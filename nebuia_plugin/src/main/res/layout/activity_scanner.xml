@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/fullscreenBackgroundColor"
+    android:theme="@style/ThemeOverlay.NebuIA.FullscreenContainer"
+    tools:context=".activities.ScannerID">
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraEngine="camera2"
+        app:cameraFacing="back"
+        app:cameraMode="picture"
+        app:cameraAutoFocusResetDelay="6"
+        app:cameraPreview="glSurface"
+        app:cameraRequestPermissions="true"
+        app:cameraUseDeviceOrientation="false">
+
+        <com.distbit.nebuia_plugin.utils.views.Rect
+            android:layout_gravity="bottom|center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:background="#39ffffff" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:text="@string/id_document"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/summary_side"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_13ssp" />
+        </LinearLayout>
+
+    </com.otaliastudios.cameraview.CameraView>
+
+    <LinearLayout
+        android:id="@+id/done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:background="@drawable/top_radius"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_5sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:src="@drawable/separator"
+            android:contentDescription="@string/image_separator"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/back"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/action_camera"
+                android:drawableStart="@drawable/back_icon"
+                android:drawableTint="#696969"
+                android:paddingStart="@dimen/_11sdp"
+                tools:ignore="RtlSymmetry" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/capture"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_gravity="center"
+                android:background="@drawable/camera"
+                tools:ignore="RtlSymmetry" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:contentDescription="@string/powered_by_nebuia"
+            android:src="@drawable/nebuia_white" />
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+

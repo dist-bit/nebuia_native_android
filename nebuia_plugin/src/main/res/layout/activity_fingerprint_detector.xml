@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_overlay"
+    android:theme="@style/ThemeOverlay.NebuIA.FullscreenContainer"
+    tools:context=".activities.FingersDetector">
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        app:cameraEngine="camera2"
+        app:cameraFacing="back"
+        app:cameraFlash="torch"
+        app:cameraMode="picture"
+        app:cameraPlaySounds="false"
+        app:cameraPreview="glSurface"
+        app:cameraRequestPermissions="true"
+        app:cameraUseDeviceOrientation="true"
+        app:cameraWhiteBalance="auto">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/back"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_gravity="end"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:drawableStart="@drawable/close_icon"
+                android:drawablePadding="@dimen/_11sdp"
+                android:drawableTint="@color/white_overlay"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_39sdp"
+                android:gravity="center"
+                android:text="@string/fingerprint_title"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_16ssp" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </com.otaliastudios.cameraview.CameraView>
+
+
+    <LinearLayout
+        android:id="@+id/panel_fingerprint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:background="@drawable/text_area"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/simpleProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:max="110" />
+
+            <TextView
+                android:id="@+id/summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:text="@string/put_your_hand"
+                android:textAlignment="center"
+                android:textColor="@color/white_overlay"
+                android:textSize="@dimen/_13ssp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="@dimen/_10sdp" />
+
+            <ProgressBar
+                android:id="@+id/loader"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="#ff2886de"
+                android:indeterminateTintMode="src_atop"
+                android:maxWidth="@dimen/_20sdp"
+                android:maxHeight="@dimen/_20sdp"
+                android:minWidth="@dimen/_20sdp"
+                android:minHeight="@dimen/_20sdp"
+                android:progress="25"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/action_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:gravity="center"
+                android:text="@string/fingerprint_label"
+                android:textAlignment="center"
+                android:textColor="#ff2886de"
+                android:textSize="@dimen/_13ssp" />
+
+            <Button
+                android:id="@+id/skip_step"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:background="@color/white_overlay"
+                android:text="@string/skip_step"
+                android:textAllCaps="false"
+                android:textColor="#7d82a8"
+                android:textSize="@dimen/_13ssp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:contentDescription="@string/powered_by_nebuia"
+                android:src="@drawable/nebuia_white" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="10dp" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="@dimen/_5sdp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

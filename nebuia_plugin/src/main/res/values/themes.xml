@@ -1,0 +1,32 @@
+<resources>
+
+    <style name="Theme.NebuIA" parent="Theme.MaterialComponents.Light" />
+
+    <style name="Theme.NebuIA.Fullscreen" parent="Theme.NebuIA">
+        <item name="android:actionBarStyle">@style/Widget.Theme.NebuIA.ActionBar.Fullscreen
+        </item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.NebuIA.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/white_overlay</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.NebuIASample" parent="Theme.MaterialComponents.Light" />
+
+    <style name="Theme.NebuIASample.Fullscreen" parent="Theme.NebuIASample">
+        <item name="android:actionBarStyle">@style/Widget.Theme.NebuIASample.ActionBar.Fullscreen
+        </item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.NebuIASample.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/white_overlay</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
+</resources>
