@@ -96,15 +96,6 @@ class Task {
             return@withContext NebuIA.fingers.Quality(bitmap)
         }
 
-
-    suspend fun imageEnhance(bitmap: Bitmap): Bitmap =
-        withContext(Dispatchers.Default) {
-            val input = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-            val status = NebuIA.enhance.Enhance(input)
-            if(status) return@withContext bitmap
-            return@withContext bitmap
-        }
-
     suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = client!!.uploadID(documents, onError)
 
     suspend fun uploadAddress(onError: () -> Unit): HashMap<String, Any>? =
