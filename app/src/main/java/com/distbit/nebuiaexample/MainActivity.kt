@@ -41,7 +41,7 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-            nebuIA.fingerDetection(0, false, 7.0, onSkip = {}, onFingerDetectionComplete = {fingers, fingers2, fingers3, fingers4 ->  }, onSkipWithFingers = {fingers, fingers2, fingers3, fingers4 ->  })
+            nebuIA.documentDetection(onIDError = {}, onIDComplete = {})
         }
 
     }

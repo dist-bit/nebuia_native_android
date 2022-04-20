@@ -135,7 +135,7 @@ static void generate_proposals(const ncnn::Mat& pred, int stride, const ncnn::Ma
                     softmax->load_param(pd);
 
                     ncnn::Option opt;
-                    opt.num_threads = 1;
+                    opt.num_threads = ncnn::get_big_cpu_count();;
                     opt.use_packing_layout = false;
 
                     softmax->create_pipeline(opt);
@@ -186,6 +186,7 @@ Inference::Inference(AAssetManager *mgr, const char *param, const char *bin) {
     Net = new ncnn::Net();
 
     ncnn::Option opt;
+    ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
     opt.lightmode = true;
     opt.num_threads = ncnn::get_big_cpu_count();
     opt.blob_allocator = &blob_pool_allocator;
@@ -212,7 +213,7 @@ Inference::detect(JNIEnv *env, jobject bitmap, int items) const {
 
     // parameters which might change for different model
     const float prob_threshold = 0.8f;
-    const float nms_threshold = 0.93f;
+    const float nms_threshold = 0.95f;
 
     auto w = width;
     auto h = height;
