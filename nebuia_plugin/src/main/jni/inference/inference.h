@@ -32,7 +32,7 @@ public:
 private:
     ncnn::Net *Net;
     const float mean_values[3] = {103.53f, 116.28f, 123.675f};
-    const float norm_valuess[3] = {0.017429f, 0.017507f, 0.017125f};
+    const float norm_values[3] = {0.017429f, 0.017507f, 0.017125f};
     int target_size = 320;
     ncnn::UnlockedPoolAllocator blob_pool_allocator;
     ncnn::PoolAllocator workspace_pool_allocator;

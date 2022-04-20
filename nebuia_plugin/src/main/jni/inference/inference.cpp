@@ -187,7 +187,6 @@ Inference::Inference(AAssetManager *mgr, const char *param, const char *bin) {
 
     ncnn::Option opt;
     ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
-    opt.lightmode = true;
     opt.num_threads = ncnn::get_big_cpu_count();
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
@@ -235,7 +234,7 @@ Inference::detect(JNIEnv *env, jobject bitmap, int items) const {
     ncnn::Mat in_pad;
     ncnn::copy_make_border(in, in_pad, h_pad / 2, h_pad - h_pad / 2, w_pad / 2, w_pad - w_pad / 2, ncnn::BORDER_CONSTANT, 0.f);
 
-    in_pad.substract_mean_normalize(mean_values, norm_valuess);
+    in_pad.substract_mean_normalize(mean_values, norm_values);
     ncnn::Extractor ex = Net->create_extractor();
 
     ex.input("in0", in_pad);
