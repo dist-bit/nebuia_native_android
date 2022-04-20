@@ -14,5 +14,3 @@
 .cxx
 local.properties
 .idea
-nebuia_plugin/src/main/assets/*.bin
-nebuia_plugin/src/main/assets/*.param
