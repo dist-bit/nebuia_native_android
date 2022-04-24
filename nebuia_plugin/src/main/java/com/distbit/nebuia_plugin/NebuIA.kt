@@ -113,7 +113,7 @@ class NebuIA(private var context: Activity) {
         fingerSkipWithImages = onSkipWithFingers
         fingerSkip = onSkip
         skipStep = skip
-        position = ptn
+        positionHand = ptn
         qualityValue = quality
         context.startActivity(
             Intent(context, FingersDetector::class.java)
@@ -147,9 +147,10 @@ class NebuIA(private var context: Activity) {
      * @param onRecordComplete - on record process done
      * @return String - path of video
      */
-    fun recordActivity(text: ArrayList<String>, onRecordComplete: (File) -> Unit) {
+    fun recordActivity(text: ArrayList<String>, nameFromId: Boolean, onRecordComplete: (File) -> Unit) {
         checkReportParamRequest()
         recordComplete = onRecordComplete
+        getNameFromId = nameFromId
         val record = Intent(context, RecordActivity::class.java)
         record.putStringArrayListExtra("text_to_load", text)
         context.startActivity(record)
@@ -346,10 +347,13 @@ class NebuIA(private var context: Activity) {
         var skipStep: Boolean = false
         var qualityValue: Double = 4.5
 
-        var position: Int = 0
+        var positionHand: Int = 0
 
         var wsqComplete: (ByteArray) -> Unit = { file: ByteArray -> }
+        // video evidence
         var recordComplete: (File) -> Unit = { file: File -> }
+        var getNameFromId: Boolean = false
+
         var faceComplete: () -> Unit = {}
 
         // nebuIA theme

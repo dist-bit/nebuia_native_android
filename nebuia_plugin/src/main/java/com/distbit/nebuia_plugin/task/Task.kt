@@ -133,7 +133,7 @@ class Task {
     }
 
     suspend fun extractFingerprints(image: Bitmap, onError: () -> Unit): HashMap<*, *>? {
-        return client!!.detectFingers(image, NebuIA.position, onError)
+        return client!!.detectFingers(image, NebuIA.positionHand, onError)
     }
 
     suspend fun getWSQFingerprintImage(image: Bitmap, onError: () -> Unit): ByteArray? {

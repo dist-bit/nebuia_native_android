@@ -267,7 +267,7 @@ class FingersDetector : AppCompatActivity() {
                         it.h.toInt()
                     )
 
-                    val rotate = croppedBmp.rotate(if (NebuIA.position == 0) -90.0f else 90.0f)!!
+                    val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
                     // clear
                     //croppedBmp.recycle()
                     val quality = NebuIA.task.fingerprintQuality(rotate)

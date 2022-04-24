@@ -87,7 +87,8 @@ class RecordActivity : AppCompatActivity() {
             parseText()
         }
 
-        getDataReport()
+        if(NebuIA.getNameFromId) getDataReport() else readText!!.text = suffixText[0]
+
         setFonts()
         setUpCamera(camera!!)
     }
