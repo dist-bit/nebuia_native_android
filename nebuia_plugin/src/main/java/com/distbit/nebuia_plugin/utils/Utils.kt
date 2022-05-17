@@ -157,13 +157,10 @@ class Utils {
         }
 
         fun Bitmap.toArray(): ByteArray {
-            val stream = ByteArrayOutputStream()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                this.compress(Bitmap.CompressFormat.WEBP_LOSSY, 100, stream)
-            } else {
-                this.compress(Bitmap.CompressFormat.WEBP, 100, stream)
+            ByteArrayOutputStream().apply {
+                compress(Bitmap.CompressFormat.JPEG,75,this)
+                return toByteArray()
             }
-            return stream.toByteArray()
         }
 
         fun ByteArray.toBitMap(): Bitmap =

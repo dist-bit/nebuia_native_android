@@ -25,10 +25,11 @@ class MainActivity : Activity() {
             //thinFont = ResourcesCompat.getFont(this, R.font.gilroy_light)
         )
         // SET TEMPORAL CODE FROM IP REQUEST
-        //nebuIA.setClientURI("http://192.168.1.104:3000/api/v1/services")
+        nebuIA.setClientURI("http://192.168.1.104:3000/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
-        nebuIA.setReport("62422330ad9791096fd9c4fe")
+        //nebuIA.setReport("62422330ad9791096fd9c4fe")
+        nebuIA.setReport("60ef54921bc1004d709a1a05")
         // CALL NEBUIA METHOD
         /*nebuIA.fingerDetection(0, false, 4.4, onSkip = {
 
@@ -41,7 +42,7 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-            nebuIA.documentDetection(onIDError = {}, onIDComplete = {})
+            nebuIA.faceLiveDetection {  }
         }
 
     }
