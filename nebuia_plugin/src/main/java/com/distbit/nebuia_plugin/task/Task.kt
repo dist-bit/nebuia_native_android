@@ -114,8 +114,7 @@ class Task {
         }
 
     suspend fun getReportSummary(): HashMap<*, *> {
-        val response = client!!.geReport()
-        return response["payload"] as HashMap<*, *>
+        return client!!.geReport()
     }
 
     suspend fun getFace(): Bitmap? {

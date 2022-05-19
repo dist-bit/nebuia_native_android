@@ -58,7 +58,7 @@ class NebuIA(private var context: Activity) {
     }
 
     /**
-     * @dev setfingerprints socre limit
+     * @dev setFingerprints score limit
      */
     fun setFingerprintsScore(value: Double) {
         //scoreFingerprints = value
