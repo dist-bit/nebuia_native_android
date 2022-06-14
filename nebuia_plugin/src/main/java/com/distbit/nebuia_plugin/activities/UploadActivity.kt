@@ -103,10 +103,15 @@ class UploadActivity : AppCompatActivity() {
      */
     private fun upload() {
         uiScope.launch {
+            var error = false
             val response = NebuIA.task.uploadID(onError = {
-                errorUpload.visibility = View.VISIBLE
+                error = true
             })
             loading.visibility = View.INVISIBLE
+
+            if(error) {
+                errorUpload.visibility = View.VISIBLE
+            }
 
             if(response != null) {
                 when {

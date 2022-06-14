@@ -25,7 +25,7 @@ class MainActivity : Activity() {
             //thinFont = ResourcesCompat.getFont(this, R.font.gilroy_light)
         )
         // SET TEMPORAL CODE FROM IP REQUEST
-        nebuIA.setClientURI("http://192.168.1.104:3000/api/v1/services")
+        nebuIA.setClientURI("https://api.nebuia.com/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
         //nebuIA.setReport("62422330ad9791096fd9c4fe")
