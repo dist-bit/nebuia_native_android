@@ -58,12 +58,12 @@ class Client {
 
     // real time document detect
     suspend fun detectFingers(file: Bitmap, position: Int, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/webp".toMediaType(), file.toArray())
+        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
 
         val body: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("hand", position.toString())
-            .addFormDataPart("image", "temp.webp", image)
+            .addFormDataPart("image", "temp.jpeg", image)
             .build()
 
         try {
@@ -80,11 +80,11 @@ class Client {
 
     // generate WSQ for fingerprint
     suspend fun getWSQFingerprint(file: Bitmap, onError: () -> Unit): ByteArray? = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/webp".toMediaType(), file.toArray())
+        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
 
         val body: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("front", "temp.webp", image)
+            .addFormDataPart("front", "temp.jpeg", image)
             .build()
 
         try {
@@ -102,11 +102,11 @@ class Client {
 
     // store image face
     suspend fun saveFace(file: Bitmap): Boolean = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/webp".toMediaType(), file.toArray())
+        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
 
         val body: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("face", "temp.webp", image)
+            .addFormDataPart("face", "temp.jpeg", image)
             .build()
 
         val response: Response = client.newCall(build("face")
@@ -126,11 +126,11 @@ class Client {
 
     // store image face
     suspend fun qualityFace(file: Bitmap): Double = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/webp".toMediaType(), file.toArray())
+        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
 
         val body: RequestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("face", "temp.webp", image)
+            .addFormDataPart("face", "temp.jpeg", image)
             .build()
 
         val response: Response = client.newCall(build("face/quality")
@@ -150,15 +150,15 @@ class Client {
 
     // uploadID
     suspend fun uploadID(docs: Documents, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val front: RequestBody = create("image/webp".toMediaType(), docs.front!!.toArray())
+        val front: RequestBody = create("image/jpeg".toMediaType(), docs.front!!.toArray())
 
         val body: MultipartBody.Builder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("front", "front.webp", front)
+            .addFormDataPart("front", "front.jpeg", front)
 
         if (!docs.isPassport) {
-            val back: RequestBody = create("image/webp".toMediaType(), docs.back!!.toArray())
-            body.addFormDataPart("back", "back.webp", back)
+            val back: RequestBody = create("image/jpeg".toMediaType(), docs.back!!.toArray())
+            body.addFormDataPart("back", "back.jpeg", back)
         }
 
         docs.front?.recycle()
@@ -178,11 +178,11 @@ class Client {
 
     // extract address from image
     suspend fun getAddress(file: Bitmap, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val front: RequestBody = create("image/webp".toMediaType(), file.toArray())
+        val front: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
 
         val body: MultipartBody.Builder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("document", "doc.webp", front)
+            .addFormDataPart("document", "doc.jpeg", front)
 
         try {
             val response: Response = client.newCall(build("address")
