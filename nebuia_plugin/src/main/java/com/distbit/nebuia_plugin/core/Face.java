@@ -23,6 +23,5 @@ public class Face {
     }
 
     public native boolean Init(AssetManager mgr);
-    public native float Quality(Bitmap bitmap);
     public native Obj[] detect(Bitmap bitmap);
 }

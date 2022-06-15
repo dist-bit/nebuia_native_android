@@ -132,7 +132,7 @@ class FaceDetector : AppCompatActivity() {
                 if (detections.isNotEmpty()) {
                     // get face quality
                     val qua = NebuIA.task.qualityFace(bitmap)
-                    if(qua > 55) {
+                    if(qua > 60) {
                         // detect face live
                         if (NebuIA.task.liveDetection(bitmap)) {
                             faceComplete = true
@@ -142,7 +142,7 @@ class FaceDetector : AppCompatActivity() {
                         } else detect = false
                     } else {
                         // play warning sound
-                        warning(this@FaceDetector);
+                        warning(this@FaceDetector)
                         summaryOne.text = getString(R.string.face_quality_warn)
                         detect = false
                     }

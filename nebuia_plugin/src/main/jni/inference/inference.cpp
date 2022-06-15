@@ -211,8 +211,8 @@ Inference::detect(JNIEnv *env, jobject bitmap, int items) const {
     const int height = info.height;
 
     // parameters which might change for different model
-    const float prob_threshold = 0.8f;
-    const float nms_threshold = 0.95f;
+    const float prob_threshold = 0.75f;
+    const float nms_threshold = 0.9f;
 
     auto w = width;
     auto h = height;
