@@ -20,17 +20,16 @@
         app:cameraRequestPermissions="true"
         app:cameraUseDeviceOrientation="true">
 
-        <!-- <ImageView
+        <ImageView
+            android:id="@+id/instruction_image"
             android:translationZ="90dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="@dimen/_260sdp"
+            android:layout_marginBottom="@dimen/_50sdp"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginBottom="@dimen/_70sdp"
             android:rotation="90"
-
             android:contentDescription="@string/powered_by_nebuia"
-            android:src="@drawable/id" /> -->
+            android:src="@drawable/id_front" />
 
         <com.distbit.nebuia_plugin.utils.views.Rect
             android:layout_gravity="bottom|center"

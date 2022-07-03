@@ -3,8 +3,10 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
@@ -16,6 +18,8 @@ import com.otaliastudios.cameraview.PictureResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 
 class ScannerID : AppCompatActivity() {
@@ -24,6 +28,7 @@ class ScannerID : AppCompatActivity() {
 
     private lateinit var camera: CameraView
     private lateinit var summarySide: TextView
+    private lateinit var imageInstruction: ImageView
     private lateinit var title: TextView
     private lateinit var capture: Button
 
@@ -50,6 +55,7 @@ class ScannerID : AppCompatActivity() {
         camera = findViewById(R.id.camera)
         summarySide = findViewById(R.id.summary_side)
         title = findViewById(R.id.title)
+        imageInstruction = findViewById(R.id.instruction_image)
 
         val back: Button = findViewById(R.id.back)
         capture = findViewById(R.id.capture)
@@ -62,6 +68,8 @@ class ScannerID : AppCompatActivity() {
             super.onBackPressed()
         }
 
+
+
         fillData()
         setUpCamera(camera)
         setFonts()
@@ -71,8 +79,28 @@ class ScannerID : AppCompatActivity() {
      * @dev set up data for detections
      */
     fun fillData() {
+        changeImageInstruction()
         fillLabels()
         setSummarySide()
+    }
+
+    /**
+     * @dev change image instruction
+     */
+    private fun changeImageInstruction() {
+        // set image visible
+        imageInstruction.visibility = View.VISIBLE
+
+        if (docs.side == Side.FRONT) {
+            imageInstruction.setImageResource(R.drawable.id_front)
+        } else {
+            imageInstruction.setImageResource(R.drawable.id_back)
+        }
+
+        // set image invisible after 4 seconds
+        Executors.newSingleThreadScheduledExecutor().schedule({
+            imageInstruction.visibility = View.INVISIBLE
+        }, 6, TimeUnit.SECONDS)
     }
 
     /**
@@ -177,9 +205,8 @@ class ScannerID : AppCompatActivity() {
         /**
          * @dev reset variables to retake image id
          */
-        fun reset() = when (NebuIA.task.documents.side) {
-            Side.FRONT -> NebuIA.task.documents.frontCrop = null
-            Side.BACK -> NebuIA.task.documents.backCrop = null
+        fun reset() {
+
         }
     }
 }
