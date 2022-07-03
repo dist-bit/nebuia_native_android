@@ -30,9 +30,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/preview_your_document"
-            android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/_18ssp" />
+            android:textSize="@dimen/_14ssp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,8 +44,7 @@
                 android:layout_width="@dimen/_310sdp"
                 android:layout_height="@dimen/_195sdp"
                 android:layout_margin="@dimen/_5sdp"
-                android:elevation="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_20sdp">
+                android:elevation="@dimen/_10sdp" >
 
                 <ImageView
                     android:id="@+id/document_preview"
@@ -83,9 +81,8 @@
             android:layout_marginBottom="@dimen/_15sdp"
             android:gravity="center"
             android:text="@string/text_id_is_clear"
-            android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/_13ssp" />
+            android:textSize="@dimen/_11ssp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -107,7 +104,7 @@
                 android:background="@drawable/action_camera"
                 android:drawableStart="@drawable/close_icon"
                 android:drawableTint="#696969"
-                android:paddingStart="@dimen/_11sdp"
+                android:paddingStart="@dimen/_12sdp"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -138,7 +135,7 @@
                 android:background="@drawable/action_camera"
                 android:drawableStart="@drawable/retake_icon"
                 android:drawableTint="#696969"
-                android:paddingStart="@dimen/_11sdp"
+                android:paddingStart="@dimen/_12sdp"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -149,7 +146,7 @@
 
 
         <ImageView
-            android:layout_width="@dimen/_100sdp"
+            android:layout_width="@dimen/_70sdp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/_3sdp"

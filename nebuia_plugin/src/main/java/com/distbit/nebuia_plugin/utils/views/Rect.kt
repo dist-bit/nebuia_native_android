@@ -13,8 +13,7 @@ class Rect : ViewGroup {
         context,
         attrs,
         defStyle
-    ) {
-    }
+    )
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)
@@ -27,21 +26,33 @@ class Rect : ViewGroup {
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        val viewportMargin = 80
+
+        val metrics = resources.displayMetrics
+        val viewportMargin = if(metrics.densityDpi <= 320) {
+            65
+        } else {
+            130
+        }
+
         val viewportCornerRadius = 8
         val eraser = Paint()
         eraser.isAntiAlias = true
         eraser.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
-        val width = width.toFloat() - viewportMargin
-        val height = width * 0.65.toFloat()
 
-        val metrics = resources.displayMetrics
         val scale: Float = resources.displayMetrics.density
 
+        val marginBottom = if(metrics.densityDpi <= 320) {
+            275 * scale
+        } else 290 * scale
+
+        val width = width.toFloat() - viewportMargin
+        val height = height - marginBottom
+
+
         val marginTop = if(metrics.densityDpi <= 320) {
-            155 * scale
-        } else 180 * scale
+            50 * scale
+        } else 40 * scale
 
         val rect = RectF(
             viewportMargin.toFloat(),
@@ -61,7 +72,7 @@ class Rect : ViewGroup {
         val path = Path()
         val stroke = Paint()
         stroke.isAntiAlias = true
-        stroke.strokeWidth = 4F
+        stroke.strokeWidth = 2F
         stroke.color = Color.WHITE
         stroke.style = Paint.Style.STROKE
 
@@ -75,5 +86,37 @@ class Rect : ViewGroup {
             rect,
             viewportCornerRadius.toFloat(), viewportCornerRadius.toFloat(), eraser
         )
+
+        val paint = Paint(Paint.DITHER_FLAG)
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 10F
+        paint.color = Color.parseColor("#9775f5")
+
+        canvas.drawPath(createCornersPath(frame.left, frame.top, frame.right, frame.bottom, 80), paint)
+
     }
+
+    private fun createCornersPath(
+        left: Float,
+        top: Float,
+        right: Float,
+        bottom: Float,
+        cornerWidth: Int
+    ): Path {
+        val path = Path()
+        path.moveTo(left, (top + cornerWidth))
+        path.lineTo(left, top)
+        path.lineTo((left + cornerWidth), top)
+        path.moveTo((right - cornerWidth), top)
+        path.lineTo(right, top)
+        path.lineTo(right, (top + cornerWidth))
+        path.moveTo(left, (bottom - cornerWidth))
+        path.lineTo(left, bottom)
+        path.lineTo((left + cornerWidth), bottom)
+        path.moveTo((right - cornerWidth), bottom)
+        path.lineTo(right, bottom)
+        path.lineTo(right, (bottom - cornerWidth))
+        return path
+    }
+
 }

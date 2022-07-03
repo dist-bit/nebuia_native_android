@@ -158,7 +158,7 @@ class Utils {
 
         fun Bitmap.toArray(): ByteArray {
             ByteArrayOutputStream().apply {
-                compress(Bitmap.CompressFormat.JPEG,75,this)
+                compress(Bitmap.CompressFormat.JPEG,100,this)
                 return toByteArray()
             }
         }

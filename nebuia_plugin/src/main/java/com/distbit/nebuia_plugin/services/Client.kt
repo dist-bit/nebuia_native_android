@@ -150,22 +150,20 @@ class Client {
 
     // uploadID
     suspend fun uploadID(docs: Documents, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val front: RequestBody = create("image/jpeg".toMediaType(), docs.front!!.toArray())
+        val front: RequestBody = create("image/jpeg".toMediaType(), docs.frontCrop!!.toArray())
 
         val body: MultipartBody.Builder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
+            .addFormDataPart("document", "id")
             .addFormDataPart("front", "front.jpeg", front)
 
         if (!docs.isPassport) {
-            val back: RequestBody = create("image/jpeg".toMediaType(), docs.back!!.toArray())
+            val back: RequestBody = create("image/jpeg".toMediaType(), docs.backCrop!!.toArray())
             body.addFormDataPart("back", "back.jpeg", back)
         }
 
-        docs.front?.recycle()
-        docs.back?.recycle()
-
         try {
-            val response: Response = client.newCall(build("id")
+            val response: Response = client.newCall(build("id/cropped/experimental")
                 .post(body.build())
                 .build()).execute()
 

@@ -2,9 +2,9 @@ package com.distbit.nebuia_plugin.task
 
 import android.graphics.Bitmap
 import com.distbit.nebuia_plugin.NebuIA
-import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.core.Finger
 import com.distbit.nebuia_plugin.core.Id
+import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import kotlinx.coroutines.Dispatchers
@@ -80,8 +80,10 @@ class Task {
                     box.h.toInt()
                 )
                 currentType = box.label
-                setBitmapForIdentity(bitmap)
-                return@withContext croppedBmp
+
+                val resized = Bitmap.createScaledBitmap(croppedBmp, 590, 389, true)
+                setBitmapForIdentity(resized)
+                return@withContext resized
             }
             return@withContext null
         }
@@ -149,10 +151,10 @@ class Task {
     private fun setBitmapForIdentity(image: Bitmap) {
         documents.isPassport = false
         when (currentType) {
-            "mx_id_front" -> documents.front = image
-            "mx_id_back" -> documents.back = image
+            "mx_id_front" -> documents.frontCrop = image
+            "mx_id_back" -> documents.backCrop = image
             "mx_passport_front" -> {
-                documents.front = image
+                documents.frontCrop = image
                 documents.isPassport = true
             }
         }

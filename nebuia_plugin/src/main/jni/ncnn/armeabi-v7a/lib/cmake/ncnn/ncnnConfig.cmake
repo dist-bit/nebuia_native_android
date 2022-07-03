@@ -21,7 +21,7 @@ if(NCNN_VULKAN)
         if(NCNN_SYSTEM_GLSLANG)
             set(GLSLANG_TARGET_DIR "")
         else()
-            set(GLSLANG_TARGET_DIR "${CMAKE_CURRENT_LIST_DIR}/../../..//cmake")
+            set(GLSLANG_TARGET_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../lib/cmake")
         endif(NCNN_SYSTEM_GLSLANG)
 
         include(${GLSLANG_TARGET_DIR}/OSDependentTargets.cmake)

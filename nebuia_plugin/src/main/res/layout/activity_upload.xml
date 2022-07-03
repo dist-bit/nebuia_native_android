@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/_15sdp"
         android:text="@string/uploading_id"
         android:textColor="@color/nebuia_bg"
-        android:textSize="@dimen/_18ssp" />
+        android:textSize="@dimen/_14ssp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -168,7 +168,7 @@
                 android:layout_height="@dimen/_35sdp"
                 android:layout_gravity="center"
                 android:elevation="@dimen/_10sdp"
-                android:paddingStart="@dimen/_7sdp"
+                android:paddingStart="@dimen/_8sdp"
                 android:background="@drawable/circle_red"
                 android:drawableStart="@drawable/close_icon"
                 android:drawableTint="@color/white_overlay"
@@ -200,13 +200,14 @@
             <Button
                 android:layout_marginTop="@dimen/_10sdp"
                 android:id="@+id/continue_error"
-                android:layout_width="@dimen/_300sdp"
+                android:layout_width="@dimen/_240sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/button_rounded"
                 android:text="@string/continue_button"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_13ssp" />
+
         </LinearLayout>
 
     </FrameLayout>
