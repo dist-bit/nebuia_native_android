@@ -42,7 +42,7 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-            nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
+            nebuIA.faceLiveDetection(false, onFaceComplete = {})
         }
 
     }

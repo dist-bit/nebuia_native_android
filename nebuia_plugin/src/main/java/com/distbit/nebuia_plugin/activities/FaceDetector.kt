@@ -132,13 +132,18 @@ class FaceDetector : AppCompatActivity() {
                 if (detections.isNotEmpty()) {
                     // get face quality
                     val qua = NebuIA.task.qualityFace(bitmap)
-                    if(qua > 60) {
+                    if(qua > 65) {
                         // detect face live
                         if (NebuIA.task.liveDetection(bitmap)) {
-                            faceComplete = true
-                            summary.text = getString(R.string.document_instruction)
-                            summaryOne.text = getString(R.string.waiting_document)
-                            detect = false
+                            if(NebuIA.idShow) {
+                                faceComplete = true
+                                summary.text = getString(R.string.document_instruction)
+                                summaryOne.text = getString(R.string.waiting_document)
+                                detect = false
+                            } else {
+                                completeActionDetection()
+                            }
+
                         } else detect = false
                     } else {
                         // play warning sound
@@ -169,18 +174,22 @@ class FaceDetector : AppCompatActivity() {
             if(ineFront && !ineBack) {
                 val detection: String = NebuIA.task.documentRealTimeDetection(bitmap)
                 if(detection == "mx_id_back") {
-                    timer.schedule(timerTask {
-                        // execute on main thread
-                        uiScope.launch {
-                            ineBack = true
-                            detect = false
-                            done()
-                        }
-                    }, 3000)
+                    completeActionDetection()
                 } else {
                     detect = false
                 }
             }
         }
+    }
+
+    private fun completeActionDetection() {
+        timer.schedule(timerTask {
+            // execute on main thread
+            uiScope.launch {
+                ineBack = true
+                detect = false
+                done()
+            }
+        }, 3000)
     }
 }
