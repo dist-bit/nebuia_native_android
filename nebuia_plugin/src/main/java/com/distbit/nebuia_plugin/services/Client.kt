@@ -154,18 +154,17 @@ class Client {
 
         val body: MultipartBody.Builder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
+            .addFormDataPart("document", if(!docs.isPassport) "id" else "passport")
             .addFormDataPart("front", "front.jpeg", front)
 
         if (!docs.isPassport) {
             val back: RequestBody = create("image/jpeg".toMediaType(), docs.back!!.toArray())
             body.addFormDataPart("back", "back.jpeg", back)
+
         }
 
-        docs.front?.recycle()
-        docs.back?.recycle()
-
         try {
-            val response: Response = client.newCall(build("id")
+            val response: Response = client.newCall(build("id/cropped/experimental")
                 .post(body.build())
                 .build()).execute()
 

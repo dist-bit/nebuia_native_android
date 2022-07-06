@@ -111,8 +111,8 @@ class PreviewDocument : BottomSheetDialogFragment() {
      * @dev fill crop documents images
      */
     private fun setBitMaps() = when (NebuIA.task.documents.side) {
-        Side.FRONT -> NebuIA.task.documents.frontCrop = NebuIA.task.cropped
-        Side.BACK -> NebuIA.task.documents.backCrop = NebuIA.task.cropped
+        Side.FRONT -> NebuIA.task.documents.front = NebuIA.task.cropped
+        Side.BACK -> NebuIA.task.documents.back = NebuIA.task.cropped
     }
 
     /**

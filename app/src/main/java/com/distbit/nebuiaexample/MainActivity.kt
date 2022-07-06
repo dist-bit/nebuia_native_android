@@ -28,8 +28,8 @@ class MainActivity : Activity() {
         nebuIA.setClientURI("https://api.nebuia.com/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
-        //nebuIA.setReport("62422330ad9791096fd9c4fe")
-        nebuIA.setReport("60ef54921bc1004d709a1a05")
+        nebuIA.setReport("62422330ad9791096fd9c4fe")
+        //nebuIA.setReport("60ef54921bc1004d709a1a05")
         // CALL NEBUIA METHOD
         /*nebuIA.fingerDetection(0, false, 4.4, onSkip = {
 
@@ -42,7 +42,7 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-            nebuIA.faceLiveDetection {  }
+            nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
         }
 
     }

@@ -34,6 +34,8 @@ class ScannerID : AppCompatActivity() {
     private lateinit var mxIDBack: String
     private lateinit var mxPassportFront: String
 
+    private var onAction: Boolean = false
+
     /**
      * @dev onCreate default android life cycle
      * init listeners for camera frames
@@ -120,7 +122,12 @@ class ScannerID : AppCompatActivity() {
         //    source.removeIf { it.width > 1080 }
         //    source
         //}
-        capture.setOnClickListener{ camera.takePicture() }
+        capture.setOnClickListener{
+            if (!onAction) {
+                camera.takePicture()
+                onAction = true
+            }
+        }
     }
 
     /**
@@ -171,15 +178,17 @@ class ScannerID : AppCompatActivity() {
                 mxIDBack -> bitmap.cropImage()
                 else -> detect = false
             }
+            // re enable capture button
+            onAction = false
         }
 
     companion object {
         /**
          * @dev reset variables to retake image id
          */
-        fun reset() = when (NebuIA.task.documents.side) {
-            Side.FRONT -> NebuIA.task.documents.front = null
-            Side.BACK -> NebuIA.task.documents.back = null
+        fun reset() {
+           // Side.FRONT -> NebuIA.task.documents.front = null
+           // Side.BACK -> NebuIA.task.documents.back = null
         }
     }
 }

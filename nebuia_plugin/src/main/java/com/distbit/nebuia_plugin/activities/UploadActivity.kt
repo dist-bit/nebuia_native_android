@@ -64,11 +64,11 @@ class UploadActivity : AppCompatActivity() {
             finish()
         }
 
-        if (NebuIA.task.documents.frontCrop != null)
-            front.setImageBitmap(NebuIA.task.documents.frontCrop)
+        if (NebuIA.task.documents.front != null)
+            front.setImageBitmap(NebuIA.task.documents.front)
 
-        if (NebuIA.task.documents.backCrop != null)
-            back.setImageBitmap(NebuIA.task.documents.backCrop)
+        if (NebuIA.task.documents.back != null)
+            back.setImageBitmap(NebuIA.task.documents.back)
 
         setFonts()
         setUpColors()

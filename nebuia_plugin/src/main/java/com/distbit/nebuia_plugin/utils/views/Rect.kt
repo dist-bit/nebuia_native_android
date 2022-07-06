@@ -27,7 +27,13 @@ class Rect : ViewGroup {
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        val viewportMargin = 80
+
+        val metrics = resources.displayMetrics
+
+        val viewportMargin = if(metrics.densityDpi <= 320) {
+            45
+        } else 80
+
         val viewportCornerRadius = 8
         val eraser = Paint()
         eraser.isAntiAlias = true
@@ -36,7 +42,7 @@ class Rect : ViewGroup {
         val width = width.toFloat() - viewportMargin
         val height = width * 0.65.toFloat()
 
-        val metrics = resources.displayMetrics
+
         val scale: Float = resources.displayMetrics.density
 
         val marginTop = if(metrics.densityDpi <= 320) {

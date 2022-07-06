@@ -200,7 +200,7 @@
             <Button
                 android:layout_marginTop="@dimen/_10sdp"
                 android:id="@+id/continue_error"
-                android:layout_width="@dimen/_300sdp"
+                android:layout_width="@dimen/_240sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/button_rounded"
