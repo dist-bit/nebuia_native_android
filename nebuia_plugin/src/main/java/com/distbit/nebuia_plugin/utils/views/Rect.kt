@@ -32,7 +32,7 @@ class Rect : ViewGroup {
         val metrics = resources.displayMetrics
         val density = metrics.densityDpi
 
-        Log.i("VALUE", density.toString())
+        // Log.i("VALUE", density.toString())
 
         val viewportMargin = if(density <= 320) {
             45
