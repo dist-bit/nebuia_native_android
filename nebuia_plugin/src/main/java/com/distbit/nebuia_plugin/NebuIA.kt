@@ -148,12 +148,12 @@ class NebuIA(private var context: Activity) {
      * @param onRecordComplete - on record process done
      * @return String - path of video
      */
-    fun recordActivity(text: Array<String>, nameFromId: Boolean, onRecordComplete: (File) -> Unit) {
+    fun recordActivity(text:  ArrayList<String>, nameFromId: Boolean, onRecordComplete: (File) -> Unit) {
         checkReportParamRequest()
         recordComplete = onRecordComplete
         getNameFromId = nameFromId
         val record = Intent(context, RecordActivity::class.java)
-        record.putStringArrayListExtra("text_to_load", text.toCollection(ArrayList()))
+        record.putStringArrayListExtra("text_to_load", text)
         context.startActivity(record)
     }
 
