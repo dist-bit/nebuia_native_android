@@ -3,6 +3,7 @@ package com.distbit.nebuia_plugin.utils.views
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 
 
@@ -29,8 +30,11 @@ class Rect : ViewGroup {
         super.dispatchDraw(canvas)
 
         val metrics = resources.displayMetrics
+        val density = metrics.densityDpi
 
-        val viewportMargin = if(metrics.densityDpi <= 320) {
+        Log.i("VALUE", metrics.densityDpi.toString())
+
+        val viewportMargin = if(density <= 320) {
             45
         } else 80
 
@@ -45,9 +49,12 @@ class Rect : ViewGroup {
 
         val scale: Float = resources.displayMetrics.density
 
-        val marginTop = if(metrics.densityDpi <= 320) {
+        val marginTop = if(density <= 240) {
+            250 * scale
+        } else if(density in 241..320) {
             155 * scale
-        } else 180 * scale
+        } else 80 * scale
+
 
         val rect = RectF(
             viewportMargin.toFloat(),

@@ -9,15 +9,15 @@
 #  ifndef NCNN_EXPORT
 #    ifdef ncnn_EXPORTS
         /* We are building this library */
-#      define NCNN_EXPORT 
+#      define NCNN_EXPORT __attribute__((visibility("default")))
 #    else
         /* We are using this library */
-#      define NCNN_EXPORT 
+#      define NCNN_EXPORT __attribute__((visibility("default")))
 #    endif
 #  endif
 
 #  ifndef NCNN_NO_EXPORT
-#    define NCNN_NO_EXPORT 
+#    define NCNN_NO_EXPORT __attribute__((visibility("hidden")))
 #  endif
 #endif
 

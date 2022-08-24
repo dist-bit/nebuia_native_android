@@ -42,7 +42,7 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-            nebuIA.faceLiveDetection(false, onFaceComplete = {})
+            nebuIA.recordActivity(arrayOf("YO MIGUEL ANGEL SANCHEZ BRAVO a través del presente manifiesto a Banco Bancrea que autorizo" , "me sea otorgado un Crédito Simple y acepto los términos y condiciones del CONTRATO DE APERTURA DE CRÉDITO SIMPLE \"CRÉDITO SIMPLE BANCREA\""), false) {}
         }
 
     }

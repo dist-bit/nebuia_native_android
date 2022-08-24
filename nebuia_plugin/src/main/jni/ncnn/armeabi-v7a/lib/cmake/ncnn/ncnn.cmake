@@ -4,7 +4,7 @@ if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.6)
    message(FATAL_ERROR "CMake >= 2.6.0 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.6...3.20)
+cmake_policy(VERSION 2.6...3.21)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -51,7 +51,7 @@ if(_IMPORT_PREFIX STREQUAL "/")
 endif()
 
 # Create imported target ncnn
-add_library(ncnn STATIC IMPORTED)
+add_library(ncnn SHARED IMPORTED)
 
 set_target_properties(ncnn PROPERTIES
   INTERFACE_COMPILE_OPTIONS "-fno-rtti;-fno-exceptions"
