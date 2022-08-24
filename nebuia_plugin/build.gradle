@@ -9,7 +9,7 @@ Properties buildProperties = new Properties()
 buildProperties.load(new FileInputStream(rootProject.file("build.properties")))
 
 group = 'com.distbit.nebuia_plugin'
-version = '0.0.60'
+version = '0.0.61'
 
 android {
     compileSdkVersion 33
@@ -31,7 +31,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            version "3.22.1"
+            version "3.18.1"
             path file('src/main/jni/CMakeLists.txt')
         }
     }
