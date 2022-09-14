@@ -21,7 +21,7 @@ data class Theme(
     var thinFont: Typeface? = null
 ) {
     fun applyBoldFont(textView: TextView) {
-        textView.setTypeface(null, Typeface.BOLD);
+        //textView.setTypeface(null, Typeface.BOLD);
         //if (this.boldFont != null) textView.typeface = this.boldFont
     }
 

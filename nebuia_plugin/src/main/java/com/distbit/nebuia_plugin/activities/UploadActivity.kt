@@ -1,5 +1,6 @@
 package com.distbit.nebuia_plugin.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -22,6 +23,8 @@ class UploadActivity : AppCompatActivity() {
     private lateinit var loading: LinearLayout
 
     private lateinit var title: TextView
+
+    private lateinit var errorDescription: TextView
 
     private lateinit var successUpload: LinearLayout
     private lateinit var continueSuccess: Button
@@ -51,6 +54,7 @@ class UploadActivity : AppCompatActivity() {
         continueError = findViewById(R.id.continue_error)
 
         title = findViewById(R.id.doc_type)
+        errorDescription = findViewById(R.id.error_description)
 
         continueSuccess.setOnClickListener {
             NebuIA.task.documents = Documents()
@@ -101,6 +105,7 @@ class UploadActivity : AppCompatActivity() {
     /**
      * @dev upload id and call callback
      */
+    @SuppressLint("SetTextI18n")
     private fun upload() {
         uiScope.launch {
             var error = false
@@ -117,8 +122,10 @@ class UploadActivity : AppCompatActivity() {
                 when {
                     response["status"] as Boolean ->
                         successUpload.visibility = View.VISIBLE
-                    else ->
+                    else -> {
                         errorUpload.visibility = View.VISIBLE
+                        errorDescription.text = "${getString(R.string.upload_id_error)}, description: ${response["payload"]}"
+                    }
                 }
             }
         }

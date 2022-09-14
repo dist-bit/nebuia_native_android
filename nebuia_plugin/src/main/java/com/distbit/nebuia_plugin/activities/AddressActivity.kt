@@ -57,7 +57,6 @@ class AddressFragment : BottomSheetDialogFragment() {
     override fun onCancel(dialog: DialogInterface) {
         AddressActivity.close()
         super.onCancel(dialog)
-
     }
 
     private var resultDocument =

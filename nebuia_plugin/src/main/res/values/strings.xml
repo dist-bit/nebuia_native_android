@@ -78,4 +78,7 @@
     <string name="capture_method">Selecciona método de captura</string>
     <string name="image_separator">image_separator</string>
     <string name="skip_step">Saltar paso</string>
+    <string name="skip_step_fingerprint">Saltar paso</string>
+    <string name="retyr_step_fingerprint">Reintentar</string>
+    <string name="nfiq">NFIQ %1$d</string>
 </resources>
