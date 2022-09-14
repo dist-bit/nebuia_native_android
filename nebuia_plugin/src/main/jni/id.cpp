@@ -4,10 +4,10 @@
 
 #include <string>
 #include <vector>
+#include <utils.h>
 #include "id.h"
 
 Inference *Id::inference = nullptr;
-
 extern "C" {
 
 // FIXME DeleteGlobalRef is missing for objCls
@@ -21,12 +21,10 @@ static jfieldID labelId;
 static jfieldID probId;
 
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
-    __android_log_print(ANDROID_LOG_DEBUG, "NebuIA", "JNI_OnLoad");
     return JNI_VERSION_1_4;
 }
 
 JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
-    __android_log_print(ANDROID_LOG_DEBUG, "NebuIA", "JNI_OnUnload");
 }
 
 JNIEXPORT jboolean JNICALL
@@ -36,6 +34,7 @@ Java_com_distbit_nebuia_1plugin_core_Id_Init(JNIEnv *env, jobject, jobject asset
         delete Id::inference;
         Id::inference = nullptr;
     }
+
     if (Id::inference == nullptr) {
         AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
         Id::inference = new Inference(mgr, "det0.param", "det0.bin");
@@ -58,11 +57,31 @@ Java_com_distbit_nebuia_1plugin_core_Id_Init(JNIEnv *env, jobject, jobject asset
 }
 
 JNIEXPORT jobjectArray JNICALL
-Java_com_distbit_nebuia_1plugin_core_Id_Detect(JNIEnv *env, jobject thiz, jobject bitmap) {
+Java_com_distbit_nebuia_1plugin_core_Id_Detect(JNIEnv *env, jobject thiz, jobject bitmap,
+                                               jobject out) {
 
     auto objects = Id::inference->detect(env, bitmap, 3);
     static const char *class_names[] = {
             "mx_id_back", "mx_id_front", "mx_passport_front"};
+
+    if (!objects.empty()) {
+        ncnn::Mat in = ncnn::Mat::from_android_bitmap(env, bitmap, ncnn::Mat::PIXEL_RGB);
+
+        ncnn::Mat dst;
+        ncnn::copy_cut_border(in, dst,
+                              objects[0].y,
+                              in.h - objects[0].h - objects[0].y,
+                              objects[0].x,
+                              in.w - objects[0].w - objects[0].x);
+
+        ncnn::Mat resized;
+        ncnn::resize_bilinear(dst, resized, 590, 389);
+        resized.to_android_bitmap(env, out, ncnn::Mat::PIXEL_RGB);
+        dst.release();
+        resized.release();
+        in.release();
+    }
+
 
     jobjectArray jObjArray = env->NewObjectArray(objects.size(), objCls, nullptr);
 

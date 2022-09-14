@@ -10,8 +10,6 @@ Quality::Quality(AAssetManager *mgr, const char *param, const char *bin) {
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
     opt.use_packing_layout = true;
-    //if (ncnn::get_gpu_count() != 0)
-    //    opt.use_vulkan_compute = true;
 
     Net->opt = opt;
 
@@ -21,8 +19,6 @@ Quality::Quality(AAssetManager *mgr, const char *param, const char *bin) {
 }
 
 Quality::~Quality() {
-    // destroy gpu instances
-    //ncnn::destroy_gpu_instance();
     Net->clear();
     delete Net;
 }
@@ -34,7 +30,6 @@ float Quality::quality(JNIEnv *env, jobject bitmap) const {
 
     in.substract_mean_normalize(mean_values, norm_values);
     ncnn::Extractor ex = Net->create_extractor();
-    //ex.set_vulkan_compute(true);
     ex.input("mobilenetv2_1.00_224_input_blob", in);
 
     ncnn::Mat out;
@@ -46,5 +41,28 @@ float Quality::quality(JNIEnv *env, jobject bitmap) const {
     out.release();
 
     return quality;
+}
+
+float Quality::qualityMat(const cv::Mat& image) const {
+
+    ncnn::Mat input = ncnn::Mat::from_pixels(image.data, ncnn::Mat::PIXEL_RGB, image.cols, image.rows);
+
+    ncnn::Mat in;
+    ncnn::resize_bilinear(input, in, target_size, target_size);
+
+    in.substract_mean_normalize(mean_values, norm_values);
+    ncnn::Extractor ex = Net->create_extractor();
+    ex.input("mobilenetv2_1.00_224_input_blob", in);
+
+    ncnn::Mat out;
+    ex.extract("dense_blob", out);
+    float quality = out[0];
+
+    // clear mat image
+    out.release();
+
+    return quality;
 
 }
+
+

@@ -99,6 +99,26 @@ class Client {
         }
     }
 
+    // generate WSQ for fingerprint
+    suspend fun getNFIQFingerprint(file: Bitmap, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
+        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
+
+        val body: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("image", "temp.jpeg", image)
+            .build()
+
+        try {
+            val response: Response = client.newCall(build("fingerprints/nfiq")
+                .post(body)
+                .build()).execute()
+
+            return@withContext toMap(response.json)
+        } catch (e: Exception) {
+            onError()
+            return@withContext null
+        }
+    }
 
     // store image face
     suspend fun saveFace(file: Bitmap): Boolean = withContext(Dispatchers.IO) {

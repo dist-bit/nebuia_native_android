@@ -113,6 +113,7 @@ class Utils {
         fun toMap(json: JSONObject): HashMap<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val keys = json.keys()
+
             while (keys.hasNext()) {
                 val key = keys.next()
                 var value = json[key]
@@ -125,6 +126,9 @@ class Utils {
 
                 map[key] = value
             }
+
+            //Log.e("NEBUIA_ERROR", map.toString())
+
             return HashMap(map)
         }
 

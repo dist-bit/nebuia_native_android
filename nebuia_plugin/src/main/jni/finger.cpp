@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "finger.h"
+#include "utils.h"
 #include <android/log.h>
 #include "cpu.h"
 
@@ -22,7 +23,6 @@ static jfieldID hId;
 static jfieldID labelId;
 static jfieldID probId;
 
-// public native boolean Init(AssetManager mgr);
 JNIEXPORT jboolean JNICALL
 Java_com_distbit_nebuia_1plugin_core_Finger_Init(JNIEnv *env, jobject, jobject assetManager) {
 
@@ -43,7 +43,6 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Init(JNIEnv *env, jobject, jobject a
 
     if (Finger::quality == nullptr) {
         AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
-        // finger quality net
         Finger::quality = new Quality(mgr, "det4.param", "det4.bin");
     }
 
@@ -54,6 +53,7 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Init(JNIEnv *env, jobject, jobject a
     constructorId = env->GetMethodID(objCls, "<init>",
                                      "(Lcom/distbit/nebuia_plugin/core/Finger;)V");
 
+
     xId = env->GetFieldID(objCls, "x", "F");
     yId = env->GetFieldID(objCls, "y", "F");
     wId = env->GetFieldID(objCls, "w", "F");
@@ -61,11 +61,12 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Init(JNIEnv *env, jobject, jobject a
     labelId = env->GetFieldID(objCls, "label", "Ljava/lang/String;");
     probId = env->GetFieldID(objCls, "prob", "F");
 
+
     return JNI_TRUE;
 }
 
-// public native Obj[] Detect(Bitmap bitmap, boolean use_gpu);
-JNIEXPORT jobjectArray JNICALL
+
+JNIEXPORT jobjectArray  JNICALL
 Java_com_distbit_nebuia_1plugin_core_Finger_Detect(JNIEnv *env, jobject thiz, jobject bitmap) {
 
     auto objects = Finger::inference->detect(env, bitmap, 1);
@@ -90,12 +91,29 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Detect(JNIEnv *env, jobject thiz, jo
     return jObjArray;
 }
 
-// public native float Quality(Bitmap bitmap, boolean use_gpu);
 JNIEXPORT jfloat JNICALL
 Java_com_distbit_nebuia_1plugin_core_Finger_Quality(JNIEnv *env, jobject thiz, jobject bitmap) {
     float score = Finger::quality->quality(env, bitmap);
     return score;
 }
+
+JNIEXPORT void  JNICALL
+Java_com_distbit_nebuia_1plugin_core_Finger_Transform(JNIEnv *env, jobject thiz,
+                                                      jobject index,
+                                                      jobject middle,
+                                                      jobject ring,
+                                                      jobject little,
+                                                      jobject indexOut,
+                                                      jobject middleOut,
+                                                      jobject ringOut,
+                                                      jobject littleOut
+) {
+    Utils::processCLAHE(env, index, indexOut);
+    Utils::processCLAHE(env, middle, middleOut);
+    Utils::processCLAHE(env, ring, ringOut);
+    Utils::processCLAHE(env, little, littleOut);
+}
+
 
 }
 

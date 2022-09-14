@@ -3,12 +3,14 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.core.Id
 import com.distbit.nebuia_plugin.model.Side
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
@@ -131,22 +133,6 @@ class ScannerID : AppCompatActivity() {
     }
 
     /**
-     * @dev crop id service
-     */
-    private fun Bitmap.cropImage() {
-        uiScope.launch {
-            val image = NebuIA.task.documentCrop(this@cropImage)
-            when {
-                image != null -> {
-                    NebuIA.task.cropped = image
-                    this@ScannerID.finalize()
-                }
-                else -> detect = false
-            }
-        }
-    }
-
-    /**
      * @dev real time detect document
      */
     private fun finalize() {
@@ -169,15 +155,19 @@ class ScannerID : AppCompatActivity() {
      */
     private fun detectDocument(bitmap: Bitmap) =
         uiScope.launch {
-            val detection: String = NebuIA.task.documentRealTimeDetection(bitmap)
-            if (docs.side == Side.FRONT) when (detection) {
-                mxIDFront -> bitmap.cropImage()
-                mxPassportFront -> bitmap.cropImage()
-                else -> detect = false
-            } else when (detection) {
-                mxIDBack -> bitmap.cropImage()
-                else -> detect = false
+            val detections = NebuIA.task.documentRealTimeDetection(bitmap)
+            if(detections.isNotEmpty()) {
+                val detection = detections[0]
+                if (docs.side == Side.FRONT) when (detection.label) {
+                    mxIDFront -> this@ScannerID.finalize()
+                    mxPassportFront -> this@ScannerID.finalize()
+                    else -> detect = false
+                } else when (detection.label) {
+                    mxIDBack -> this@ScannerID.finalize()
+                    else -> detect = false
+                }
             }
+
             // re enable capture button
             onAction = false
         }

@@ -155,9 +155,9 @@ class FaceDetector : AppCompatActivity() {
             }
 
             if(faceComplete && !ineFront) {
-                val detection: String = NebuIA.task.documentRealTimeDetection(bitmap)
+                val detection = NebuIA.task.documentRealTimeDetection(bitmap)
 
-                if(detection == "mx_id_front") {
+                if(detection[0].label == "mx_id_front") {
                     timer.schedule(timerTask {
                         // execute on main thread
                         uiScope.launch {
@@ -172,8 +172,8 @@ class FaceDetector : AppCompatActivity() {
             }
 
             if(ineFront && !ineBack) {
-                val detection: String = NebuIA.task.documentRealTimeDetection(bitmap)
-                if(detection == "mx_id_back") {
+                val detection = NebuIA.task.documentRealTimeDetection(bitmap)
+                if(detection[0].label == "mx_id_back") {
                     completeActionDetection()
                 } else {
                     detect = false

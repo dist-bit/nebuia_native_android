@@ -3,6 +3,7 @@
 //
 
 #define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
+
 #include "face.h"
 #include "mat.h"
 

@@ -25,7 +25,7 @@ class MainActivity : Activity() {
             //thinFont = ResourcesCompat.getFont(this, R.font.gilroy_light)
         )
         // SET TEMPORAL CODE FROM IP REQUEST
-        nebuIA.setClientURI("https://api.nebuia.com/api/v1/services")
+        nebuIA.setClientURI("http://192.168.1.111:8080/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
         nebuIA.setReport("62422330ad9791096fd9c4fe")
@@ -42,9 +42,8 @@ class MainActivity : Activity() {
         val action = findViewById<Button>(R.id.action)
 
         action.setOnClickListener {
-          nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
+            nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
         }
-
     }
 
 }

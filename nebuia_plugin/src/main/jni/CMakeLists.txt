@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.4.1)
 set(ncnn_DIR ${CMAKE_SOURCE_DIR}/ncnn/${ANDROID_ABI}/lib/cmake/ncnn)
 find_package(ncnn REQUIRED)
 
+set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/opencv/sdk/native/jni)
+find_package(OpenCV REQUIRED core imgproc)
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -fopenmp")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fopenmp")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fopenmp")
@@ -22,15 +25,23 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines
 # disable rtti and exceptions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/ ${INCLUDE_PATH})
+
 add_library(
         nebuia_plugin
         SHARED
+
         inference/inference.cpp
         inference/quality.cpp
+
         id.cpp
         face.cpp
-        finger.cpp)
+        finger.cpp
+
+        utils/utils.cpp
+
+)
 
 target_link_libraries(nebuia_plugin
         ncnn
-        jnigraphics)
+        ${OpenCV_LIBS} jnigraphics)

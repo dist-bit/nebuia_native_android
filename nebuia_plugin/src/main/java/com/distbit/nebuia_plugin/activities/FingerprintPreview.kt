@@ -1,13 +1,18 @@
 package com.distbit.nebuia_plugin.activities
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,8 +26,13 @@ class FingerprintPreview : AppCompatActivity() {
 
     private lateinit var summary: TextView
     private lateinit var title: TextView
+    private lateinit var actionsPanel: LinearLayout
 
     private lateinit var statusIcon: Button
+    private val fingers = NebuIA.task.fingers
+
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var svProgressHUD: ProgressHUD
 
     /**
      * @dev onCreate default android life cycle
@@ -35,16 +45,15 @@ class FingerprintPreview : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         statusIcon = findViewById(R.id.icon_status)
+        actionsPanel = findViewById(R.id.actions)
+        actionsPanel.visibility = View.INVISIBLE
 
         val indexFinger: ImageView = findViewById(R.id.index)
         val middleFinger: ImageView = findViewById(R.id.middle)
         val ringFinger: ImageView = findViewById(R.id.ring)
         val littleFinger: ImageView = findViewById(R.id.little)
 
-        val indexFingerNFIQ: TextView = findViewById(R.id.index_nfiq)
-        val middleFingerNFIQ: TextView = findViewById(R.id.middle_nfiq)
-        val ringFingerNFIQ: TextView = findViewById(R.id.ring_nfiq)
-        val littleFingerNFIQ: TextView = findViewById(R.id.little_nfiq)
+        svProgressHUD = ProgressHUD(this)
 
         //retake = findViewById(R.id.retake_finger)
         continueFinger = findViewById(R.id.continue_fingers)
@@ -57,19 +66,57 @@ class FingerprintPreview : AppCompatActivity() {
         windowFeatures()
         //setUpRetake()
 
-        val fingers = NebuIA.task.fingers
-
         indexFinger.setImageBitmap(fingers[0].image)
         middleFinger.setImageBitmap(fingers[1].image)
         ringFinger.setImageBitmap(fingers[2].image)
         littleFinger.setImageBitmap(fingers[3].image)
 
-        indexFingerNFIQ.text = "NFIQ ${fingers[0].score}"
-        middleFingerNFIQ.text = "NFIQ ${fingers[1].score}"
-        ringFingerNFIQ.text = "NFIQ ${fingers[2].score}"
-        littleFingerNFIQ.text = "NFIQ ${fingers[3].score}"
+       setUpNFIQ()
+    }
 
-        if (fingers[0].score < 45) {
+    private fun setUpNFIQ() {
+        val indexFingerNFIQ: TextView = findViewById(R.id.index_nfiq)
+        val middleFingerNFIQ: TextView = findViewById(R.id.middle_nfiq)
+        val ringFingerNFIQ: TextView = findViewById(R.id.ring_nfiq)
+        val littleFingerNFIQ: TextView = findViewById(R.id.little_nfiq)
+
+        svProgressHUD.show()
+
+        getNFIQ(fingers[0].image, onScore = {
+            svProgressHUD.dismiss()
+            indexFingerNFIQ.text = getString(R.string.nfiq, it)
+            unlockActions(it)
+        })
+        getNFIQ(fingers[1].image, onScore = {
+            middleFingerNFIQ.text = getString(R.string.nfiq, it)
+        })
+        getNFIQ(fingers[2].image, onScore = {
+            ringFingerNFIQ.text = getString(R.string.nfiq, it)
+        })
+        getNFIQ(fingers[3].image, onScore = {
+            littleFingerNFIQ.text = getString(R.string.nfiq, it)
+        })
+
+    }
+
+    private fun getNFIQ(image: Bitmap, onScore: (score: Int) -> Unit) {
+        uiScope.launch {
+            val response = NebuIA.task.getNFIQFingerprintImage(image, onError = {
+                onScore(0)
+            })
+
+            if(response != null && response["status"] as Boolean) {
+                val score = response["payload"] as Int
+                onScore(score)
+            } else {
+                onScore(0)
+            }
+        }
+    }
+
+    private fun unlockActions(score: Int) {
+        actionsPanel.visibility = View.VISIBLE
+        if (score < 40) {
             if(NebuIA.skipStep) {
                 continueFinger.text = getString(R.string.skip_fingerprints)
                 summary.text = resources.getString(R.string.skip_step_fingerprints)
@@ -78,19 +125,19 @@ class FingerprintPreview : AppCompatActivity() {
                 summary.text = resources.getString(R.string.skip_fingerprints_summary)
             }
             // icon
-            statusIcon.background = resources.getDrawable(R.drawable.circle_red)
+            statusIcon.background = ResourcesCompat.getDrawable(resources, R.drawable.circle_red, null)
             statusIcon.setCompoundDrawablesWithIntrinsicBounds(R.drawable.close_icon, 0, 0, 0);
 
         } else {
             continueFinger.text = resources.getString(R.string.continue_button)
             summary.text = resources.getString(R.string.success_fingerprint_summary)
             //
-            statusIcon.background = resources.getDrawable(R.drawable.circle_green)
+            statusIcon.background = ResourcesCompat.getDrawable(resources, R.drawable.circle_green, null)
             statusIcon.setCompoundDrawablesWithIntrinsicBounds(R.drawable.material_check_icon, 0, 0, 0);
         }
 
         // if score is > 45 this is a correct quality
-        if (fingers[0].score < 45) {
+        if (score < 40) {
             continueFinger.setOnClickListener {
                 this@FingerprintPreview.finish()
                 NebuIA.fingerSkipWithImages(fingers[0], fingers[1], fingers[2], fingers[3])
@@ -98,9 +145,9 @@ class FingerprintPreview : AppCompatActivity() {
 
             // set button text
             if(NebuIA.skipStep) {
-                continueFinger.text = "Saltar paso"
+                continueFinger.text = getString(R.string.skip_step_fingerprint)
             } else {
-                continueFinger.text = "Reintentar"
+                continueFinger.text = getString(R.string.retyr_step_fingerprint)
             }
         } else {
             continueFinger.setOnClickListener {

@@ -7,19 +7,18 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Base64
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Fingers
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
-import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
-import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
-import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.size.Size
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +43,6 @@ class FingersDetector : AppCompatActivity() {
     private lateinit var panel: LinearLayout
     private lateinit var camera: CameraView
 
-    private lateinit var svProgressHUD: ProgressHUD
     private lateinit var qualityBar: ProgressBar
 
     val timer = object: CountDownTimer(50000, 1000) {
@@ -84,9 +82,6 @@ class FingersDetector : AppCompatActivity() {
 
         setContentView(R.layout.activity_fingerprint_detector)
         window.hideSystemUI()
-
-        svProgressHUD =
-            ProgressHUD(this)
 
         camera = findViewById(R.id.camera)
 
@@ -170,12 +165,6 @@ class FingersDetector : AppCompatActivity() {
         }
 
         timer.start()
-        camera.addCameraListener(object : CameraListener() {
-            override fun onPictureTaken(result: PictureResult) {
-                processFrame(result)
-            }
-
-        })
 
         Timer(getString(R.string.time_schedule), false)
             .schedule(2000) {
@@ -191,51 +180,7 @@ class FingersDetector : AppCompatActivity() {
             }
     }
 
-    private fun processFrame(result: PictureResult) {
-        svProgressHUD.show()
-        result.toBitmap {
-
-            uiScope.launch {
-                val fingers: MutableList<Fingers> = mutableListOf()
-                //val enhanced = NebuIA.task.imageEnhance(it!!)
-                val response = NebuIA.task.extractFingerprints(it!!, onError = {
-                    detect = false
-                    svProgressHUD.dismiss()
-                })
-
-                // release images
-                //it.recycle()
-
-                svProgressHUD.dismiss()
-                // check response1
-                if (response != null) {
-                    try {
-                        if (response["status"] as Boolean) {
-                            val data = response["payload"] as HashMap<String, Any>
-                            (data["fingers"] as List<HashMap<String, Any>>).forEach { finger ->
-                                fingers.add(
-                                    Fingers(
-                                        name = finger["name"] as String,
-                                        image = (finger["image"] as String).toBitMap(),
-                                        score = finger["nfiq"] as Int
-                                    )
-                                )
-                            }
-
-                            NebuIA.task.fingers = fingers
-                            this@FingersDetector.finalize()
-                            // ON FAIL PROCESSING
-                        } else {
-                            detect = false
-                        }
-                    } catch (e: Exception) {
-                        detect = false
-                    }
-                }
-            }
-        }
-
-    }
+    val img = mutableListOf<Bitmap>()
 
     /**
      * @dev analyze frame to search fingers in frame
@@ -250,11 +195,13 @@ class FingersDetector : AppCompatActivity() {
             val scores: MutableList<Float> = mutableListOf()
 
             //order rects
-            result.sortByDescending { it.y }
+            result.sortBy { it.y }
 
             result.forEach {
                 rects.add(RectF(it.x, it.y, it.w, it.h))
             }
+
+            img.clear()
 
             if (rects.size == 4) {
                 //detectionsCount.add(rects.size)
@@ -268,12 +215,11 @@ class FingersDetector : AppCompatActivity() {
                     )
 
                     val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
-                    // clear
-                    //croppedBmp.recycle()
                     val quality = NebuIA.task.fingerprintQuality(rotate)
                     if(quality >= NebuIA.qualityValue) {
                         scores.add(quality)
                     }
+                    img.add(rotate)
                 }
             } else {
                 rects.clear()
@@ -287,11 +233,33 @@ class FingersDetector : AppCompatActivity() {
 
             if (size >= 3) {
                 timer.cancel()
-                camera.takePicture()
+                processFingerprints()
+                //camera.takePicture()
             } else {
                 detect = false
             }
         }
+    }
+
+    private fun processFingerprints() {
+        val fingers: MutableList<Fingers> = mutableListOf()
+
+        uiScope.launch {
+            val transformed = NebuIA.task.processFingerprint(img)
+            for (image in transformed) {
+                fingers.add(
+                    Fingers(
+                        name = "fingerprint",
+                        image = image,
+                        score = 0
+                    )
+                )
+            }
+
+            NebuIA.task.fingers = fingers
+            this@FingersDetector.finalize()
+        }
+
     }
 
     // set score to progress bar
@@ -309,8 +277,8 @@ class FingersDetector : AppCompatActivity() {
     /**
      * @dev on 4 fingers detected, go to preview result
      */
-    private fun FingersDetector.finalize() {
-        val intent = Intent(this@FingersDetector, FingerprintPreview::class.java)
+    private fun finalize() {
+        val intent = Intent(this, FingerprintPreview::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
         finish()

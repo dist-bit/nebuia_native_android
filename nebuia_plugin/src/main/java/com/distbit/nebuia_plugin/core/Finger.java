@@ -2,6 +2,7 @@ package com.distbit.nebuia_plugin.core;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+
 import androidx.annotation.Keep;
 
 @Keep
@@ -11,8 +12,7 @@ public class Finger {
     }
 
     @Keep
-    public class Obj
-    {
+    public class Obj {
         public float x;
         public float y;
         public float w;
@@ -22,6 +22,12 @@ public class Finger {
     }
 
     public native boolean Init(AssetManager mgr);
+
     public native Obj[] Detect(Bitmap bitmap);
+
+    public native void Transform(Bitmap index, Bitmap middle, Bitmap ring, Bitmap little,
+                                 Bitmap indexOut, Bitmap middleOut, Bitmap ringOut, Bitmap littleOut
+    );
+
     public native float Quality(Bitmap bitmap);
 }

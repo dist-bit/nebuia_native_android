@@ -2,9 +2,9 @@ package com.distbit.nebuia_plugin.task
 
 import android.graphics.Bitmap
 import com.distbit.nebuia_plugin.NebuIA
-import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.core.Finger
 import com.distbit.nebuia_plugin.core.Id
+import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +14,8 @@ import java.util.*
 
 
 class Task {
+
+    val conf = Bitmap.Config.ARGB_8888
 
     var client: Client? = null
     var currentType: String? = null
@@ -56,44 +58,41 @@ class Task {
             return@withContext client!!.qualityFace(bitmap)
         }
 
-    suspend fun documentRealTimeDetection(bitmap: Bitmap): String =
+    suspend fun documentRealTimeDetection(bitmap: Bitmap): Array<Id.Obj> =
         withContext(Dispatchers.Default) {
-            val result: Array<Id.Obj> = NebuIA.id.Detect(bitmap)
-            if (result.isNotEmpty()) {
-                return@withContext result[0].label
-            }
-            return@withContext ""
-        }
-
-    suspend fun documentCrop(bitmap: Bitmap): Bitmap? =
-        withContext(Dispatchers.Default) {
-            val result: Array<Id.Obj> = NebuIA.id.Detect(bitmap)
+            // create fixed size bitmap
+            val outCropped = Bitmap.createBitmap( 590, 389, conf)
+            val result: Array<Id.Obj> = NebuIA.id.Detect(bitmap, outCropped)
 
             if (result.isNotEmpty()) {
-                val box: Id.Obj = result.first()
+                NebuIA.task.cropped = outCropped
 
-                val croppedBmp: Bitmap = Bitmap.createBitmap(
-                    bitmap,
-                    box.x.toInt(),
-                    box.y.toInt(),
-                    box.w.toInt(),
-                    box.h.toInt()
-                )
-                currentType = box.label
+                currentType = result[0].label
                 setBitmapForIdentity(bitmap)
-                return@withContext croppedBmp
+                return@withContext result
             }
-            return@withContext null
+            return@withContext arrayOf()
         }
 
     suspend fun fingerprintDetection(bitmap: Bitmap): Array<Finger.Obj> =
         withContext(Dispatchers.Default) {
-            return@withContext NebuIA.fingers.Detect(bitmap)
+            return@withContext  NebuIA.fingers.Detect(bitmap)
         }
 
     suspend fun fingerprintQuality(bitmap: Bitmap): Float =
         withContext(Dispatchers.Default) {
             return@withContext NebuIA.fingers.Quality(bitmap)
+        }
+
+    suspend fun processFingerprint(bitmaps: MutableList<Bitmap>): Array<Bitmap> =
+        withContext(Dispatchers.Default) {
+            val index = Bitmap.createBitmap( 416, 416, conf)
+            val middle = Bitmap.createBitmap( 416, 416, conf)
+            val ring = Bitmap.createBitmap( 416, 416, conf)
+            val little = Bitmap.createBitmap( 416, 416, conf)
+
+            NebuIA.fingers.Transform(bitmaps[0], bitmaps[1], bitmaps[2], bitmaps[3], index, middle, ring, little)
+            return@withContext arrayOf(index, middle, ring, little)
         }
 
     suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = client!!.uploadID(documents, onError)
@@ -143,6 +142,10 @@ class Task {
             else null
         }
         return null
+    }
+
+    suspend fun getNFIQFingerprintImage(image: Bitmap, onError: () -> Unit): HashMap<*, *>? {
+        return client!!.getNFIQFingerprint(image, onError)
     }
 
     // store document images
