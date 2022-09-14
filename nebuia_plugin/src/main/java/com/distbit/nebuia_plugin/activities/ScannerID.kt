@@ -177,8 +177,9 @@ class ScannerID : AppCompatActivity() {
          * @dev reset variables to retake image id
          */
         fun reset() {
-           // Side.FRONT -> NebuIA.task.documents.front = null
-           // Side.BACK -> NebuIA.task.documents.back = null
+            NebuIA.task.documents.front = null
+            NebuIA.task.documents.back = null
+            NebuIA.task.documents.side = Side.FRONT
         }
     }
 }

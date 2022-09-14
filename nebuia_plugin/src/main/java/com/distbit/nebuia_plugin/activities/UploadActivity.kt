@@ -64,6 +64,7 @@ class UploadActivity : AppCompatActivity() {
 
         continueError.setOnClickListener {
             NebuIA.task.documents = Documents()
+            ScannerID.reset()
             NebuIA.idError()
             finish()
         }
@@ -105,7 +106,6 @@ class UploadActivity : AppCompatActivity() {
     /**
      * @dev upload id and call callback
      */
-    @SuppressLint("SetTextI18n")
     private fun upload() {
         uiScope.launch {
             var error = false
@@ -124,7 +124,7 @@ class UploadActivity : AppCompatActivity() {
                         successUpload.visibility = View.VISIBLE
                     else -> {
                         errorUpload.visibility = View.VISIBLE
-                        errorDescription.text = "${getString(R.string.upload_id_error)}, description: ${response["payload"]}"
+                        errorDescription.text = "${getString(R.string.upload_id_error)}, descripción: ${response["payload"]}"
                     }
                 }
             }
