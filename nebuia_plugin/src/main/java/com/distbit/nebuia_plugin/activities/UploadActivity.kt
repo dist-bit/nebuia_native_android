@@ -1,6 +1,5 @@
 package com.distbit.nebuia_plugin.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
