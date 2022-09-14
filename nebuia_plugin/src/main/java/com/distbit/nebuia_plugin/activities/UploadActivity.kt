@@ -64,6 +64,7 @@ class UploadActivity : AppCompatActivity() {
 
         continueError.setOnClickListener {
             NebuIA.task.documents = Documents()
+            ScannerID.reset()
             NebuIA.idError()
             finish()
         }
@@ -105,7 +106,6 @@ class UploadActivity : AppCompatActivity() {
     /**
      * @dev upload id and call callback
      */
-    @SuppressLint("SetTextI18n")
     private fun upload() {
         uiScope.launch {
             var error = false

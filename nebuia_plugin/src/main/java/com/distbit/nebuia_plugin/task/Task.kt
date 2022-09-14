@@ -68,7 +68,7 @@ class Task {
                 NebuIA.task.cropped = outCropped
 
                 currentType = result[0].label
-                setBitmapForIdentity(bitmap)
+                setBitmapForIdentity(outCropped)
                 return@withContext result
             }
             return@withContext arrayOf()
@@ -128,10 +128,6 @@ class Task {
         return if (response.size > 241)
             response.toBitMap()
         else null
-    }
-
-    suspend fun extractFingerprints(image: Bitmap, onError: () -> Unit): HashMap<*, *>? {
-        return client!!.detectFingers(image, NebuIA.positionHand, onError)
     }
 
     suspend fun getWSQFingerprintImage(image: Bitmap, onError: () -> Unit): ByteArray? {
