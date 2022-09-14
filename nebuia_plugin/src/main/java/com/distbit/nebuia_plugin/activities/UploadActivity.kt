@@ -124,7 +124,7 @@ class UploadActivity : AppCompatActivity() {
                         successUpload.visibility = View.VISIBLE
                     else -> {
                         errorUpload.visibility = View.VISIBLE
-                        errorDescription.text = "${getString(R.string.upload_id_error)}, description: ${response["payload"]}"
+                        errorDescription.text = "${getString(R.string.upload_id_error)}, descripción: ${response["payload"]}"
                     }
                 }
             }
