@@ -180,6 +180,7 @@
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
+                android:text="@string/upload_id_error"
                 android:gravity="center"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_13ssp" />
