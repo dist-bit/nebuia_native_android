@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Base64
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
@@ -16,16 +15,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Fingers
+import com.distbit.nebuia_plugin.utils.Utils.Companion.getOptimalSize
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.otaliastudios.cameraview.CameraView
-import com.otaliastudios.cameraview.size.Size
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
-import kotlin.math.abs
 
 
 class FingersDetector : AppCompatActivity() {
@@ -226,10 +224,7 @@ class FingersDetector : AppCompatActivity() {
             }
 
             val size = scores.size
-
             setProgressBar(size)
-            // clear image
-            //decode.recycle()
 
             if (size >= 3) {
                 timer.cancel()
@@ -284,54 +279,10 @@ class FingersDetector : AppCompatActivity() {
         finish()
     }
 
-    /**
-     * @dev convert base64 to bitmap
-     * @return bitmap image
-     */
-    private fun String.toBitMap(): Bitmap {
-        val decodedString: ByteArray = Base64.decode(this, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-    }
-
     fun Bitmap.rotate(angle: Float): Bitmap? {
         val matrix = Matrix()
         matrix.postRotate(angle)
         return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
-    }
-
-    /**
-     * Calculate the optimal size of camera preview
-     * @param sizes
-     * @param w
-     * @param h
-     * @return
-     */
-    private fun getOptimalSize(sizes: List<Size>?, w: Int, h: Int): Size? {
-        val targetRatio = w.toDouble() / h
-        if (sizes == null) return null
-        var optimalSize: Size? = null
-        var minDiff = Double.MAX_VALUE
-
-        for (size in sizes) {
-            val ratio: Int = size.width / size.height
-            if (abs(ratio - targetRatio) > 0.2) continue
-            if (abs(size.height - h) < minDiff) {
-                optimalSize = size
-                minDiff = abs(size.height - h).toDouble()
-            }
-        }
-        // Cannot find the one match the aspect ratio, ignore the requirement
-        if (optimalSize == null) {
-            minDiff = Double.MAX_VALUE
-            for (size in sizes) {
-                if (abs(size.height - h) < minDiff) {
-                    optimalSize = size
-                    minDiff = abs(size.height - h).toDouble()
-                }
-            }
-        }
-
-        return optimalSize
     }
 
 }

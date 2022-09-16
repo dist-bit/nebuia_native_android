@@ -188,6 +188,7 @@ Inference::Inference(AAssetManager *mgr, const char *param, const char *bin) {
     ncnn::Option opt;
     ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
     opt.num_threads = ncnn::get_big_cpu_count();
+    opt.use_packing_layout = true;
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
     Net->opt = opt;
@@ -211,8 +212,8 @@ Inference::detect(JNIEnv *env, jobject bitmap, int items) const {
     const int height = info.height;
 
     // parameters which might change for different model
-    const float prob_threshold = 0.75f;
-    const float nms_threshold = 0.9f;
+    const float prob_threshold = 0.7f;
+    const float nms_threshold = 0.8f;
 
     auto w = width;
     auto h = height;

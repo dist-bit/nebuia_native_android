@@ -16,6 +16,7 @@
         app:cameraEngine="camera2"
         app:cameraFacing="back"
         app:cameraMode="picture"
+        app:cameraPictureMetering="true"
         app:cameraAutoFocusResetDelay="6"
         app:cameraPreview="glSurface"
         app:cameraRequestPermissions="true"
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
-            android:background="#39ffffff" />
+            android:background="#50ffffff" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,7 +67,7 @@
 
         <ImageView
             android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_5sdp"
+            android:layout_height="@dimen/_3sdp"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_13sdp"
             android:src="@drawable/separator"
@@ -86,13 +87,13 @@
 
             <Button
                 android:id="@+id/back"
-                android:layout_width="@dimen/_45sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/action_camera"
                 android:drawableStart="@drawable/back_icon"
                 android:drawableTint="#696969"
-                android:paddingStart="@dimen/_11sdp"
+                android:paddingStart="@dimen/_10sdp"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -102,8 +103,8 @@
 
             <Button
                 android:id="@+id/capture"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_width="@dimen/_47sdp"
+                android:layout_height="@dimen/_47sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/camera"
                 tools:ignore="RtlSymmetry" />
@@ -121,7 +122,7 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="@dimen/_100sdp"
+            android:layout_width="@dimen/_99sdp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/_3sdp"

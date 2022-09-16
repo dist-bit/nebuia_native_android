@@ -3,14 +3,12 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
-import com.distbit.nebuia_plugin.core.Id
 import com.distbit.nebuia_plugin.model.Side
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
@@ -57,10 +55,6 @@ class ScannerID : AppCompatActivity() {
 
         val back: Button = findViewById(R.id.back)
         capture = findViewById(R.id.capture)
-
-        //
-        //bottomSheetFragment.dismiss()
-
 
         back.setOnClickListener {
             super.onBackPressed()
@@ -112,6 +106,8 @@ class ScannerID : AppCompatActivity() {
     private fun setUpCamera(camera: CameraView) {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
+        camera.startAutoFocus(camera.width / 2F, camera.height / 2F);
+
         camera.addCameraListener(object : CameraListener() {
             override fun onPictureTaken(result: PictureResult) {
                 result.toBitmap {
@@ -119,11 +115,7 @@ class ScannerID : AppCompatActivity() {
                 }
             }
         })
-        // fast webp conversion
-        //camera.setPictureSize { source ->
-        //    source.removeIf { it.width > 1080 }
-        //    source
-        //}
+
         capture.setOnClickListener{
             if (!onAction) {
                 camera.takePicture()

@@ -127,8 +127,6 @@ class Utils {
                 map[key] = value
             }
 
-            //Log.e("NEBUIA_ERROR", map.toString())
-
             return HashMap(map)
         }
 
