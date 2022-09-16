@@ -56,28 +56,6 @@ class Client {
         return@withContext report
     }
 
-    // real time document detect
-    suspend fun detectFingers(file: Bitmap, position: Int, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
-
-        val body: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("hand", position.toString())
-            .addFormDataPart("image", "temp.jpeg", image)
-            .build()
-
-        try {
-            val response: Response = client.newCall(build("fingerprints")
-                .post(body)
-                .build()).execute()
-
-            return@withContext toMap(response.json)
-        } catch (e: Exception) {
-            onError()
-            return@withContext null
-        }
-    }
-
     // generate WSQ for fingerprint
     suspend fun getWSQFingerprint(file: Bitmap, onError: () -> Unit): ByteArray? = withContext(Dispatchers.IO) {
         val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
