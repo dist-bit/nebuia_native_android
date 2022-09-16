@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor
 import android.graphics.*
 import android.media.MediaPlayer
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
@@ -126,8 +127,6 @@ class Utils {
 
                 map[key] = value
             }
-
-            //Log.e("NEBUIA_ERROR", map.toString())
 
             return HashMap(map)
         }

@@ -3,7 +3,6 @@ package com.distbit.nebuia_plugin.utils.views
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 
 
@@ -14,8 +13,7 @@ class Rect : ViewGroup {
         context,
         attrs,
         defStyle
-    ) {
-    }
+    )
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)

@@ -144,10 +144,10 @@
                 android:textSize="@dimen/_12ssp" />
 
             <Button
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:id="@+id/continue_success"
-                android:layout_width="@dimen/_240sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/button_rounded"
                 android:text="@string/continue_button"
@@ -189,9 +189,9 @@
                 android:id="@+id/error_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
                 android:gravity="center"
                 android:text="@string/upload_id_error_summary"
                 android:textAlignment="center"
@@ -199,15 +199,16 @@
                 android:textSize="@dimen/_12ssp" />
 
             <Button
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:id="@+id/continue_error"
-                android:layout_width="@dimen/_240sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="center"
                 android:background="@drawable/button_rounded"
                 android:text="@string/continue_button"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_13ssp" />
+
         </LinearLayout>
 
     </FrameLayout>
