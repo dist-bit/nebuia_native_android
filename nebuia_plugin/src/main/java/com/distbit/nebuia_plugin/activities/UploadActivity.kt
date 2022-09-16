@@ -30,7 +30,6 @@ class UploadActivity : AppCompatActivity() {
 
     private lateinit var errorUpload: LinearLayout
     private lateinit var continueError: Button
-    private lateinit var retry: Button
 
     /**
      * @dev onCreate default android life cycle
