@@ -16,7 +16,7 @@
         app:cameraEngine="camera2"
         app:cameraFacing="back"
         app:cameraMode="picture"
-        app:cameraPictureMetering="false"
+        app:cameraPictureMetering="true"
         app:cameraAutoFocusResetDelay="300"
         app:cameraPreview="glSurface"
         app:cameraRequestPermissions="true"
