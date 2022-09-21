@@ -157,15 +157,19 @@ class FaceDetector : AppCompatActivity() {
             if(faceComplete && !ineFront) {
                 val detection = NebuIA.task.documentRealTimeDetection(bitmap)
 
-                if(detection[0].label == "mx_id_front") {
-                    timer.schedule(timerTask {
-                        // execute on main thread
-                        uiScope.launch {
-                            ineFront = true
-                            summary.text = getString(R.string.back_document_instruction)
-                            detect = false
-                        }
-                    }, 3000)
+                if(detection.isNotEmpty()) {
+                    if(detection[0].label == "mx_id_front") {
+                        timer.schedule(timerTask {
+                            // execute on main thread
+                            uiScope.launch {
+                                ineFront = true
+                                summary.text = getString(R.string.back_document_instruction)
+                                detect = false
+                            }
+                        }, 2000)
+                    } else {
+                        detect = false
+                    }
                 } else {
                     detect = false
                 }
@@ -173,8 +177,12 @@ class FaceDetector : AppCompatActivity() {
 
             if(ineFront && !ineBack) {
                 val detection = NebuIA.task.documentRealTimeDetection(bitmap)
-                if(detection[0].label == "mx_id_back") {
-                    completeActionDetection()
+                if(detection.isNotEmpty()) {
+                    if(detection[0].label == "mx_id_back") {
+                        completeActionDetection()
+                    } else {
+                        detect = false
+                    }
                 } else {
                     detect = false
                 }

@@ -153,7 +153,6 @@ class FingersDetector : AppCompatActivity() {
         val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
 
-
         camera.setPictureSize { source ->
             mutableListOf(getOptimalSize(source, width, height)!!)
         }

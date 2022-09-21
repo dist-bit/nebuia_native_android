@@ -58,7 +58,7 @@ class MainActivity : Activity() {
         }
 
         spoof.setOnClickListener {
-            nebuIA.faceLiveDetection(false, onFaceComplete = {})
+            nebuIA.faceLiveDetection(true, onFaceComplete = {})
         }
     }
 
