@@ -3,6 +3,7 @@ package com.distbit.nebuiaexample
 import android.app.Activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.model.ui.Theme

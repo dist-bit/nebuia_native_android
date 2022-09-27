@@ -84,16 +84,20 @@ class FingerprintPreview : AppCompatActivity() {
 
         getNFIQ(fingers[0].image, onScore = {
             svProgressHUD.dismiss()
+            fingers[0].score = it
             indexFingerNFIQ.text = getString(R.string.nfiq, it)
             unlockActions(it)
         })
         getNFIQ(fingers[1].image, onScore = {
+            fingers[1].score = it
             middleFingerNFIQ.text = getString(R.string.nfiq, it)
         })
         getNFIQ(fingers[2].image, onScore = {
+            fingers[2].score = it
             ringFingerNFIQ.text = getString(R.string.nfiq, it)
         })
         getNFIQ(fingers[3].image, onScore = {
+            fingers[3].score = it
             littleFingerNFIQ.text = getString(R.string.nfiq, it)
         })
 
