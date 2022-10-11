@@ -3,6 +3,13 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.BackgroundColorSpan
+import android.text.style.StyleSpan
+import android.text.style.SuperscriptSpan
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
@@ -10,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Side
+import com.distbit.nebuia_plugin.utils.SpanFormatter
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
@@ -94,9 +102,20 @@ class ScannerID : AppCompatActivity() {
      * @dev set title depending of current
      * step [front/back/passport]
      */
-    private fun setSummarySide() = if (docs.side == Side.FRONT) summarySide.text =
-        getString(R.string.set_front_id) else summarySide.text =
-        getString(R.string.set_back_id)
+    private fun setSummarySide() {
+        val spanned1 = SpannableString(getString(R.string.set_front_id))
+
+        val spanned2: SpannableString
+        if (docs.side == Side.FRONT) {
+            spanned2 = SpannableString(getString(R.string.side_front_id))
+        } else {
+            spanned2 = SpannableString(getString(R.string.side_back_id))
+        }
+
+        spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#914afc")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanned2.setSpan(StyleSpan(Typeface.BOLD), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        summarySide.text = SpanFormatter.format( spanned1, spanned2)
+    }
 
     /**
      * @dev set up camera for frame processing

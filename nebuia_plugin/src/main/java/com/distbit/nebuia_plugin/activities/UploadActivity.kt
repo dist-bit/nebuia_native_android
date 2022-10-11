@@ -111,6 +111,7 @@ class UploadActivity : AppCompatActivity() {
             val response = NebuIA.task.uploadID(onError = {
                 error = true
             })
+
             loading.visibility = View.INVISIBLE
 
             if(error) {

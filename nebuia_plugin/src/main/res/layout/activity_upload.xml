@@ -222,8 +222,17 @@
         android:layout_width="@dimen/_100sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:layout_marginBottom="@dimen/_3sdp"
         android:contentDescription="@string/powered_by_nebuia"
         android:src="@drawable/nebuia_black" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="version 0.0.70"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:textSize="@dimen/_8ssp" />
 
 </LinearLayout>

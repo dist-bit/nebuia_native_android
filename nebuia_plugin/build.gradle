@@ -9,7 +9,7 @@ Properties buildProperties = new Properties()
 buildProperties.load(new FileInputStream(rootProject.file("build.properties")))
 
 group = 'com.distbit.nebuia_plugin'
-version = '0.0.68'
+version = '0.0.70'
 
 android {
     compileSdkVersion 33
@@ -37,9 +37,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix ".debug"
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
     compileOptions {
