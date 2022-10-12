@@ -229,7 +229,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="version 0.0.70"
+        android:text="@string/version"
         android:textAlignment="center"
         android:textColor="#000"
         android:layout_marginBottom="@dimen/_3sdp"

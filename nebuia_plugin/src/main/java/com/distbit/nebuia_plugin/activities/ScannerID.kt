@@ -4,12 +4,9 @@ import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.BackgroundColorSpan
 import android.text.style.StyleSpan
-import android.text.style.SuperscriptSpan
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
@@ -112,7 +109,7 @@ class ScannerID : AppCompatActivity() {
             spanned2 = SpannableString(getString(R.string.side_back_id))
         }
 
-        spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#914afc")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#1a8ed0")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanned2.setSpan(StyleSpan(Typeface.BOLD), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         summarySide.text = SpanFormatter.format( spanned1, spanned2)
     }

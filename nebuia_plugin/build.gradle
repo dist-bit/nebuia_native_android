@@ -9,7 +9,7 @@ Properties buildProperties = new Properties()
 buildProperties.load(new FileInputStream(rootProject.file("build.properties")))
 
 group = 'com.distbit.nebuia_plugin'
-version = '0.0.70'
+version = '0.0.71'
 
 android {
     compileSdkVersion 33
