@@ -172,6 +172,19 @@ class NebuIA(private var context: Activity) {
     }
 
     /**
+     * @dev launch IDScanner detector
+     * @param onIDComplete - this flow has many activities,
+     * on end we need to redirect to another local activity
+     */
+    fun genericCapture(onCaptureComplete: (ByteArray?) -> Unit) {
+        checkReportParamRequest()
+        documentCapture = onCaptureComplete
+        context.startActivity(
+            Intent(context, CaptureActivity::class.java)
+        )
+    }
+
+    /**
      * @dev launch Camera activity for  Address proof
      * @param onAddressComplete - return address from image or pdf
      */
@@ -349,6 +362,8 @@ class NebuIA(private var context: Activity) {
         var qualityValue: Double = 4.5
 
         var positionHand: Int = 0
+        // generic document capture
+        var documentCapture: (ByteArray) -> Unit = { file: ByteArray -> }
 
         var wsqComplete: (ByteArray) -> Unit = { file: ByteArray -> }
         // video evidence

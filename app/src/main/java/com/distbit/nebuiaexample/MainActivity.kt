@@ -44,7 +44,7 @@ class MainActivity : Activity() {
         val fingerprints = findViewById<Button>(R.id.fingerprints)
 
         id.setOnClickListener {
-            nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
+            nebuIA.genericCapture {  }
         }
 
         fingerprints.setOnClickListener {

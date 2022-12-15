@@ -188,21 +188,21 @@ class FingersDetector : AppCompatActivity() {
         //val bmp2: Bitmap = decode.copy(decode.config, true)
         uiScope.launch {
             val result = NebuIA.task.fingerprintDetection(decode)
-            val rects: MutableList<RectF> = mutableListOf()
+            val rectangles: MutableList<RectF> = mutableListOf()
             val scores: MutableList<Float> = mutableListOf()
 
             //order rects
             result.sortBy { it.y }
 
             result.forEach {
-                rects.add(RectF(it.x, it.y, it.w, it.h))
+                rectangles.add(RectF(it.x, it.y, it.w, it.h))
             }
 
             img.clear()
 
-            if (rects.size == 4) {
+            if (rectangles.size == 4) {
                 //detectionsCount.add(rects.size)
-                result.forEach {
+                for (it in result) {
                     val croppedBmp: Bitmap = Bitmap.createBitmap(
                         decode,
                         it.x.toInt(),
@@ -219,7 +219,7 @@ class FingersDetector : AppCompatActivity() {
                     img.add(rotate)
                 }
             } else {
-                rects.clear()
+                rectangles.clear()
             }
 
             val size = scores.size

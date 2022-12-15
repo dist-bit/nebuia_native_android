@@ -20,8 +20,6 @@ import kotlinx.coroutines.launch
 
 class FingerprintPreview : AppCompatActivity() {
 
-
-    // private lateinit var retake: Button
     private lateinit var continueFinger: Button
 
     private lateinit var summary: TextView

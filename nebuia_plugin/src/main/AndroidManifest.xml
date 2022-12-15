@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.distbit.nebuia_plugin">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -24,35 +23,40 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoDisplay"
             android:name=".activities.AddressActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
-        <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoDisplay" />
+        <activity
+            android:name=".activities.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoDisplay" />
+        <activity
             android:name=".activities.AddressPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingerprint_preview"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".activities.RecordActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingerprint_preview"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".activities.FingerprintPreview"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingerprint_preview"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".activities.UploadActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_upload"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".activities.ScannerID"
