@@ -15,6 +15,7 @@ import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Side
 import com.distbit.nebuia_plugin.utils.SpanFormatter
+import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
@@ -38,6 +39,8 @@ class ScannerID : AppCompatActivity() {
     private lateinit var mxIDFront: String
     private lateinit var mxIDBack: String
     private lateinit var mxPassportFront: String
+
+    private lateinit var svProgressHUD: ProgressHUD
 
     private var onAction: Boolean = false
 
@@ -64,6 +67,8 @@ class ScannerID : AppCompatActivity() {
         back.setOnClickListener {
             super.onBackPressed()
         }
+
+        svProgressHUD = ProgressHUD(this)
 
         fillData()
         setUpCamera(camera)
@@ -134,6 +139,7 @@ class ScannerID : AppCompatActivity() {
 
         capture.setOnClickListener{
             if (!onAction) {
+                svProgressHUD.show()
                 camera.takePicture()
                 onAction = true
             }
@@ -164,6 +170,7 @@ class ScannerID : AppCompatActivity() {
     private fun detectDocument(bitmap: Bitmap) =
         uiScope.launch {
             val detections = NebuIA.task.documentRealTimeDetection(bitmap)
+            svProgressHUD.dismiss()
             if(detections.isNotEmpty()) {
                 val detection = detections[0]
                 if (docs.side == Side.FRONT) when (detection.label) {

@@ -8,6 +8,8 @@
 #include "id.h"
 
 Inference *Id::inference = nullptr;
+DocumentExtractor *Id::extractor = nullptr;
+
 extern "C" {
 
 // FIXME DeleteGlobalRef is missing for objCls
@@ -29,6 +31,7 @@ JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
 
 JNIEXPORT jboolean JNICALL
 Java_com_distbit_nebuia_1plugin_core_Id_Init(JNIEnv *env, jobject, jobject assetManager) {
+    AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
 
     if (Id::inference != nullptr) {
         delete Id::inference;
@@ -36,8 +39,16 @@ Java_com_distbit_nebuia_1plugin_core_Id_Init(JNIEnv *env, jobject, jobject asset
     }
 
     if (Id::inference == nullptr) {
-        AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
         Id::inference = new Inference(mgr, "det0.param", "det0.bin");
+    }
+
+    if (Id::extractor != nullptr) {
+        delete Id::extractor;
+        Id::extractor = nullptr;
+    }
+
+    if (Id::extractor == nullptr) {
+        Id::extractor = new DocumentExtractor(mgr, "cropper.param", "cropper.bin");
     }
 
     // init jni glue
@@ -65,23 +76,40 @@ Java_com_distbit_nebuia_1plugin_core_Id_Detect(JNIEnv *env, jobject thiz, jobjec
             "mx_id_back", "mx_id_front", "mx_passport_front"};
 
     if (!objects.empty()) {
-        ncnn::Mat in = ncnn::Mat::from_android_bitmap(env, bitmap, ncnn::Mat::PIXEL_RGB);
+        std::vector<Doc> items;
+        Id::extractor->detect(env, bitmap, items);
 
-        ncnn::Mat dst;
-        ncnn::copy_cut_border(in, dst,
-                              objects[0].y,
-                              in.h - objects[0].h - objects[0].y,
-                              objects[0].x,
-                              in.w - objects[0].w - objects[0].x);
+        cv::Mat input = Utils::transformMat(env, bitmap);
 
-        ncnn::Mat resized;
-        ncnn::resize_bilinear(dst, resized, 590, 389);
-        resized.to_android_bitmap(env, out, ncnn::Mat::PIXEL_RGB);
-        dst.release();
+        cv::Point2f Points[4] = {
+                cv::Point2f(items[0].pts[0].x, items[0].pts[0].y),
+                cv::Point2f(items[0].pts[1].x, items[0].pts[1].y),
+                cv::Point2f(items[0].pts[2].x, items[0].pts[2].y),
+                cv::Point2f(items[0].pts[3].x, items[0].pts[3].y),
+
+        };
+
+        cv::Point2f dst_vertices[4];
+        dst_vertices[0] = cv::Point(0, 0);
+        dst_vertices[1] = cv::Point(items[0].rect.width, 0); // 590
+        dst_vertices[2] = cv::Point(0, items[0].rect.height); //389
+        dst_vertices[3] = cv::Point(items[0].rect.width, items[0].rect.height);
+
+        cv::Mat warpAffineMatrix = cv::getPerspectiveTransform(Points, dst_vertices);
+
+        cv::Mat rotated;
+        cv::Size size(items[0].rect.width, items[0].rect.height);
+        cv::warpPerspective(input, rotated, warpAffineMatrix, size);
+
+        cv::Mat resized;
+        cv::resize(rotated, resized, cv::Size(590, 389));
+
+        ncnn::Mat in2 = ncnn::Mat::from_pixels(resized.data, ncnn::Mat::PIXEL_RGB, resized.cols, resized.rows);
+        in2.to_android_bitmap(env, out, ncnn::Mat::PIXEL_RGB);
+        in2.release();
         resized.release();
-        in.release();
+        rotated.release();
     }
-
 
     jobjectArray jObjArray = env->NewObjectArray(objects.size(), objCls, nullptr);
 

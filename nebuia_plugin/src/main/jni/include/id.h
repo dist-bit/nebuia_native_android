@@ -12,10 +12,12 @@
 #include <jni.h>
 #include "net.h"
 #include "inference.h"
+#include "document_extractor.h"
 
 class Id {
 public:
     static Inference *inference;
+    static DocumentExtractor *extractor;
 };
 
 #endif //Id_H

@@ -33,6 +33,7 @@ add_library(
 
         inference/inference.cpp
         inference/quality.cpp
+        inference/document_extractor.cpp
 
         id.cpp
         face.cpp
