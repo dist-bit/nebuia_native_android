@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.model.Documents
 import com.distbit.nebuia_plugin.model.Side
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -26,6 +27,8 @@ class PreviewDocument : BottomSheetDialogFragment() {
     private lateinit var continueID: Button
     private lateinit var close: Button
 
+    private var documents: Documents = Documents
+
     companion object {
         fun newInstance() = PreviewDocument()
     }
@@ -36,7 +39,6 @@ class PreviewDocument : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.activity_preview_document, container, false)
-
 
         preview = view.findViewById(R.id.document_preview)
         docType = view.findViewById(R.id.doc_type)
@@ -49,7 +51,6 @@ class PreviewDocument : BottomSheetDialogFragment() {
 
         setUpRetake()
         setUpContinue()
-
 
         setType()
         setFonts()
@@ -75,12 +76,16 @@ class PreviewDocument : BottomSheetDialogFragment() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
-                            preview.setImageBitmap(NebuIA.task.cropped)
+                            setImage()
                         }
                         BottomSheetBehavior.STATE_HIDDEN -> dismiss()
-                        BottomSheetBehavior.STATE_COLLAPSED -> {}
+                        BottomSheetBehavior.STATE_COLLAPSED -> {
+
+                        }
                         BottomSheetBehavior.STATE_DRAGGING -> {}
-                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {}
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                            setImage()
+                        }
                         BottomSheetBehavior.STATE_SETTLING -> {}
                     }
                 }
@@ -103,47 +108,35 @@ class PreviewDocument : BottomSheetDialogFragment() {
      * @dev set up retake button listener
      */
     private fun setUpRetake() = retake.setOnClickListener {
-        ScannerID.reset()
+        Documents.reset()
         dismiss()
-    }
-
-    /**
-     * @dev fill crop documents images
-     */
-    private fun setBitMaps() = when (NebuIA.task.documents.side) {
-        Side.FRONT -> NebuIA.task.documents.front = NebuIA.task.cropped
-        Side.BACK -> NebuIA.task.documents.back = NebuIA.task.cropped
     }
 
     /**
      * @dev set up continue button listener
      */
     private fun setUpContinue() = continueID.setOnClickListener {
-        setBitMaps()
         when {
-            NebuIA.task.documents.isComplete() -> {
+            documents.isComplete() -> {
                 dismiss()
                 (activity as ScannerID).uploadData()
             }
             else -> {
-                dismiss()
-                NebuIA.task.documents.side = Side.BACK
+                dismissAllowingStateLoss()
+                documents.setSide(Side.BACK)
                 (activity as ScannerID).fillData()
             }
         }
+    }
+
+    fun setImage() {
+        preview.setImageBitmap(documents.getPreview())
     }
 
     /**
      * @dev set label for document type
      */
     private fun setType() {
-        val title: String =
-            when (NebuIA.task.currentType!!) {
-                getString(R.string.mx_id_front) -> getString(R.string.front_id_mx)
-                getString(R.string.mx_id_back) -> getString(R.string.back_id_mx)
-                getString(R.string.mx_passport_front) -> getString(R.string.passport_mx)
-                else -> ""
-            }
-        docType.text = title
+        docType.text = documents.getLabel()
     }
 }

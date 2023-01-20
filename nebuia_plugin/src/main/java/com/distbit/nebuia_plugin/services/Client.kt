@@ -2,10 +2,7 @@ package com.distbit.nebuia_plugin.services
 
 import android.graphics.Bitmap
 import com.distbit.nebuia_plugin.NebuIA
-import com.distbit.nebuia_plugin.model.Documents
-import com.distbit.nebuia_plugin.model.Keys
-import com.distbit.nebuia_plugin.model.OTP
-import com.distbit.nebuia_plugin.model.Side
+import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.utils.Utils.Companion.getJsonFromMap
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toArray
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toMap
@@ -147,16 +144,18 @@ class Client {
     }
 
     // uploadID
-    suspend fun uploadID(docs: Documents, onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
-        val front: RequestBody = create("image/jpeg".toMediaType(), docs.front!!.toArray())
+    suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
+        val docs = Documents
+        val front: RequestBody = create("image/jpeg".toMediaType(), docs.frontImage()!!.toArray())
+        val isPassport = docs.type() == DocumentType.PASSPORT
 
         val body: MultipartBody.Builder = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
-            .addFormDataPart("document", if(!docs.isPassport) "id" else "passport")
+            .addFormDataPart("document", if(!isPassport) "id" else "passport")
             .addFormDataPart("front", "front.jpeg", front)
 
-        if (!docs.isPassport) {
-            val back: RequestBody = create("image/jpeg".toMediaType(), docs.back!!.toArray())
+        if (!isPassport) {
+            val back: RequestBody = create("image/jpeg".toMediaType(), docs.backImage()!!.toArray())
             body.addFormDataPart("back", "back.jpeg", back)
 
         }
@@ -246,7 +245,12 @@ class Client {
 
     // get document image
     suspend fun geDocumentImage(side: Side): ByteArray = withContext(Dispatchers.IO) {
-        val response: Response = client.newCall(build("docs/${side.side}")
+        val sideDocument = if(side == Side.FRONT) {
+            "front"
+        } else {
+            "back"
+        }
+        val response: Response = client.newCall(build("docs/${sideDocument}")
             .get()
             .build()).execute()
 

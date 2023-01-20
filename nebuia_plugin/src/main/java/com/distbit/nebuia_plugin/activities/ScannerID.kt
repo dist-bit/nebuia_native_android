@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.model.Documents
 import com.distbit.nebuia_plugin.model.Side
 import com.distbit.nebuia_plugin.utils.SpanFormatter
 import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
@@ -33,7 +34,7 @@ class ScannerID : AppCompatActivity() {
     private lateinit var title: TextView
     private lateinit var capture: Button
 
-    private val docs = NebuIA.task.documents
+    private var documents: Documents = Documents
 
     private var detect: Boolean = false
     private lateinit var mxIDFront: String
@@ -107,11 +108,10 @@ class ScannerID : AppCompatActivity() {
     private fun setSummarySide() {
         val spanned1 = SpannableString(getString(R.string.set_front_id))
 
-        val spanned2: SpannableString
-        if (docs.side == Side.FRONT) {
-            spanned2 = SpannableString(getString(R.string.side_front_id))
+        val spanned2: SpannableString = if (documents.side() == Side.FRONT) {
+            SpannableString(getString(R.string.side_front_id))
         } else {
-            spanned2 = SpannableString(getString(R.string.side_back_id))
+            SpannableString(getString(R.string.side_back_id))
         }
 
         spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#1a8ed0")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -169,10 +169,11 @@ class ScannerID : AppCompatActivity() {
      */
     private fun detectDocument(bitmap: Bitmap) =
         uiScope.launch {
-            val detections = NebuIA.task.documentRealTimeDetection(bitmap)
+            val cropped = NebuIA.task.documentRealTimeDetection(bitmap)
             svProgressHUD.dismiss()
-            if(detections.isNotEmpty()) {
-                val detection = detections[0]
+            if(cropped != null) {
+                this@ScannerID.finalize()
+                /*val detection = detections[0]
                 if (docs.side == Side.FRONT) when (detection.label) {
                     mxIDFront -> this@ScannerID.finalize()
                     mxPassportFront -> this@ScannerID.finalize()
@@ -180,9 +181,8 @@ class ScannerID : AppCompatActivity() {
                 } else when (detection.label) {
                     mxIDBack -> this@ScannerID.finalize()
                     else -> detect = false
-                }
-            }
-
+                } */
+            } else detect = false
             // re enable capture button
             onAction = false
         }
@@ -191,10 +191,6 @@ class ScannerID : AppCompatActivity() {
         /**
          * @dev reset variables to retake image id
          */
-        fun reset() {
-            NebuIA.task.documents.front = null
-            NebuIA.task.documents.back = null
-            NebuIA.task.documents.side = Side.FRONT
-        }
+
     }
 }

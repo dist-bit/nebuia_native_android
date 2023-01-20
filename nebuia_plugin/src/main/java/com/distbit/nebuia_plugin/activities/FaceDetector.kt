@@ -21,6 +21,7 @@ import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.concurrent.timerTask
 
+
 class FaceDetector : AppCompatActivity() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
@@ -37,6 +38,7 @@ class FaceDetector : AppCompatActivity() {
     private var ineBack: Boolean = false
 
     private lateinit var camera: CameraView
+    private var brightness = 0
 
     /**
      * @dev onCreate default android life cycle
@@ -155,34 +157,40 @@ class FaceDetector : AppCompatActivity() {
             }
 
             if(faceComplete && !ineFront) {
-                val detection = NebuIA.task.documentRealTimeDetection(bitmap)
+                val label = NebuIA.task.documentLabel(bitmap)
 
-                if(detection.isNotEmpty()) {
-                    if(detection[0].label == "mx_id_front") {
-                        timer.schedule(timerTask {
+                if(label == "mx_id_front") {
+                    uiScope.launch {
+                        ineFront = true
+                        summary.text = getString(R.string.back_document_instruction)
+                        detect = false
+                    }
+                    /*if(detection[0].label == "mx_id_front") {
+                        /*timer.schedule(timerTask {
                             // execute on main thread
                             uiScope.launch {
                                 ineFront = true
                                 summary.text = getString(R.string.back_document_instruction)
                                 detect = false
                             }
-                        }, 2000)
+                        }, 2000) */
                     } else {
                         detect = false
-                    }
+                    } */
                 } else {
                     detect = false
                 }
             }
 
             if(ineFront && !ineBack) {
-                val detection = NebuIA.task.documentRealTimeDetection(bitmap)
-                if(detection.isNotEmpty()) {
-                    if(detection[0].label == "mx_id_back") {
+                val label = NebuIA.task.documentLabel(bitmap)
+                if(label == "mx_id_back") {
+                    completeActionDetection()
+                   /* if(detection[0].label == "mx_id_back") {
                         completeActionDetection()
                     } else {
                         detect = false
-                    }
+                    } */
                 } else {
                     detect = false
                 }

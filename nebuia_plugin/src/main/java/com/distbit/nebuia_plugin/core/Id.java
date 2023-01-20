@@ -22,5 +22,6 @@ public class Id {
     }
 
     public native boolean Init(AssetManager mgr);
-    public native Obj[] Detect(Bitmap bitmap, Bitmap out);
+    public native boolean Detect(Bitmap bitmap, Bitmap out);
+    public native String GetLabel(Bitmap bitmap);
 }

@@ -31,6 +31,8 @@ class UploadActivity : AppCompatActivity() {
     private lateinit var errorUpload: LinearLayout
     private lateinit var continueError: Button
 
+    private var documents: Documents = Documents
+
     /**
      * @dev onCreate default android life cycle
      * init listeners for camera frames
@@ -56,23 +58,22 @@ class UploadActivity : AppCompatActivity() {
         errorDescription = findViewById(R.id.error_description)
 
         continueSuccess.setOnClickListener {
-            NebuIA.task.documents = Documents()
+            documents.reset()
             NebuIA.idComplete()
             finish()
         }
 
         continueError.setOnClickListener {
-            NebuIA.task.documents = Documents()
-            ScannerID.reset()
+            documents.reset()
             NebuIA.idError()
             finish()
         }
 
-        if (NebuIA.task.documents.front != null)
-            front.setImageBitmap(NebuIA.task.documents.front)
+        if (documents.frontImage() != null)
+            front.setImageBitmap(documents.frontImage())
 
-        if (NebuIA.task.documents.back != null)
-            back.setImageBitmap(NebuIA.task.documents.back)
+        if (documents.backImage() != null)
+            back.setImageBitmap(documents.backImage())
 
         setFonts()
         setUpColors()

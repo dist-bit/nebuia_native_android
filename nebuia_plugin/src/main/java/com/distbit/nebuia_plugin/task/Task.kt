@@ -3,7 +3,6 @@ package com.distbit.nebuia_plugin.task
 import android.graphics.Bitmap
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.core.Finger
-import com.distbit.nebuia_plugin.core.Id
 import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
@@ -21,7 +20,6 @@ class Task {
     var currentType: String? = null
 
     // utils
-    var documents: Documents = Documents()
     var fingers: MutableList<Fingers> = mutableListOf()
 
     // address
@@ -29,7 +27,7 @@ class Task {
     var addressBitmap: Bitmap? = null
 
     // cropped
-    var cropped: Bitmap? = null
+    //var cropped: Bitmap? = null
 
     fun setOTP(code: String) {
         client!!.otp = code
@@ -58,20 +56,21 @@ class Task {
             return@withContext client!!.qualityFace(bitmap)
         }
 
-    suspend fun documentRealTimeDetection(bitmap: Bitmap): Array<Id.Obj> =
+    suspend fun documentRealTimeDetection(bitmap: Bitmap): Bitmap? =
         withContext(Dispatchers.Default) {
             // create fixed size bitmap
-            val outCropped = Bitmap.createBitmap( 590, 389, conf)
-            val result: Array<Id.Obj> = NebuIA.id.Detect(bitmap, outCropped)
-
-            if (result.isNotEmpty()) {
-                NebuIA.task.cropped = outCropped
-
-                currentType = result[0].label
-                setBitmapForIdentity(outCropped)
-                return@withContext result
+            val cropped = Bitmap.createBitmap( 590, 389, conf)
+            val result: Boolean = NebuIA.id.Detect(bitmap, cropped)
+            if (result) {
+                cropped.setBitmapForIdentity()
+                return@withContext cropped
             }
-            return@withContext arrayOf()
+            return@withContext null
+        }
+
+    suspend fun documentLabel(bitmap: Bitmap): String =
+        withContext(Dispatchers.Default) {
+            return@withContext NebuIA.id.GetLabel(bitmap)
         }
 
     suspend fun fingerprintDetection(bitmap: Bitmap): Array<Finger.Obj> =
@@ -95,7 +94,7 @@ class Task {
             return@withContext arrayOf(index, middle, ring, little)
         }
 
-    suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = client!!.uploadID(documents, onError)
+    suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = client!!.uploadID(onError)
 
     suspend fun uploadAddress(onError: () -> Unit): HashMap<String, Any>? =
         withContext(Dispatchers.Default) {
@@ -145,8 +144,9 @@ class Task {
     }
 
     // store document images
-    private fun setBitmapForIdentity(image: Bitmap) {
-        documents.isPassport = false
+    private fun Bitmap.setBitmapForIdentity() {
+        Documents.setImage(this)
+        /*documents.isPassport = false
         when (currentType) {
             "mx_id_front" -> documents.front = image
             "mx_id_back" -> documents.back = image
@@ -154,6 +154,6 @@ class Task {
                 documents.front = image
                 documents.isPassport = true
             }
-        }
+        } */
     }
 }
