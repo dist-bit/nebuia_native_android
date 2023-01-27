@@ -44,7 +44,6 @@ private:
 private:
     ncnn::Net *Net;
 
-    int num_thread;
     int image_w;
     int image_h;
 

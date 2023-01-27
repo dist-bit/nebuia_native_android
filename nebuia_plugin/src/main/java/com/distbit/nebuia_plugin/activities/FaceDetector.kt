@@ -3,11 +3,13 @@ package com.distbit.nebuia_plugin.activities
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.utils.Utils
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.distbit.nebuia_plugin.utils.Utils.Companion.warning
@@ -38,7 +40,8 @@ class FaceDetector : AppCompatActivity() {
     private var ineBack: Boolean = false
 
     private lateinit var camera: CameraView
-    private var brightness = 0
+
+    private var idShow: Boolean = false
 
     /**
      * @dev onCreate default android life cycle
@@ -59,8 +62,13 @@ class FaceDetector : AppCompatActivity() {
 
         back.setOnClickListener { back() }
 
+        getValueIDInstructions()
         setFonts()
         setUpCamera()
+    }
+
+    private fun getValueIDInstructions() {
+        idShow = intent.extras!!.getBoolean("idShow")
     }
 
     /**
@@ -86,24 +94,28 @@ class FaceDetector : AppCompatActivity() {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
         camera.playSounds = false
-        camera.setPreviewStreamSize { source ->
-            source.removeIf { it.width > 720 }
-            source
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+
+        camera.setPictureSize { source ->
+            mutableListOf(Utils.getOptimalSize(source, width, height)!!)
         }
+
+        camera.setPreviewStreamSize { source ->
+            mutableListOf(Utils.getOptimalSize(source, width, height)!!)
+        }
+
         camera.addCameraListener(object : CameraListener() {
             override fun onPictureTaken(result: PictureResult) {
                 result.toBitmap {
-                    uiScope.launch {
-                        if (NebuIA.task.liveDetection(it!!)) {
-                            faceComplete = true
-                            summary.text = getString(R.string.document_instruction)
-                            summaryOne.text = getString(R.string.waiting_document)
-                            detect = false
-                        } else detect = false
-                    }
+                    analyzeFaceSpoofing(it!!)
                 }
             }
         })
+
         camera.addFrameProcessor { frame ->
             if (!detect) {
                 detect = true
@@ -111,6 +123,23 @@ class FaceDetector : AppCompatActivity() {
                     detect(frame.toBitMap())
             }
         }
+    }
+
+    private fun analyzeFaceSpoofing(image: Bitmap) {
+        uiScope.launch {
+            // detect face live
+            if (NebuIA.task.liveDetection(image)) {
+                if (idShow) {
+                    faceComplete = true
+                    summary.text = getString(R.string.document_instruction)
+                    summaryOne.text = getString(R.string.waiting_document)
+                    detect = false
+                } else {
+                    completeActionDetection()
+                }
+            } else detect = false
+        }
+
     }
 
     private fun done() {
@@ -129,24 +158,13 @@ class FaceDetector : AppCompatActivity() {
     private fun detect(bitmap: Bitmap) {
         uiScope.launch {
 
-            if(!faceComplete) {
+            if (!faceComplete) {
                 val detections = NebuIA.face.detect(bitmap)
                 if (detections.isNotEmpty()) {
                     // get face quality
                     val qua = NebuIA.task.qualityFace(bitmap)
-                    if(qua > 65) {
-                        // detect face live
-                        if (NebuIA.task.liveDetection(bitmap)) {
-                            if(NebuIA.idShow) {
-                                faceComplete = true
-                                summary.text = getString(R.string.document_instruction)
-                                summaryOne.text = getString(R.string.waiting_document)
-                                detect = false
-                            } else {
-                                completeActionDetection()
-                            }
-
-                        } else detect = false
+                    if (qua > 68) {
+                        camera.takePicture()
                     } else {
                         // play warning sound
                         warning(this@FaceDetector)
@@ -156,41 +174,24 @@ class FaceDetector : AppCompatActivity() {
                 } else detect = false
             }
 
-            if(faceComplete && !ineFront) {
+            if (faceComplete && !ineFront) {
                 val label = NebuIA.task.documentLabel(bitmap)
 
-                if(label == "mx_id_front") {
+                if (label == "mx_id_front") {
                     uiScope.launch {
                         ineFront = true
                         summary.text = getString(R.string.back_document_instruction)
                         detect = false
                     }
-                    /*if(detection[0].label == "mx_id_front") {
-                        /*timer.schedule(timerTask {
-                            // execute on main thread
-                            uiScope.launch {
-                                ineFront = true
-                                summary.text = getString(R.string.back_document_instruction)
-                                detect = false
-                            }
-                        }, 2000) */
-                    } else {
-                        detect = false
-                    } */
                 } else {
                     detect = false
                 }
             }
 
-            if(ineFront && !ineBack) {
+            if (ineFront && !ineBack) {
                 val label = NebuIA.task.documentLabel(bitmap)
-                if(label == "mx_id_back") {
+                if (label == "mx_id_back") {
                     completeActionDetection()
-                   /* if(detection[0].label == "mx_id_back") {
-                        completeActionDetection()
-                    } else {
-                        detect = false
-                    } */
                 } else {
                     detect = false
                 }
@@ -206,6 +207,6 @@ class FaceDetector : AppCompatActivity() {
                 detect = false
                 done()
             }
-        }, 3000)
+        }, 2000)
     }
 }

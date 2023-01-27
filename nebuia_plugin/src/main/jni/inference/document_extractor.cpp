@@ -194,20 +194,16 @@ DocumentExtractor::~DocumentExtractor() {
     delete Net;
 }
 
-DocumentExtractor::DocumentExtractor(AAssetManager *mgr, const char *param, const char *bin)
-{
-
-
+DocumentExtractor::DocumentExtractor(AAssetManager *mgr, const char *param, const char *bin) {
     Net = new ncnn::Net();
 
     blob_pool_allocator.set_size_compare_ratio(0.f);
     workspace_pool_allocator.set_size_compare_ratio(0.f);
 
-    ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
-
     ncnn::Option opt;
     ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
     opt.num_threads = ncnn::get_big_cpu_count();
+    opt.use_packing_layout = true;
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
     Net->opt = opt;
@@ -251,6 +247,7 @@ DocumentExtractor::detect(JNIEnv *env, jobject bitmap, std::vector<Doc>& objects
     in_pad.substract_mean_normalize(0, norm_vals);
 
     ncnn::Extractor ex = Net->create_extractor();
+    ex.set_num_threads(ncnn::get_big_cpu_count());
 
     ex.input("data", in_pad);
 

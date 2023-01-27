@@ -4,13 +4,13 @@
 
 #define clip(x, y) (x < 0 ? 0 : (x > y ? y : x))
 
+#include <cpu.h>
 #include "face.h"
 #include "mat.h"
 
 Face* Face::detector = nullptr;
 
 Face::Face(AAssetManager *mgr, const char *param, const char *bin, float iou_threshold_, int topk_) {
-    num_thread = 2;
     topk = topk_;
     score_threshold = 0.7;
     iou_threshold = iou_threshold_;
@@ -50,7 +50,14 @@ Face::Face(AAssetManager *mgr, const char *param, const char *bin, float iou_thr
     num_anchors = priors.size();
 
     this->Net = new ncnn::Net();
-    this->Net->opt.use_vulkan_compute = true;
+
+    ncnn::Option opt;
+    ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
+    opt.num_threads = ncnn::get_big_cpu_count();
+    opt.use_packing_layout = true;
+
+    this->Net->opt = opt;
+
     this->Net->load_param(mgr, param);
     this->Net->load_model(mgr, bin);
 }
@@ -81,7 +88,7 @@ std::vector<BoxInfo> Face::detect(JNIEnv *env, jobject image) {
 
     ncnn::Extractor ex = this->Net->create_extractor();
     //ex.set_vulkan_compute(true);
-    ex.set_num_threads(num_thread);
+    ex.set_num_threads(ncnn::get_big_cpu_count());
     ex.input("input", ncnn_img);
 
     ncnn::Mat scores;

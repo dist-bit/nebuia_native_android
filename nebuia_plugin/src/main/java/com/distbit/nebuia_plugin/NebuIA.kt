@@ -94,11 +94,10 @@ class NebuIA(private var context: Activity) {
      */
     fun faceLiveDetection(useIDShow: Boolean ,onFaceComplete: () -> Unit) {
         checkReportParamRequest()
-        idShow = useIDShow
         faceComplete = onFaceComplete
-        context.startActivity(
-            Intent(context, FaceDetector::class.java)
-        )
+        val intent = Intent(context, FaceDetector::class.java)
+        intent.putExtra("idShow", useIDShow);
+        context.startActivity(intent)
     }
 
     /**
@@ -371,7 +370,6 @@ class NebuIA(private var context: Activity) {
         var getNameFromId: Boolean = false
         // face
         var faceComplete: () -> Unit = {}
-        var idShow: Boolean = false
 
         // nebuIA theme
         var theme: Theme = Theme()
