@@ -3,9 +3,10 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.*
+import android.media.Image
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -15,13 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Fingers
-import com.distbit.nebuia_plugin.utils.Utils.Companion.getOptimalSize
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.otaliastudios.cameraview.CameraView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.nio.ByteBuffer
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -144,22 +145,9 @@ class FingersDetector : AppCompatActivity() {
      * set image format and life cycle to activity
      */
     private fun setUpCamera() {
-        camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
+        //camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
         camera.playSounds = false
-
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-
-        camera.setPictureSize { source ->
-            mutableListOf(getOptimalSize(source, width, height)!!)
-        }
-
-        camera.setPreviewStreamSize { source ->
-            mutableListOf(getOptimalSize(source, width, height)!!)
-        }
 
         timer.start()
 
@@ -168,8 +156,7 @@ class FingersDetector : AppCompatActivity() {
                 camera.addFrameProcessor { frame ->
                     if (!detect) {
                         detect = true
-                        if (frame.dataClass === ByteArray::class.java)
-                            detectFingerprint(frame.toBitMap())
+                        detectFingerprint(frame.toBitMap())
                         frame.release()
                     }
                     frame.release()
@@ -185,13 +172,12 @@ class FingersDetector : AppCompatActivity() {
      * @param decode - frame image
      */
     private fun detectFingerprint(decode: Bitmap) {
-        //val bmp2: Bitmap = decode.copy(decode.config, true)
         uiScope.launch {
             val result = NebuIA.task.fingerprintDetection(decode)
             val rectangles: MutableList<RectF> = mutableListOf()
             val scores: MutableList<Float> = mutableListOf()
 
-            //order rects
+            //order rectangles
             result.sortBy { it.y }
 
             result.forEach {
@@ -201,7 +187,6 @@ class FingersDetector : AppCompatActivity() {
             img.clear()
 
             if (rectangles.size == 4) {
-                //detectionsCount.add(rects.size)
                 for (it in result) {
                     val croppedBmp: Bitmap = Bitmap.createBitmap(
                         decode,
@@ -213,6 +198,7 @@ class FingersDetector : AppCompatActivity() {
 
                     val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
                     val quality = NebuIA.task.fingerprintQuality(rotate)
+                    //Log.i("NEEEEBU", quality.toString())
                     if(quality >= NebuIA.qualityValue) {
                         scores.add(quality)
                     }
@@ -228,7 +214,6 @@ class FingersDetector : AppCompatActivity() {
             if (size >= 3) {
                 timer.cancel()
                 processFingerprints()
-                //camera.takePicture()
             } else {
                 detect = false
             }

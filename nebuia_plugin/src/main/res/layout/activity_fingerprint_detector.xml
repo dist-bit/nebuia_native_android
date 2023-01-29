@@ -12,7 +12,6 @@
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true"
         app:cameraEngine="camera2"
         app:cameraFacing="back"
         app:cameraFlash="torch"
@@ -20,7 +19,9 @@
         app:cameraPlaySounds="false"
         app:cameraPreview="glSurface"
         app:cameraRequestPermissions="true"
-        app:cameraUseDeviceOrientation="true"
+        app:cameraUseDeviceOrientation="false"
+        app:cameraPictureFormat="jpeg"
+        app:cameraExperimental="false"
         app:cameraWhiteBalance="auto">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout

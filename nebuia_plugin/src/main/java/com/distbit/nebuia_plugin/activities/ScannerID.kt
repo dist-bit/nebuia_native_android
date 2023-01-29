@@ -36,14 +36,11 @@ class ScannerID : AppCompatActivity() {
 
     private var documents: Documents = Documents
 
-    private var detect: Boolean = false
     private lateinit var mxIDFront: String
     private lateinit var mxIDBack: String
     private lateinit var mxPassportFront: String
 
     private lateinit var svProgressHUD: ProgressHUD
-
-    private var onAction: Boolean = false
 
     /**
      * @dev onCreate default android life cycle
@@ -61,11 +58,9 @@ class ScannerID : AppCompatActivity() {
         camera = findViewById(R.id.camera)
         summarySide = findViewById(R.id.summary_side)
         title = findViewById(R.id.title)
-
-        val back: Button = findViewById(R.id.back)
         capture = findViewById(R.id.capture)
 
-        back.setOnClickListener {
+        findViewById<Button>(R.id.back).setOnClickListener {
             super.onBackPressed()
         }
 
@@ -138,20 +133,17 @@ class ScannerID : AppCompatActivity() {
         })
 
         capture.setOnClickListener{
-            if (!onAction) {
-                svProgressHUD.show()
-                camera.takePicture()
-                onAction = true
-            }
+            capture.isEnabled = false
+            svProgressHUD.show()
+            camera.takePicture()
         }
     }
 
     /**
      * @dev real time detect document
      */
-    private fun finalize() {
+    private fun finalize() =
         PreviewDocument.newInstance().show(supportFragmentManager, PreviewDocument::class.java.canonicalName)
-    }
 
     /**
     * @dev real time detect document
@@ -171,6 +163,7 @@ class ScannerID : AppCompatActivity() {
         uiScope.launch {
             val cropped = NebuIA.task.documentRealTimeDetection(bitmap)
             svProgressHUD.dismiss()
+            capture.isEnabled = true
             if(cropped != null) {
                 this@ScannerID.finalize()
                 /*val detection = detections[0]
@@ -182,15 +175,7 @@ class ScannerID : AppCompatActivity() {
                     mxIDBack -> this@ScannerID.finalize()
                     else -> detect = false
                 } */
-            } else detect = false
+            }
             // re enable capture button
-            onAction = false
         }
-
-    companion object {
-        /**
-         * @dev reset variables to retake image id
-         */
-
-    }
 }

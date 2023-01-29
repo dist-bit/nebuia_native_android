@@ -12,13 +12,14 @@
         android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true"
         app:cameraEngine="camera2"
+        app:cameraExperimental="true"
         app:cameraFacing="back"
+        app:cameraGestureTap="autoFocus"
         app:cameraMode="picture"
         app:cameraPictureMetering="true"
-        app:cameraAutoFocusResetDelay="300"
         app:cameraPreview="glSurface"
+        app:cameraPictureFormat="jpeg"
         app:cameraRequestPermissions="true"
         app:cameraUseDeviceOrientation="false">
 
