@@ -122,8 +122,6 @@ class ScannerID : AppCompatActivity() {
     private fun setUpCamera(camera: CameraView) {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
-        camera.startAutoFocus(camera.width / 2F, camera.height / 2F);
-
         camera.addCameraListener(object : CameraListener() {
             override fun onPictureTaken(result: PictureResult) {
                 result.toBitmap {

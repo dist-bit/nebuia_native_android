@@ -3,10 +3,8 @@ package com.distbit.nebuia_plugin.activities
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.*
-import android.media.Image
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -22,7 +20,6 @@ import com.otaliastudios.cameraview.CameraView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -44,7 +41,7 @@ class FingersDetector : AppCompatActivity() {
 
     private lateinit var qualityBar: ProgressBar
 
-    val timer = object: CountDownTimer(50000, 1000) {
+    private val timer = object: CountDownTimer(50000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             val seconds: Long = millisUntilFinished / 1000
             if(seconds == 25L) {
@@ -83,9 +80,6 @@ class FingersDetector : AppCompatActivity() {
         window.hideSystemUI()
 
         camera = findViewById(R.id.camera)
-
-        val back: Button = findViewById(R.id.back)
-
         title = findViewById(R.id.title)
         summary = findViewById(R.id.summary)
         //summaryOne = findViewById(R.id.summary_1)
@@ -97,7 +91,7 @@ class FingersDetector : AppCompatActivity() {
 
         qualityBar.max = 3 // 4 fingers
 
-        back.setOnClickListener { super.onBackPressed() }
+        findViewById<Button>(R.id.back).setOnClickListener { super.onBackPressed() }
         skip.setOnClickListener {
             NebuIA.fingerSkip()
             super.onBackPressed()
@@ -119,9 +113,7 @@ class FingersDetector : AppCompatActivity() {
     /**
      * @dev clear fingerprints list
      */
-    private fun clearFingerprints() {
-        NebuIA.task.fingers.clear()
-    }
+    private fun clearFingerprints() = NebuIA.task.fingers.clear()
 
     /**
      * @dev apply fonts from NebuIA theme
@@ -145,9 +137,9 @@ class FingersDetector : AppCompatActivity() {
      * set image format and life cycle to activity
      */
     private fun setUpCamera() {
-        //camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
+        camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
-        camera.playSounds = false
+        camera.startAutoFocus(camera.width / 2F, camera.height / 2F);
 
         timer.start()
 
@@ -156,9 +148,11 @@ class FingersDetector : AppCompatActivity() {
                 camera.addFrameProcessor { frame ->
                     if (!detect) {
                         detect = true
-                        detectFingerprint(frame.toBitMap())
+                        val bitmap = frame.toBitMap()
                         frame.release()
+                        detectFingerprint(bitmap)
                     }
+
                     frame.release()
                 }
             }
@@ -198,7 +192,6 @@ class FingersDetector : AppCompatActivity() {
 
                     val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
                     val quality = NebuIA.task.fingerprintQuality(rotate)
-                    //Log.i("NEEEEBU", quality.toString())
                     if(quality >= NebuIA.qualityValue) {
                         scores.add(quality)
                     }

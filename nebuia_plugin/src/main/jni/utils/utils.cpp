@@ -47,7 +47,7 @@ cv::Mat Utils::transformMat(JNIEnv *env, jobject process) {
     return rgb;
 }
 
-void Utils::processCLAHE(JNIEnv *env, const jobject inBitmap, jobject outBitmap) {
+void Utils::processCLAHE(JNIEnv *env, jobject inBitmap, jobject outBitmap) {
 
     cv::Mat image = transformMat(env, inBitmap);
 
