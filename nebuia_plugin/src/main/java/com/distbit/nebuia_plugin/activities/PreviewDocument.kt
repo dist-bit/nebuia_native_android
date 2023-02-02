@@ -119,6 +119,7 @@ class PreviewDocument : BottomSheetDialogFragment() {
         when {
             documents.isComplete() -> {
                 dismiss()
+                documents.setSide(Side.FRONT)
                 (activity as ScannerID).uploadData()
             }
             else -> {

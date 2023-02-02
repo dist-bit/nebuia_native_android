@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Documents
+import com.distbit.nebuia_plugin.model.Side
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,6 +59,7 @@ class UploadActivity : AppCompatActivity() {
         errorDescription = findViewById(R.id.error_description)
 
         continueSuccess.setOnClickListener {
+            documents.setSide(Side.FRONT)
             documents.reset()
             NebuIA.idComplete()
             finish()
