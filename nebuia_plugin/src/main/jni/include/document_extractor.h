@@ -37,14 +37,14 @@ public:
 private:
     ncnn::Net *Net;
 
-    int target_size = 352;
+    int target_size = 384;
     const float norm_vals[3] = {1 / 255.f, 1 / 255.f, 1 / 255.f};
 
     ncnn::UnlockedPoolAllocator blob_pool_allocator;
     ncnn::PoolAllocator workspace_pool_allocator;
 
-    float prob_threshold = 0.3f;
-    float nms_threshold = 0.5f;
+    float prob_threshold = 0.35f;
+    float nms_threshold = 0.55f;
 };
 
 #endif //NEBUIA_DOCUMENT_H

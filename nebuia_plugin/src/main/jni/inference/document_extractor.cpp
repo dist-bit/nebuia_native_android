@@ -202,8 +202,15 @@ DocumentExtractor::DocumentExtractor(AAssetManager *mgr, const char *param, cons
 
     ncnn::Option opt;
     ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
-    opt.num_threads = ncnn::get_big_cpu_count();
+
+    opt.use_fp16_arithmetic = true;
+    opt.use_bf16_storage = true;
     opt.use_packing_layout = true;
+
+    opt.use_winograd23_convolution = true;
+    opt.use_winograd43_convolution = true;
+    opt.use_winograd63_convolution = true;
+
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
     Net->opt = opt;
@@ -247,7 +254,7 @@ DocumentExtractor::detect(JNIEnv *env, jobject bitmap, std::vector<Doc>& objects
     in_pad.substract_mean_normalize(0, norm_vals);
 
     ncnn::Extractor ex = Net->create_extractor();
-    ex.set_num_threads(ncnn::get_big_cpu_count());
+    //ex.set_num_threads(ncnn::get_big_cpu_count());
 
     ex.input("data", in_pad);
 
@@ -321,14 +328,9 @@ DocumentExtractor::detect(JNIEnv *env, jobject bitmap, std::vector<Doc>& objects
 
     int count = picked.size();
 
-   // objects.resize(count);
-
     for (int i = 0; i < count; i++)
     {
-        //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%d", picked[i]);
-        //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS_1", "%d", proposals[picked[i]].label);
         Doc a =  proposals[picked[i]];
-        // adjust offset to original unpadded
         float x0 = (a.rect.x - (wpad / 2)) / scale;
         float y0 = (a.rect.y - (hpad / 2)) / scale;
         float x1 = (a.rect.x + a.rect.width - (wpad / 2)) / scale;

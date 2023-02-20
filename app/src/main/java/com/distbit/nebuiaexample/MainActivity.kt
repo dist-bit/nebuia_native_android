@@ -28,7 +28,7 @@ class MainActivity : Activity() {
         //nebuIA.setClientURI("http://192.168.1.111:8080/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
-        nebuIA.setReport("62422330ad9791096fd9c4fe")
+        nebuIA.setReport("63f25f106e1a6b708a57596f")
         //nebuIA.setReport("60ef54921bc1004d709a1a05")
         // CALL NEBUIA METHOD
         /*nebuIA.fingerDetection(0, false, 4.4, onSkip = {
