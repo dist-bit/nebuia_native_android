@@ -107,14 +107,13 @@ class NebuIA(private var context: Activity) {
      * @return ByteArray - wsq file
      * @return Bitmap - index finger with fingerprint clear image
      */
-    fun fingerDetection(ptn: Int, skip: Boolean, quality: Double, onFingerDetectionComplete: (Fingers, Fingers, Fingers, Fingers) -> Unit, onSkip: () -> Unit, onSkipWithFingers: (Fingers, Fingers, Fingers, Fingers) -> Unit) {
+    fun fingerDetection(ptn: Int, skip: Boolean, onFingerDetectionComplete: (Fingers, Fingers, Fingers, Fingers) -> Unit, onSkip: () -> Unit, onSkipWithFingers: (Fingers, Fingers, Fingers, Fingers) -> Unit) {
         checkReportParamRequest()
         fingerComplete = onFingerDetectionComplete
         fingerSkipWithImages = onSkipWithFingers
         fingerSkip = onSkip
         skipStep = skip
         positionHand = ptn
-        qualityValue = quality
         context.startActivity(
             Intent(context, FingersDetector::class.java)
         )
@@ -358,7 +357,6 @@ class NebuIA(private var context: Activity) {
             { index, middle, ring, little: Fingers -> }
         var fingerSkip: () -> Unit = {}
         var skipStep: Boolean = false
-        var qualityValue: Double = 4.5
 
         var positionHand: Int = 0
         // generic document capture

@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -15,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Fingers
-import com.distbit.nebuia_plugin.utils.Utils.Companion.getOptimalSize
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.otaliastudios.cameraview.CameraView
@@ -194,9 +192,11 @@ class FingersDetector : AppCompatActivity() {
 
                     val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
                     val quality = NebuIA.task.fingerprintQuality(rotate)
-                    if(quality >= NebuIA.qualityValue) {
+
+                    if(quality == 1) {
                         scores.add(quality)
                     }
+
                     img.add(rotate)
                 }
             } else {
