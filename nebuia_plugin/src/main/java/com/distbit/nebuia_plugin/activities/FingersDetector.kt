@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
 
-
 class FingersDetector : AppCompatActivity() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
 

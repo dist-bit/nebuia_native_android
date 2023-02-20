@@ -94,6 +94,7 @@ class FaceDetector : AppCompatActivity() {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
         camera.playSounds = false
+        camera.exposureCorrection = 1F
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
