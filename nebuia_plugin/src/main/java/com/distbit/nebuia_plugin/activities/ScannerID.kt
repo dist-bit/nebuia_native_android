@@ -122,6 +122,7 @@ class ScannerID : AppCompatActivity() {
     private fun setUpCamera(camera: CameraView) {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
+        camera.exposureCorrection = 1F
         camera.addCameraListener(object : CameraListener() {
             override fun onPictureTaken(result: PictureResult) {
                 result.toBitmap {

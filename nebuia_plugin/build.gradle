@@ -27,6 +27,12 @@ android {
             moduleName "ncnn"
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_ARM_NEON=ON"
+            }
+        }
     }
 
     externalNativeBuild {

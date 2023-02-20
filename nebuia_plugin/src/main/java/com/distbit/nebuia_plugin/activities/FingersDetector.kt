@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.Fingers
+import com.distbit.nebuia_plugin.utils.Utils.Companion.getOptimalSize
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.otaliastudios.cameraview.CameraView
@@ -139,7 +141,7 @@ class FingersDetector : AppCompatActivity() {
     private fun setUpCamera() {
         camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
         camera.setLifecycleOwner(this)
-        camera.startAutoFocus(camera.width / 2F, camera.height / 2F);
+        camera.exposureCorrection = 1F
 
         timer.start()
 
@@ -169,7 +171,7 @@ class FingersDetector : AppCompatActivity() {
         uiScope.launch {
             val result = NebuIA.task.fingerprintDetection(decode)
             val rectangles: MutableList<RectF> = mutableListOf()
-            val scores: MutableList<Float> = mutableListOf()
+            val scores: MutableList<Int> = mutableListOf()
 
             //order rectangles
             result.sortBy { it.y }

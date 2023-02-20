@@ -6,12 +6,8 @@ Quality::Quality(AAssetManager *mgr, const char *param, const char *bin) {
     Net = new ncnn::Net();
 
     ncnn::Option opt;
-    ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
-    opt.num_threads = ncnn::get_big_cpu_count();
-    opt.lightmode = true;
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
-
     Net->opt = opt;
 
     // init param
@@ -24,7 +20,7 @@ Quality::~Quality() {
     delete Net;
 }
 
-float Quality::quality(JNIEnv *env, jobject bitmap) const {
+int Quality::quality(JNIEnv *env, jobject bitmap) const {
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(env, bitmap, &info);
     ncnn::Mat in = ncnn::Mat::from_android_bitmap_resize(env, bitmap, ncnn::Mat::PIXEL_BGR2RGB, target_size, target_size);
@@ -37,12 +33,12 @@ float Quality::quality(JNIEnv *env, jobject bitmap) const {
 
     ncnn::Mat out;
     ex.extract("dense_blob", out);
-    float quality = out[0];
+    // Get the binary prediction
+    int index = (out[0] > 0.5) ? 1 : 0;
     // clear mat image
     in.release();
     out.release();
-
-    return quality;
+    return index;
 }
 
 

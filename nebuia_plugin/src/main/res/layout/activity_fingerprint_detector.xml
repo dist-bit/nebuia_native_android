@@ -22,7 +22,7 @@
         app:cameraUseDeviceOrientation="false"
         app:cameraPictureFormat="jpeg"
         app:cameraExperimental="false"
-        app:cameraWhiteBalance="auto">
+      >
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"

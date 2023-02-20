@@ -29,5 +29,5 @@ public class Finger {
                                  Bitmap indexOut, Bitmap middleOut, Bitmap ringOut, Bitmap littleOut
     );
 
-    public native float Quality(Bitmap bitmap);
+    public native int Quality(Bitmap bitmap);
 }

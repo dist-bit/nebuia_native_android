@@ -91,10 +91,9 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Detect(JNIEnv *env, jobject thiz, jo
     return jObjArray;
 }
 
-JNIEXPORT jfloat JNICALL
+JNIEXPORT jint JNICALL
 Java_com_distbit_nebuia_1plugin_core_Finger_Quality(JNIEnv *env, jobject thiz, jobject bitmap) {
-    float score = Finger::quality->quality(env, bitmap);
-    return score;
+    return Finger::quality->quality(env, bitmap);
 }
 
 JNIEXPORT void  JNICALL

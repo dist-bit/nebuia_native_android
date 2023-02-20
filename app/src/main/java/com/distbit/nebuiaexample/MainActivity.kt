@@ -48,7 +48,7 @@ class MainActivity : Activity() {
         }
 
         fingerprints.setOnClickListener {
-            nebuIA.fingerDetection(1, false, 4.4, onSkip = {
+            nebuIA.fingerDetection(1, false, 0.9, onSkip = {
 
             }, onFingerDetectionComplete = { fingers, fingers2, fingers3, fingers4 ->
                 // LOGIC HERE

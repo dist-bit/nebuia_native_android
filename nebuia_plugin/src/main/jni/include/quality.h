@@ -17,8 +17,7 @@ public:
 
     ~Quality();
 
-    float quality(JNIEnv *env, jobject bitmap) const;
-    float qualityMat(const cv::Mat& image) const;
+    int quality(JNIEnv *env, jobject bitmap) const;
 
 private:
     ncnn::Net *Net;

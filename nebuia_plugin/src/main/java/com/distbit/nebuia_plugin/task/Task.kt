@@ -78,7 +78,7 @@ class Task {
             return@withContext  NebuIA.fingers.Detect(bitmap)
         }
 
-    suspend fun fingerprintQuality(bitmap: Bitmap): Float =
+    suspend fun fingerprintQuality(bitmap: Bitmap): Int =
         withContext(Dispatchers.Default) {
             return@withContext NebuIA.fingers.Quality(bitmap)
         }

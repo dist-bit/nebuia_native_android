@@ -186,8 +186,8 @@ Inference::Inference(AAssetManager *mgr, const char *param, const char *bin) {
     Net = new ncnn::Net();
 
     ncnn::Option opt;
-    ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
-    opt.num_threads = ncnn::get_big_cpu_count();
+    //ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
+    //opt.num_threads = ncnn::get_big_cpu_count();
     opt.use_packing_layout = true;
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
