@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -217,7 +216,6 @@ class FingersDetector : AppCompatActivity() {
                         croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
 
                     val score = NebuIA.task.fingerprintQuality(rotate)
-                    Log.i("FINGER_QUALITY",score.toString())
                     if (score >= quality) {
                         scores.add(score)
                     }
