@@ -20,7 +20,7 @@ Quality::~Quality() {
     delete Net;
 }
 
-int Quality::quality(JNIEnv *env, jobject bitmap) const {
+float Quality::quality(JNIEnv *env, jobject bitmap) const {
     AndroidBitmapInfo info;
     AndroidBitmap_getInfo(env, bitmap, &info);
     ncnn::Mat in = ncnn::Mat::from_android_bitmap_resize(env, bitmap, ncnn::Mat::PIXEL_BGR2RGB, target_size, target_size);
@@ -34,7 +34,7 @@ int Quality::quality(JNIEnv *env, jobject bitmap) const {
     ncnn::Mat out;
     ex.extract("dense_blob", out);
     // Get the binary prediction
-    int index = (out[0] > 0.5) ? 1 : 0;
+    float index = out[0];
     // clear mat image
     in.release();
     out.release();

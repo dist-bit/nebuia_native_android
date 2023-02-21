@@ -14,10 +14,8 @@
 class Quality {
 public:
     Quality(AAssetManager *mgr, const char *param, const char *bin);
-
     ~Quality();
-
-    int quality(JNIEnv *env, jobject bitmap) const;
+    float quality(JNIEnv *env, jobject bitmap) const;
 
 private:
     ncnn::Net *Net;

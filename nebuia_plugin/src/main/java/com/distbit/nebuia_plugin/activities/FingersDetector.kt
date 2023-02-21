@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.concurrent.timerTask
 
 class FingersDetector : AppCompatActivity() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
@@ -40,21 +42,24 @@ class FingersDetector : AppCompatActivity() {
 
     private lateinit var qualityBar: ProgressBar
 
-    private val timer = object: CountDownTimer(50000, 1000) {
+    private var quality: Float = 8f
+    private var maxSizeFingers: Int = 2
+
+    private val timer = object : CountDownTimer(50000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             val seconds: Long = millisUntilFinished / 1000
-            if(seconds == 25L) {
+            if (seconds == 25L) {
                 summary.text = getString(R.string.fingerprints_warning_detection)
             }
 
-            if(seconds == 0L) {
+            if (seconds == 0L) {
                 cancel()
                 qualityBar.visibility = View.GONE
                 loader.visibility = View.GONE
                 action.visibility = View.GONE
                 skip.visibility = View.VISIBLE
 
-                if(NebuIA.skipStep) {
+                if (NebuIA.skipStep) {
                     summary.text = getString(R.string.skip_step_fingerprints)
                     skip.text = getString(R.string.skip_fingerprints)
                 } else {
@@ -67,6 +72,8 @@ class FingersDetector : AppCompatActivity() {
         override fun onFinish() {
         }
     }
+
+    private val decrement: Timer = Timer()
 
     /**
      * @dev onCreate default android life cycle
@@ -102,6 +109,22 @@ class FingersDetector : AppCompatActivity() {
         setFonts()
         clearFingerprints()
         setUpCamera()
+    }
+
+    private fun startDecrement() {
+        decrement.scheduleAtFixedRate(
+            timerTask()
+            {
+                if (quality > 2) {
+                    quality -= 2
+                } else {
+                    quality = 1.5f
+                    maxSizeFingers = 2
+                    decrement.cancel()
+                }
+            }, 5000, 5000
+        )
+
     }
 
     private fun windowFeatures() {
@@ -144,6 +167,7 @@ class FingersDetector : AppCompatActivity() {
 
         Timer(getString(R.string.time_schedule), false)
             .schedule(2000) {
+                startDecrement()
                 camera.addFrameProcessor { frame ->
                     if (!detect) {
                         detect = true
@@ -168,7 +192,7 @@ class FingersDetector : AppCompatActivity() {
         uiScope.launch {
             val result = NebuIA.task.fingerprintDetection(decode)
             val rectangles: MutableList<RectF> = mutableListOf()
-            val scores: MutableList<Int> = mutableListOf()
+            val scores: MutableList<Float> = mutableListOf()
 
             //order rectangles
             result.sortBy { it.y }
@@ -189,11 +213,13 @@ class FingersDetector : AppCompatActivity() {
                         it.h.toInt()
                     )
 
-                    val rotate = croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
-                    val quality = NebuIA.task.fingerprintQuality(rotate)
+                    val rotate =
+                        croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
 
-                    if(quality == 1) {
-                        scores.add(quality)
+                    val score = NebuIA.task.fingerprintQuality(rotate)
+                    Log.i("FINGER_QUALITY",score.toString())
+                    if (score >= quality) {
+                        scores.add(score)
                     }
 
                     img.add(rotate)
@@ -205,7 +231,7 @@ class FingersDetector : AppCompatActivity() {
             val size = scores.size
             setProgressBar(size)
 
-            if (size >= 3) {
+            if (size >= maxSizeFingers) {
                 timer.cancel()
                 processFingerprints()
             } else {
