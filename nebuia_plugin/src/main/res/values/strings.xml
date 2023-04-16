@@ -83,4 +83,9 @@
     <string name="retyr_step_fingerprint">Reintentar</string>
     <string name="nfiq">NFIQ %1$d</string>
     <string name="version">version 0.0.71</string>
+    <string name="tmp_image_file">tmp_image_file</string>
+    <string name="jpeg">.jpeg</string>
+    <string name="com_distbit_nebuia_plugin">com.distbit.nebuia_plugin</string>
+    <string name="application_pdf">application/pdf</string>
+    <string name="id_capture_option">Selecciona una opción para capturar tu documento de identidad</string>
 </resources>

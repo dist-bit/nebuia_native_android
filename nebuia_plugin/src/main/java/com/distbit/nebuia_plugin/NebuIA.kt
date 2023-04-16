@@ -165,8 +165,9 @@ class NebuIA(private var context: Activity) {
         idComplete = onIDComplete
         idError = onIDError
         context.startActivity(
-            Intent(context, ScannerID::class.java)
+            Intent(context, IDCaptureActivity::class.java)
         )
+        context.overridePendingTransition(0, 0);
     }
 
     /**

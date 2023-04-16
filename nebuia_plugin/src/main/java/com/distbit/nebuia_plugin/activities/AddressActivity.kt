@@ -88,7 +88,6 @@ class AddressFragment : BottomSheetDialogFragment() {
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
                 latestTmpUri?.let { uri ->
-                    val path =  uri.path!!
                     val bitmap: Bitmap =
                         MediaStore.Images.Media.getBitmap(
                             requireContext().contentResolver,
@@ -132,7 +131,7 @@ class AddressFragment : BottomSheetDialogFragment() {
      */
     private fun pickPDFFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "application/pdf"
+        intent.type = getString(R.string.application_pdf)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         resultDocument.launch(intent)
     }
@@ -148,17 +147,17 @@ class AddressFragment : BottomSheetDialogFragment() {
         }
     }
 
-    lateinit var tmpFile: File
+    private lateinit var tmpFile: File
     private fun getTmpFileUri(): Uri {
         tmpFile =
-            File.createTempFile("tmp_image_file", ".jpeg", requireActivity().cacheDir).apply {
+            File.createTempFile(getString(R.string.tmp_image_file), getString(R.string.jpeg), requireActivity().cacheDir).apply {
                 createNewFile()
                 deleteOnExit()
             }
 
         return FileProvider.getUriForFile(
             this.requireContext(),
-            "com.distbit.nebuia_plugin",
+            getString(R.string.com_distbit_nebuia_plugin),
             tmpFile
         )
     }
@@ -170,7 +169,5 @@ class AddressFragment : BottomSheetDialogFragment() {
         val intent = Intent(requireActivity(), AddressPreviewActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
-        //requireActivity().finish()
     }
-
 }

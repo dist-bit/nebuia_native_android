@@ -31,6 +31,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoDisplay" />
         <activity
+            android:name=".activities.IDCaptureActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoDisplay" />
+        <activity
             android:name=".activities.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
@@ -57,12 +62,6 @@
             android:name=".activities.UploadActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_upload"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name=".activities.ScannerID"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_scanner"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity

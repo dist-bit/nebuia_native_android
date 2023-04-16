@@ -27,18 +27,21 @@ float Quality::quality(JNIEnv *env, jobject bitmap) const {
 
     in.substract_mean_normalize(mean_values, norm_values);
     ncnn::Extractor ex = Net->create_extractor();
-    ex.set_num_threads(ncnn::get_big_cpu_count());
+    //ex.set_num_threads(ncnn::get_big_cpu_count());
 
-    ex.input("mobilenetv2_1.00_224_input_blob", in);
+    ex.input("input", in);
 
     ncnn::Mat out;
-    ex.extract("dense_blob", out);
+    ex.extract("output", out);
     // Get the binary prediction
-    float index = out[0];
+    const float* prob = out.channel(1);
+    float score = prob[0];
+
+
     // clear mat image
     in.release();
     out.release();
-    return index;
+    return score;
 }
 
 

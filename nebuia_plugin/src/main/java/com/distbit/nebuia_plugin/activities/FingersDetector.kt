@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -110,21 +111,18 @@ class FingersDetector : AppCompatActivity() {
         setUpCamera()
     }
 
-    private fun startDecrement() {
-        decrement.scheduleAtFixedRate(
-            timerTask()
-            {
-                if (quality > 2) {
-                    quality -= 2
-                } else {
-                    quality = 1.5f
-                    maxSizeFingers = 2
-                    decrement.cancel()
-                }
-            }, 5000, 5000
-        )
-
-    }
+    private fun startDecrement() = decrement.scheduleAtFixedRate(
+        timerTask()
+        {
+            if (quality > 2) {
+                quality -= 2
+            } else {
+                quality = 1.5f
+                maxSizeFingers = 2
+                decrement.cancel()
+            }
+        }, 5000, 5000
+    )
 
     private fun windowFeatures() {
         window.navigationBarColor = resources.getColor(R.color.white_overlay)
@@ -216,7 +214,10 @@ class FingersDetector : AppCompatActivity() {
                         croppedBmp.rotate(if (NebuIA.positionHand == 0) -90.0f else 90.0f)!!
 
                     val score = NebuIA.task.fingerprintQuality(rotate)
-                    if (score >= quality) {
+
+                    Log.i("SOCREE", score.toString())
+
+                    if (score >= 0.99) {
                         scores.add(score)
                     }
 

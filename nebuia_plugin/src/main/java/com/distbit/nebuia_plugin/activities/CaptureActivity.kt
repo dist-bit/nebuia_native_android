@@ -11,8 +11,6 @@ import com.distbit.nebuia_plugin.R
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.PictureResult
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
 class CaptureActivity : AppCompatActivity() {

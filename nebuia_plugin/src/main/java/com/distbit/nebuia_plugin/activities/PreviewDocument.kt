@@ -120,12 +120,15 @@ class PreviewDocument : BottomSheetDialogFragment() {
             documents.isComplete() -> {
                 dismiss()
                 documents.setSide(Side.FRONT)
-                (activity as ScannerID).uploadData()
+                (activity as IDCaptureActivity).uploadData()
             }
             else -> {
+                // close dialog
+                IDCaptureActivity.close()
+
                 dismissAllowingStateLoss()
                 documents.setSide(Side.BACK)
-                (activity as ScannerID).fillData()
+                //(activity as ScannerID).fillData()
             }
         }
     }
