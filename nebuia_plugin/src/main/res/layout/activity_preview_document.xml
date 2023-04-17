@@ -17,49 +17,23 @@
         android:layout_marginTop="@dimen/_13sdp"
         android:src="@drawable/separator" />
 
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/doc_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/preview_your_document"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/_18ssp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_50sdp"
             android:gravity="center_horizontal|center_vertical"
             android:padding="@dimen/_10sdp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="@dimen/_310sdp"
+            <ImageView
+                android:id="@+id/document_preview"
+                android:layout_width="@dimen/_290sdp"
+                android:scaleType="fitCenter"
                 android:layout_height="@dimen/_195sdp"
-                android:layout_margin="@dimen/_5sdp"
-                android:elevation="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_20sdp">
-
-                <ImageView
-                    android:id="@+id/document_preview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:layout_centerInParent="true"
-                    android:background="@color/white_overlay" />
-            </androidx.cardview.widget.CardView>
-
+                android:adjustViewBounds="true"
+                android:background="@drawable/round_image" />
         </LinearLayout>
 
-    </LinearLayout>
+\
 
     <View
         android:layout_weight="1"
@@ -81,18 +55,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_15sdp"
             android:layout_marginEnd="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_25sdp"
             android:gravity="center"
             android:text="@string/text_id_is_clear"
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/_13ssp" />
+            android:textSize="@dimen/_11ssp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:orientation="horizontal">
 
             <View
@@ -100,15 +74,12 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageView
                 android:id="@+id/back"
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
-                android:background="@drawable/action_camera"
-                android:drawableStart="@drawable/close_icon"
-                android:drawableTint="#696969"
-                android:paddingStart="@dimen/_12sdp"
+                android:src="@drawable/material_close_icon"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -116,14 +87,11 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageView
                 android:id="@+id/continue_id"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:background="@drawable/circle_green"
-                android:drawableStart="@drawable/material_check_icon"
-                android:drawableTint="@color/white_overlay"
-                android:paddingStart="@dimen/_13sdp"
+                android:src="@drawable/material_check_icon"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -131,15 +99,12 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageView
                 android:id="@+id/retake"
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
-                android:background="@drawable/action_camera"
-                android:drawableStart="@drawable/retake_icon"
-                android:drawableTint="#696969"
-                android:paddingStart="@dimen/_12sdp"
+                android:src="@drawable/material_retry_icon"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -153,7 +118,7 @@
             android:layout_width="@dimen/_100sdp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
             android:contentDescription="@string/powered_by_nebuia"
             android:src="@drawable/nebuia_white" />
 

@@ -16,7 +16,7 @@
     <string name="proof_of_live_running">Ralizando prueba de vida</string>
     <string name="proof_of_live_description">Ralizaremos la prueba de vida.\nColoca tu rostro en el área marcada</string>
     <string name="camera_persmission">Necesitamos persmiso para acceder a la cámara</string>
-    <string name="set_front_id">Coloca la parte %1$s de tu documento y\npresiona el boton blanco para capturar</string>
+    <string name="set_front_id">Ten a la mano la parte %1$s de tu documento y presiona el iniciar verificacion.</string>
     <string name="side_front_id">&#160;frontal&#160;</string>
     <string name="side_back_id">&#160;trasera&#160;</string>
     <!-- document types -->
@@ -28,7 +28,7 @@
     <string name="put_your_hand">Coloca tus dedos frente a la cámara, enfocando tus huellas dactilares hasta llenar la barra inferior a color verde.</string>
     <string name="fingerprint_title">Huella dactilar</string>
     <string name="preview_your_document">Previsualiza tu documento</string>
-    <string name="text_id_is_clear">Revisa que el textro de tu documento se vea completamente además de que sea claro y legible</string>
+    <string name="text_id_is_clear">Revisa que el texto de tu documento se vea completamente además de que sea claro y legible.</string>
     <string name="yes_continue">Si, continuar</string>
     <string name="retake_image">Capturar Nuevamente</string>
     <string name="id_document">Documento Identidad</string>
@@ -39,7 +39,7 @@
     <string name="record_summary">A continuación, al detectar tu rostro grabaremos un clip de video de <b>20 segundos como evidencia</b>, deberás leer el texto en pantalla.</string>
     <string name="time_schedule">back_flow</string>
     <string name="address_proof">Comprobante de domicilio</string>
-    <string name="address_summary">Captura una images de tu comprobante de domicilio donde sea visible tu dirección</string>
+    <string name="address_summary">Captura una imagen de tu comprobante de domicilio donde sea visible tu dirección</string>
     <string name="address_summary_preview">Tu dirección deberá estar presente en la primer hoja, por favor verifica que sea legible</string>
     <string name="fingerprint_title_preview">Análisis de huellas</string>
     <string name="success_fingerprint">Tus huellas han sido capturadas</string>
@@ -88,4 +88,8 @@
     <string name="com_distbit_nebuia_plugin">com.distbit.nebuia_plugin</string>
     <string name="application_pdf">application/pdf</string>
     <string name="id_capture_option">Selecciona una opción para capturar tu documento de identidad</string>
+    <string name="id_title">A continuacion deberas capturar\ntu documento de identidad</string>
+    <string name="extract_id">Recortaremos tu documento automaticamente.</string>
+    <string name="init_verification">Iniciar Verificacion</string>
+    <string name="check_icon">check_icon</string>
 </resources>

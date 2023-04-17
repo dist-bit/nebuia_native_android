@@ -104,14 +104,11 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageView
                 android:id="@+id/continue_upload"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:background="@drawable/circle_green"
-                android:drawableStart="@drawable/material_check_icon"
-                android:drawableTint="@color/white_overlay"
-                android:paddingStart="@dimen/_14sdp"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_55sdp"
+                android:src="@drawable/material_check_icon"
                 tools:ignore="RtlSymmetry" />
 
             <View

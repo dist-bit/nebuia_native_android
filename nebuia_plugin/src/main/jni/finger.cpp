@@ -43,8 +43,7 @@ Java_com_distbit_nebuia_1plugin_core_Finger_Init(JNIEnv *env, jobject, jobject a
 
     if (Finger::quality == nullptr) {
         AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
-       // Finger::quality = new Quality(mgr, "det4.param", "det4.bin");
-        Finger::quality = new Quality(mgr, "quality.param", "quality.bin");
+       Finger::quality = new Quality(mgr, "det4.param", "det4.bin");
     }
 
     // init jni glue

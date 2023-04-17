@@ -17,22 +17,22 @@
         android:layout_marginBottom="@dimen/_10sdp"
         android:text="@string/fingerprint_title_preview"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="#2B303D"
         android:textSize="@dimen/_16ssp" />
 
     <LinearLayout
-        android:layout_marginTop="@dimen/_10sdp"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/index"
@@ -40,28 +40,28 @@
                 android:layout_height="@dimen/_70sdp" />
 
             <TextView
-                android:layout_marginTop="@dimen/_4sdp"
-                android:gravity="center"
                 android:id="@+id/index_nfiq"
-                android:textSize="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="@color/nebuia_bg" />
+                android:textColor="@color/nebuia_bg"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="@dimen/_25sdp"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp" />
 
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/middle"
@@ -69,30 +69,30 @@
                 android:layout_height="@dimen/_70sdp" />
 
             <TextView
-                android:layout_marginTop="@dimen/_4sdp"
-                android:gravity="center"
                 android:id="@+id/middle_nfiq"
                 android:layout_width="match_parent"
-                android:textSize="@dimen/_10sdp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="@color/nebuia_bg" />
+                android:textColor="@color/nebuia_bg"
+                android:textSize="@dimen/_10sdp" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/_10sdp"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/ring"
@@ -100,28 +100,28 @@
                 android:layout_height="@dimen/_70sdp" />
 
             <TextView
-                android:layout_marginTop="@dimen/_4sdp"
-                android:gravity="center"
                 android:id="@+id/ring_nfiq"
-                android:textSize="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="@color/nebuia_bg" />
+                android:textColor="@color/nebuia_bg"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="30dp"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp" />
 
 
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/little"
@@ -129,14 +129,14 @@
                 android:layout_height="@dimen/_70sdp" />
 
             <TextView
-                android:layout_marginTop="@dimen/_4sdp"
-                android:gravity="center"
                 android:id="@+id/little_nfiq"
-                android:textSize="@dimen/_10sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="@color/nebuia_bg" />
+                android:textColor="@color/nebuia_bg"
+                android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
 
@@ -144,75 +144,91 @@
 
     <LinearLayout
         android:id="@+id/actions"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"  >
-
-    <Button
-        android:id="@+id/icon_status"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_35sdp"
-        android:layout_gravity="center"
-        android:background="@drawable/circle_green"
-        android:drawableStart="@drawable/material_check_icon"
-        android:layout_marginTop="15dp"
-        android:drawableTint="@color/white_overlay"
-        android:elevation="@dimen/_10sdp"
-        android:paddingStart="@dimen/_7sdp"
-        tools:ignore="RtlSymmetry" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="@string/success_fingerprint"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/_13ssp" />
-
-    <TextView
-        android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
-        android:gravity="center"
-        android:text="@string/success_fingerprint_summary"
-        android:textAlignment="center"
-        android:textColor="#7d82a8"
-        android:textSize="@dimen/_12ssp" />
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_12sdp"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/continue_fingers"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:background="@drawable/button_rounded"
-            android:text="@string/continue_button"
-            android:textAllCaps="false"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/icon_status_check"
+                android:layout_width="@dimen/_38sdp"
+                android:layout_height="@dimen/_38sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/check_icon"
+                android:src="@drawable/material_check_icon"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/icon_status_error"
+                android:layout_width="@dimen/_38sdp"
+                android:layout_height="@dimen/_38sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/check_icon"
+                android:src="@drawable/material_error_icon"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/title_finger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/success_fingerprint"
+            android:textColor="#2B303D"
             android:textSize="@dimen/_13ssp" />
 
-        <!-- <Button
-            android:id="@+id/retake_finger"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="@dimen/width_button"
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/logo_margin_bottom"
-            android:background="@color/white_overlay"
-            android:text="@string/capture_fingers"
-            android:textAllCaps="false"
-            android:textColor="#7d82a8"
-            android:textSize="@dimen/subtitle_size" /> -->
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:gravity="center"
+            android:text="@string/success_fingerprint_summary"
+            android:textAlignment="center"
+            android:textColor="#6A6E78"
+            android:textSize="@dimen/_12ssp" />
 
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/continue_fingers"
+                android:layout_width="335dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button"
+                android:text="@string/continue_button"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
+
+            <!-- <Button
+                android:id="@+id/retake_finger"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="@dimen/width_button"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/logo_margin_bottom"
+                android:background="@color/white_overlay"
+                android:text="@string/capture_fingers"
+                android:textAllCaps="false"
+                android:textColor="#7d82a8"
+                android:textSize="@dimen/subtitle_size" /> -->
+
+        </LinearLayout>
     </LinearLayout>
 
     <View

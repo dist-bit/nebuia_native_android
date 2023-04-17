@@ -19,9 +19,9 @@ public:
 
 private:
     ncnn::Net *Net;
-    int target_size = 224;
-    const float mean_values[3] = {123.675f, 116.28f, 103.53};
-    const float norm_values[3] = {1.0f / 58.395f, 1.0f / 57.12f, 1.0f / 57.375f};
+    int target_size = 320;
+    const float mean_values[3] = {127.5f, 127.5f, 127.5f};
+    const float norm_values[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
 
     ncnn::UnlockedPoolAllocator blob_pool_allocator;
     ncnn::PoolAllocator workspace_pool_allocator;

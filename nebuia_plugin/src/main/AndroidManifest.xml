@@ -33,8 +33,9 @@
         <activity
             android:name=".activities.IDCaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fingerprint_preview"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoDisplay" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".activities.CaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

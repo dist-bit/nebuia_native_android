@@ -167,7 +167,7 @@ class NebuIA(private var context: Activity) {
         context.startActivity(
             Intent(context, IDCaptureActivity::class.java)
         )
-        context.overridePendingTransition(0, 0);
+        //context.overridePendingTransition(0, 0);
     }
 
     /**

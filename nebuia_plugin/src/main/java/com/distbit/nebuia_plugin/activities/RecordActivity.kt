@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -42,8 +43,8 @@ class RecordActivity : AppCompatActivity() {
     private lateinit var summary: TextView
     private var readText: TextView? = null
 
-    private lateinit var record: Button
-    private lateinit var recordDone: Button
+    private lateinit var record: ImageView
+    private lateinit var recordDone: ImageView
 
     private var camera: CameraView? = null
 

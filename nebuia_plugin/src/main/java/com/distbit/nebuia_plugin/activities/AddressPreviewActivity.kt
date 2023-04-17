@@ -28,7 +28,7 @@ class AddressPreviewActivity : AppCompatActivity() {
 
     private lateinit var close: Button
     private lateinit var retake: Button
-    private lateinit var upload: Button
+    private lateinit var upload: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

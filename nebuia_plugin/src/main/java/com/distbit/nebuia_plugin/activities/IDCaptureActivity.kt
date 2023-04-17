@@ -6,15 +6,25 @@ import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
+import com.distbit.nebuia_plugin.model.Documents
+import com.distbit.nebuia_plugin.model.Side
+import com.distbit.nebuia_plugin.utils.SpanFormatter
 import com.distbit.nebuia_plugin.utils.Utils.Companion.correctOrientation
 import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -26,86 +36,99 @@ import java.io.File
 
 class IDCaptureActivity : AppCompatActivity() {
 
-    /*private val uiScope = CoroutineScope(Dispatchers.Main)
-
-    private lateinit var camera: CameraView
-    private lateinit var summarySide: TextView
     private lateinit var title: TextView
+    private lateinit var summary: TextView
     private lateinit var capture: Button
-
-    private var documents: Documents = Documents
+    private lateinit var back: Button
+    private lateinit var icon: ImageView
 
     private lateinit var mxIDFront: String
     private lateinit var mxIDBack: String
     private lateinit var mxPassportFront: String
+    private var documents: Documents = Documents
 
-    private lateinit var svProgressHUD: ProgressHUD */
+    private lateinit var frontIcon: Bitmap
+    private lateinit var backIcon: Bitmap
 
     /**
      * @dev onCreate default android life cycle
      * init listeners for camera frames
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        /*super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_scanner)
-        //window.hideSystemUI()
-        window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window?.statusBarColor = this.getColor(android.R.color.transparent)
-        window?.navigationBarColor = this.getColor(R.color.nebuia_bg)
-
-        camera = findViewById(R.id.camera)
-        summarySide = findViewById(R.id.summary_side)
-        title = findViewById(R.id.title)
-        capture = findViewById(R.id.capture)
-
-        findViewById<Button>(R.id.back).setOnClickListener {
-            super.onBackPressed()
-        }
-
-        svProgressHUD = ProgressHUD(this)
-
-        fillData()
-        setUpCamera(camera)
-        setFonts() */
-
         super.onCreate(savedInstanceState)
 
+        window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window?.statusBarColor = this.getColor(android.R.color.transparent)
+        window?.navigationBarColor = this.getColor(android.R.color.transparent)
+
+        setContentView(R.layout.activity_scanner)
+
+        title = findViewById(R.id.instruction_id)
+        summary = findViewById(R.id.subtitle_id)
+        capture = findViewById(R.id.capture)
+        icon = findViewById(R.id.id_icon)
+        back = findViewById(R.id.back)
+
+        frontIcon = BitmapFactory.decodeResource(resources, R.drawable.ic_id_front)
+        backIcon = BitmapFactory.decodeResource(resources, R.drawable.ic_id_back)
+
+        setFonts()
+        fillData()
+        setUpColors()
+
+        IDCaptureActivity.act = this
+
+        capture.setOnClickListener {
+            openDialog()
+        }
+
+        back.setOnClickListener {
+            this.finish()
+        }
+    }
+
+    /**
+     * @dev set colors to components
+     */
+    private fun setUpColors() {
+        NebuIA.theme.setUpButtonPrimaryTheme(capture, this)
+    }
+
+    private fun openDialog() {
         idFragment = IDFragment.newInstance()
         idFragment.show(supportFragmentManager, idFragment.tag)
-        IDCaptureActivity.act = this
     }
 
     /**
      * @dev set up data for detections
      */
-    /*fun fillData() {
+    fun fillData() {
         fillLabels()
         setSummarySide()
-    } */
+    }
 
     /**
      * @dev set up fill document labels
      */
-    /*private fun fillLabels() {
+    private fun fillLabels() {
         mxIDFront = getString(R.string.mx_id_front)
         mxIDBack = getString(R.string.mx_id_back)
         mxPassportFront = getString(R.string.mx_passport_front)
-    } */
+    }
 
     /**
      * @dev apply fonts from NebuIA theme
      */
-    /*private fun setFonts() {
+    private fun setFonts() {
         NebuIA.theme.applyBoldFont(title)
-        NebuIA.theme.applyNormalFont(summarySide)
-    } */
+        NebuIA.theme.applyNormalFont(summary)
+    }
 
     /**
      * @dev set title depending of current
      * step [front/back/passport]
      */
-    /*private fun setSummarySide() {
+    private fun setSummarySide() {
         val spanned1 = SpannableString(getString(R.string.set_front_id))
 
         val spanned2: SpannableString = if (documents.side() == Side.FRONT) {
@@ -114,40 +137,18 @@ class IDCaptureActivity : AppCompatActivity() {
             SpannableString(getString(R.string.side_back_id))
         }
 
-        spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#1a8ed0")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanned2.setSpan(StyleSpan(Typeface.BOLD), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        summarySide.text = SpanFormatter.format( spanned1, spanned2)
-    } */
-
-    /**
-     * @dev set up camera for frame processing
-     * set image format and life cycle to activity
-     * @param camera - CameraView instance
-     */
-    /*private fun setUpCamera(camera: CameraView) {
-        camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
-        camera.setLifecycleOwner(this)
-        camera.exposureCorrection = 1F
-        camera.addCameraListener(object : CameraListener() {
-            override fun onPictureTaken(result: PictureResult) {
-                result.toBitmap {
-                    detectDocument(it!!)
-                }
+        icon.setImageBitmap(
+            if (documents.side() == Side.FRONT) {
+                frontIcon
+            } else {
+                backIcon
             }
-        })
+        )
 
-        capture.setOnClickListener{
-            capture.isEnabled = false
-            svProgressHUD.show()
-            camera.takePicture()
-        }
-    } */
-
-    /**
-     * @dev real time detect document
-     */
-    /*private fun finalize() =
-        PreviewDocument.newInstance().show(supportFragmentManager, PreviewDocument::class.java.canonicalName) */
+       // spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#1a8ed0")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanned2.setSpan(StyleSpan(Typeface.BOLD), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        summary.text = SpanFormatter.format( spanned1, spanned2)
+    }
 
     /**
      * @dev real time detect document
@@ -159,46 +160,17 @@ class IDCaptureActivity : AppCompatActivity() {
         finish()
     }
 
-    /**
-     * @dev real time detect document
-     * @param bitmap - Image frame from camera view
-     */
-    /*private fun detectDocument(bitmap: Bitmap) =
-        uiScope.launch {
-            val cropped = NebuIA.task.documentRealTimeDetection(bitmap)
-            svProgressHUD.dismiss()
-            capture.isEnabled = true
-            if(cropped != null) {
-                this@ScannerID.finalize()
-                /*val detection = detections[0]
-                if (docs.side == Side.FRONT) when (detection.label) {
-                    mxIDFront -> this@ScannerID.finalize()
-                    mxPassportFront -> this@ScannerID.finalize()
-                    else -> detect = false
-                } else when (detection.label) {
-                    mxIDBack -> this@ScannerID.finalize()
-                    else -> detect = false
-                } */
-            }
-            // re enable capture button
-        } */
-
     companion object {
-        lateinit var act: IDCaptureActivity
+        private lateinit var act: IDCaptureActivity
         lateinit var idFragment: IDFragment
 
-        fun close() {
-            act.onBackPressed();
-        }
+        fun close() = act.onBackPressed()
 
         /**
          * @dev preview id document
          */
-        fun finalize() {
-            val supportFragmentManager = act.supportFragmentManager
-            PreviewDocument.newInstance()
-                .show(supportFragmentManager, PreviewDocument::class.java.canonicalName)
-        }
+        fun finalize() = PreviewDocument.newInstance()
+            .show(act.supportFragmentManager, PreviewDocument::class.java.canonicalName)
 
         fun hideDialog() = idFragment.dismiss()
     }
@@ -218,7 +190,6 @@ class IDFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        IDCaptureActivity.close()
         super.onCancel(dialog)
     }
 
@@ -257,9 +228,7 @@ class IDFragment : BottomSheetDialogFragment() {
         val view = inflater.inflate(R.layout.menu_capture_camera, container, false)
         val camera = view.findViewById<LinearLayout>(R.id.camera)
         svProgressHUD = ProgressHUD(activity)
-
         camera.setOnClickListener { pickCameraFile() }
-
         return view
     }
 
