@@ -88,8 +88,8 @@
     <string name="com_distbit_nebuia_plugin">com.distbit.nebuia_plugin</string>
     <string name="application_pdf">application/pdf</string>
     <string name="id_capture_option">Selecciona una opción para capturar tu documento de identidad</string>
-    <string name="id_title">A continuacion deberas capturar\ntu documento de identidad</string>
-    <string name="extract_id">Recortaremos tu documento automaticamente.</string>
-    <string name="init_verification">Iniciar Verificacion</string>
+    <string name="id_title">A continuación deberas capturar\ntu documento de identidad</string>
+    <string name="extract_id">Recortaremos tu documento automáticamente.</string>
+    <string name="init_verification">Iniciar Verificación</string>
     <string name="check_icon">check_icon</string>
 </resources>
