@@ -16,7 +16,7 @@
     <string name="proof_of_live_running">Ralizando prueba de vida</string>
     <string name="proof_of_live_description">Ralizaremos la prueba de vida.\nColoca tu rostro en el área marcada</string>
     <string name="camera_persmission">Necesitamos persmiso para acceder a la cámara</string>
-    <string name="set_front_id">Ten a la mano la parte %1$s de tu documento y presiona el iniciar verificacion.</string>
+    <string name="set_front_id">Ten a la mano la parte %1$s de tu documento y presiona el botón iniciar verificación.</string>
     <string name="side_front_id">&#160;frontal&#160;</string>
     <string name="side_back_id">&#160;trasera&#160;</string>
     <!-- document types -->
