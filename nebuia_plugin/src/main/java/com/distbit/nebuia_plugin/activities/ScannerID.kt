@@ -165,16 +165,6 @@ class ScannerID : AppCompatActivity() {
             capture.isEnabled = true
             if(cropped != null) {
                 this@ScannerID.finalize()
-                /*val detection = detections[0]
-                if (docs.side == Side.FRONT) when (detection.label) {
-                    mxIDFront -> this@ScannerID.finalize()
-                    mxPassportFront -> this@ScannerID.finalize()
-                    else -> detect = false
-                } else when (detection.label) {
-                    mxIDBack -> this@ScannerID.finalize()
-                    else -> detect = false
-                } */
             }
-            // re enable capture button
         }
 }
