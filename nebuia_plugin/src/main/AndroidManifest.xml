@@ -17,7 +17,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.distbit.nebuia_plugin"
+            android:authorities="${applicationId}.nebuia_plugin"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
