@@ -48,7 +48,7 @@ Java_com_distbit_nebuia_1plugin_core_Id_Init(JNIEnv *env, jobject, jobject asset
     }
 
     if (Id::extractor == nullptr) {
-        Id::extractor = new DocumentExtractor(mgr, "cropper.param", "cropper.bin");
+        Id::extractor = new DocumentExtractor(mgr, "det5.param", "det5.bin");
     }
 /*
     // init jni glue
