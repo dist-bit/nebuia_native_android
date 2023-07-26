@@ -1,6 +1,7 @@
 package com.distbit.nebuia_plugin.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -158,7 +159,7 @@ class AddressFragment : BottomSheetDialogFragment() {
 
         return FileProvider.getUriForFile(
             this.requireContext(),
-            "com.distbit.nebuia_plugin",
+            "${this.requireContext().packageName}.nebuia_plugin",
             tmpFile
         )
     }

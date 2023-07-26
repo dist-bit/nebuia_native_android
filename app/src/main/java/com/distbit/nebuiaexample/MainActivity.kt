@@ -42,6 +42,7 @@ class MainActivity : Activity() {
         val spoof = findViewById<Button>(R.id.spoofing)
         val id = findViewById<Button>(R.id.id_scanner)
         val fingerprints = findViewById<Button>(R.id.fingerprints)
+        val address = findViewById<Button>(R.id.address)
 
         id.setOnClickListener {
             nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
@@ -59,6 +60,10 @@ class MainActivity : Activity() {
 
         spoof.setOnClickListener {
             nebuIA.faceLiveDetection(true, onFaceComplete = {})
+        }
+
+        address.setOnClickListener {
+            nebuIA.captureAddress(onAddressComplete = {})
         }
     }
 
