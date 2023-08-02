@@ -78,10 +78,10 @@ Java_com_distbit_nebuia_1plugin_core_Id_Detect(JNIEnv *env, jobject thiz, jobjec
         cv::Mat input = Utils::transformMat(env, bitmap);
 
         cv::Point2f Points[4] = {
+                cv::Point2f(items[0].pts[3].x, items[0].pts[3].y),
+                cv::Point2f(items[0].pts[2].x, items[0].pts[2].y),
                 cv::Point2f(items[0].pts[0].x, items[0].pts[0].y),
                 cv::Point2f(items[0].pts[1].x, items[0].pts[1].y),
-                cv::Point2f(items[0].pts[2].x, items[0].pts[2].y),
-                cv::Point2f(items[0].pts[3].x, items[0].pts[3].y),
 
         };
 

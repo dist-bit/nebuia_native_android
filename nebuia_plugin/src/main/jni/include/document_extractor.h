@@ -43,8 +43,8 @@ private:
     ncnn::UnlockedPoolAllocator blob_pool_allocator;
     ncnn::PoolAllocator workspace_pool_allocator;
 
-    float prob_threshold = 0.35f;
-    float nms_threshold = 0.55f;
+    float prob_threshold = 0.4f;
+    float nms_threshold = 0.6f;
 };
 
 #endif //NEBUIA_DOCUMENT_H

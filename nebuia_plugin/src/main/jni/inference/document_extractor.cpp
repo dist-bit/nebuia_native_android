@@ -203,14 +203,6 @@ DocumentExtractor::DocumentExtractor(AAssetManager *mgr, const char *param, cons
     ncnn::Option opt;
     ncnn::set_omp_num_threads(ncnn::get_big_cpu_count());
 
-    opt.use_fp16_arithmetic = true;
-    opt.use_bf16_storage = true;
-    opt.use_packing_layout = true;
-
-    opt.use_winograd23_convolution = true;
-    opt.use_winograd43_convolution = true;
-    opt.use_winograd63_convolution = true;
-
     opt.blob_allocator = &blob_pool_allocator;
     opt.workspace_allocator = &workspace_pool_allocator;
     Net->opt = opt;
@@ -254,7 +246,6 @@ DocumentExtractor::detect(JNIEnv *env, jobject bitmap, std::vector<Doc>& objects
     in_pad.substract_mean_normalize(0, norm_vals);
 
     ncnn::Extractor ex = Net->create_extractor();
-    //ex.set_num_threads(ncnn::get_big_cpu_count());
 
     ex.input("data", in_pad);
 
@@ -336,7 +327,7 @@ DocumentExtractor::detect(JNIEnv *env, jobject bitmap, std::vector<Doc>& objects
         float x1 = (a.rect.x + a.rect.width - (wpad / 2)) / scale;
         float y1 = (a.rect.y + a.rect.height - (hpad / 2)) / scale;
 
-        a.pts.erase(a.pts.begin() + 2);
+        a.pts.erase(a.pts.begin() + 4);
 
         for (auto & pt : a.pts)
         {
