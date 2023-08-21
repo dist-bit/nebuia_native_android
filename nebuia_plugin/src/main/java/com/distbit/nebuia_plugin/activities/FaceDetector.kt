@@ -164,7 +164,7 @@ class FaceDetector : AppCompatActivity() {
                 if (detections.isNotEmpty()) {
                     // get face quality
                     val qua = NebuIA.task.qualityFace(bitmap)
-                    if (qua > 68) {
+                    if (qua > 70) {
                         camera.takePicture()
                     } else {
                         // play warning sound

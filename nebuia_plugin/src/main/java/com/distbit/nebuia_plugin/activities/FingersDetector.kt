@@ -41,7 +41,7 @@ class FingersDetector : AppCompatActivity() {
 
     private lateinit var qualityBar: ProgressBar
 
-    private var quality: Float = 8f
+    private var quality: Float = 14f
     private var maxSizeFingers: Int = 2
 
     private val timer = object : CountDownTimer(50000, 1000) {

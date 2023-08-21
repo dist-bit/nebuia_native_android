@@ -8,7 +8,6 @@ import android.os.Environment
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -35,15 +34,14 @@ class RecordActivity : AppCompatActivity() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    private var doneLayout: LinearLayout? = null
-    private lateinit var zone: RelativeLayout
+    //private var doneLayout: LinearLayout? = null
+    private lateinit var zone: LinearLayout
 
     private var title: TextView? = null
     private lateinit var summary: TextView
     private var readText: TextView? = null
 
-    private lateinit var record: Button
-    private lateinit var recordDone: Button
+    private lateinit var continueText: Button
 
     private var camera: CameraView? = null
 
@@ -62,28 +60,21 @@ class RecordActivity : AppCompatActivity() {
         window.hideSystemUI()
 
         camera = findViewById(R.id.camera)
-        val back: Button = findViewById(R.id.back)
+        //val back: Button = findViewById(R.id.back)
 
-        doneLayout = findViewById(R.id.done)
+        //doneLayout = findViewById(R.id.done)
 
         title = findViewById(R.id.title)
         summary = findViewById(R.id.summary)
-
         readText = findViewById(R.id.read_text)
-        record = findViewById(R.id.record)
-        recordDone = findViewById(R.id.record_done)
-
         zone = findViewById(R.id.zone)
+        continueText = findViewById(R.id.continue_text)
 
         suffixText = intent!!.getStringArrayListExtra("text_to_load")!!
         permission()
 
-        back.setOnClickListener { back() }
-        record.setOnClickListener {
-            parseText()
-        }
-
-        recordDone.setOnClickListener {
+        //back.setOnClickListener { back() }
+        continueText.setOnClickListener {
             parseText()
         }
 
@@ -91,13 +82,15 @@ class RecordActivity : AppCompatActivity() {
 
         setFonts()
         setUpCamera(camera!!)
+
+        if(suffixText.size == 1) {
+            continueText.text = getString(R.string.done_image)
+        }
     }
 
     private fun parseText() {
-
         if(suffixText.size == currentTextPosition + 2) {
-            record.visibility = View.INVISIBLE
-            recordDone.visibility = View.VISIBLE
+            continueText.text = getString(R.string.done_image)
         }
 
         if(suffixText.size != currentTextPosition + 1) {
@@ -106,12 +99,8 @@ class RecordActivity : AppCompatActivity() {
         } else {
             lectureComplete = true
             zone.visibility = View.INVISIBLE
-            record.visibility = View.INVISIBLE
-            recordDone.visibility = View.INVISIBLE
-            //summary.text =
-            //    "Por favor coloca la parte frontal de tu documento de identidad frente a la cámara"
+            continueText.visibility = View.GONE
             timer.schedule(timerTask {
-                //ineBack = true
                 camera!!.stopVideo()
             }, 1000)
         }
@@ -164,12 +153,15 @@ class RecordActivity : AppCompatActivity() {
         NebuIA.theme.applyBoldFont(title!!)
         NebuIA.theme.applyNormalFont(summary)
         NebuIA.theme.applyNormalFont(readText!!)
+        setUpColors()
     }
 
     /**
-     * @dev return to previous activity
+     * @dev set colors to components
      */
-    private fun back() = this.finish()
+    private fun setUpColors() {
+        NebuIA.theme.setUpButtonPrimaryTheme(continueText, this)
+    }
 
     /**
      * @dev set up camera for frame processing
@@ -197,7 +189,7 @@ class RecordActivity : AppCompatActivity() {
 
             override fun onVideoRecordingStart() {
                 zone.visibility = View.VISIBLE
-                record.visibility = View.VISIBLE
+                continueText.visibility = View.VISIBLE
             }
 
             override fun onVideoRecordingEnd() {

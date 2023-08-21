@@ -9,20 +9,20 @@ import com.distbit.nebuia_plugin.R
 
 data class Theme(
     // color configuration
-    var primaryColor: Int = 0xff27ae60.toInt(),
+    var primaryColor: Int = 0xff734FD9.toInt(),
     var secondaryColor: Int = 0xff0C1243.toInt(),
     // text color
     var primaryTextButtonColor: Int = 0xff27ae60.toInt(),
     var secondaryTextButtonColor: Int = 0xff0C1243.toInt(),
-    var buttonDrawable: Int = R.drawable.button_rounded,
+    var buttonDrawable: Int = R.drawable.button,
     // fonts
     var boldFont: Typeface? = null,
     var normalFont: Typeface? = null,
     var thinFont: Typeface? = null
 ) {
     fun applyBoldFont(textView: TextView) {
-        //textView.setTypeface(null, Typeface.BOLD);
-        //if (this.boldFont != null) textView.typeface = this.boldFont
+        textView.setTypeface(null, Typeface.BOLD);
+        if (this.boldFont != null) textView.typeface = this.boldFont
     }
 
     fun applyNormalFont(textView: TextView) {

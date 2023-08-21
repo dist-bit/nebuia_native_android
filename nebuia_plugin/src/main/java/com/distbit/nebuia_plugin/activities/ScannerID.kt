@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.WindowManager
 import android.widget.Button
@@ -111,6 +112,7 @@ class ScannerID : AppCompatActivity() {
 
         spanned2.setSpan(BackgroundColorSpan(Color.parseColor("#1a8ed0")), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanned2.setSpan(StyleSpan(Typeface.BOLD), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spanned2.setSpan(ForegroundColorSpan(Color.WHITE), 0, spanned2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         summarySide.text = SpanFormatter.format( spanned1, spanned2)
     }
 

@@ -22,8 +22,8 @@ class UploadActivity : AppCompatActivity() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private lateinit var loading: LinearLayout
 
-    private lateinit var title: TextView
-
+    private lateinit var titleSummaryOk: TextView
+    private lateinit var titleSummaryError: TextView
     private lateinit var errorDescription: TextView
 
     private lateinit var successUpload: LinearLayout
@@ -44,8 +44,8 @@ class UploadActivity : AppCompatActivity() {
         setContentView(R.layout.activity_upload)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val front: ImageView = findViewById(R.id.document_front_preview)
-        val back: ImageView = findViewById(R.id.document_back_preview)
+        //val front: ImageView = findViewById(R.id.document_front_preview)
+        //val back: ImageView = findViewById(R.id.document_back_preview)
 
         loading = findViewById(R.id.loading)
 
@@ -55,7 +55,8 @@ class UploadActivity : AppCompatActivity() {
         errorUpload = findViewById(R.id.error_id)
         continueError = findViewById(R.id.continue_error)
 
-        title = findViewById(R.id.doc_type)
+        titleSummaryOk = findViewById(R.id.title_summary_ok)
+        titleSummaryError = findViewById(R.id.title_summary_error)
         errorDescription = findViewById(R.id.error_description)
 
         continueSuccess.setOnClickListener {
@@ -71,16 +72,11 @@ class UploadActivity : AppCompatActivity() {
             finish()
         }
 
-        if (documents.frontImage() != null)
-            front.setImageBitmap(documents.frontImage())
-
-        if (documents.backImage() != null)
-            back.setImageBitmap(documents.backImage())
-
         setFonts()
         setUpColors()
         upload()
         windowFeatures()
+
 
     }
 
@@ -93,7 +89,8 @@ class UploadActivity : AppCompatActivity() {
      * @dev apply fonts from NebuIA theme
      */
     private fun setFonts() {
-        NebuIA.theme.applyBoldFont(title)
+        NebuIA.theme.applyBoldFont(titleSummaryOk)
+        NebuIA.theme.applyBoldFont(titleSummaryError)
     }
 
     /**
@@ -102,7 +99,6 @@ class UploadActivity : AppCompatActivity() {
     private fun setUpColors() {
         NebuIA.theme.setUpButtonPrimaryTheme(continueSuccess, this)
         NebuIA.theme.setUpButtonPrimaryTheme(continueError, this)
-        //NebuIA.theme.setUpButtonSecondaryTheme(retake, this)
     }
 
     /**

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,12 +19,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class PreviewDocument : BottomSheetDialogFragment() {
 
-    private lateinit var docType: TextView
+    //private lateinit var docType: TextView
     private lateinit var summary: TextView
     private lateinit var preview: ImageView
-    private lateinit var retake: Button
-    private lateinit var continueID: Button
-    private lateinit var close: Button
+    private lateinit var retake: ImageView
+    private lateinit var continueID: ImageView
+    private lateinit var close: ImageView
 
     private var documents: Documents = Documents
 
@@ -41,7 +40,7 @@ class PreviewDocument : BottomSheetDialogFragment() {
         val view: View = inflater.inflate(R.layout.activity_preview_document, container, false)
 
         preview = view.findViewById(R.id.document_preview)
-        docType = view.findViewById(R.id.doc_type)
+        //docType = view.findViewById(R.id.doc_type)
         summary = view.findViewById(R.id.summary)
         retake = view.findViewById(R.id.retake)
         continueID = view.findViewById(R.id.continue_id)
@@ -98,10 +97,7 @@ class PreviewDocument : BottomSheetDialogFragment() {
      * @dev apply fonts from NebuIA theme
      */
     private fun setFonts() {
-        NebuIA.theme.applyBoldFont(docType)
         NebuIA.theme.applyNormalFont(summary)
-        NebuIA.theme.applyNormalFont(continueID)
-        NebuIA.theme.applyNormalFont(retake)
     }
 
     /**
@@ -132,12 +128,13 @@ class PreviewDocument : BottomSheetDialogFragment() {
 
     fun setImage() {
         preview.setImageBitmap(documents.getPreview())
+       // preview.setBackgroundResource(R.drawable.round_image);
     }
 
     /**
      * @dev set label for document type
      */
     private fun setType() {
-        docType.text = documents.getLabel()
+        // docType.text = documents.getLabel()
     }
 }

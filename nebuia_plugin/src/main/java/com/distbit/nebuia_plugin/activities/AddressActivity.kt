@@ -89,7 +89,6 @@ class AddressFragment : BottomSheetDialogFragment() {
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
                 latestTmpUri?.let { uri ->
-                    val path =  uri.path!!
                     val bitmap: Bitmap =
                         MediaStore.Images.Media.getBitmap(
                             requireContext().contentResolver,

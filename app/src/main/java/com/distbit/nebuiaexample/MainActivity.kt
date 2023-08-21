@@ -16,8 +16,8 @@ class MainActivity : Activity() {
         val nebuIA = NebuIA(this)
         // SET THEME
         NebuIA.theme = Theme(
-            primaryColor = 0xff2886de.toInt(),
-            secondaryColor = 0xffffffff.toInt(),
+            //primaryColor = 0xff2886de.toInt(),
+            //secondaryColor = 0xffffffff.toInt(),
             primaryTextButtonColor = 0xffffffff.toInt(),
             secondaryTextButtonColor = 0xff904afa.toInt(),
             //boldFont = ResourcesCompat.getFont(this, R.font.gilroy_bold),
@@ -43,9 +43,16 @@ class MainActivity : Activity() {
         val id = findViewById<Button>(R.id.id_scanner)
         val fingerprints = findViewById<Button>(R.id.fingerprints)
         val address = findViewById<Button>(R.id.address)
+        val video = findViewById<Button>(R.id.evidence)
 
         id.setOnClickListener {
+           // nebuIA.recordActivity(arrayListOf<String>("Yo miguel manifientso que pedi un credito a bancra", "Yo miguel angel sanche bravotesxto  manifientso que pedi un credito a bancra y estoy consiente de pagarlos todo y asi terminar mi prestamo  ien librado"),nameFromId = false, onRecordComplete = {} )
             nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
+        }
+
+        video.setOnClickListener {
+            nebuIA.recordActivity(arrayListOf<String>("Yo miguel manifientso que pedi un credito a bancra", "Yo miguel angel sanche bravotesxto  manifientso que pedi un credito a bancra y estoy consiente de pagarlos todo y asi terminar mi prestamo  ien librado"),nameFromId = false, onRecordComplete = {} )
+
         }
 
         fingerprints.setOnClickListener {

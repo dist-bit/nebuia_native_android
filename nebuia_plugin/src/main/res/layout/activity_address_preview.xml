@@ -93,8 +93,7 @@
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
-                android:background="@drawable/action_camera"
-                android:drawableStart="@drawable/close_icon"
+                android:background="@drawable/material_close_icon"
                 android:drawableTint="#696969"
                 android:paddingStart="@dimen/_11sdp"
                 tools:ignore="RtlSymmetry" />
@@ -104,14 +103,11 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageView
                 android:id="@+id/continue_upload"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:background="@drawable/circle_green"
-                android:drawableStart="@drawable/material_check_icon"
-                android:drawableTint="@color/white_overlay"
-                android:paddingStart="@dimen/_14sdp"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_55sdp"
+                android:src="@drawable/material_check_icon"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -124,8 +120,7 @@
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_gravity="center"
-                android:background="@drawable/action_camera"
-                android:drawableStart="@drawable/retake_icon"
+                android:background="@drawable/material_retry_icon"
                 android:drawableTint="#696969"
                 android:paddingStart="@dimen/_11sdp"
                 tools:ignore="RtlSymmetry" />

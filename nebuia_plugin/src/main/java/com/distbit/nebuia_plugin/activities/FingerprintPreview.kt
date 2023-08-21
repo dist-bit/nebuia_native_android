@@ -1,6 +1,7 @@
 package com.distbit.nebuia_plugin.activities
 
-import android.graphics.Bitmap
+import android.graphics.*
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
@@ -24,13 +24,19 @@ class FingerprintPreview : AppCompatActivity() {
 
     private lateinit var summary: TextView
     private lateinit var title: TextView
+    private lateinit var titleFinger: TextView
     private lateinit var actionsPanel: LinearLayout
 
-    private lateinit var statusIcon: Button
+    private lateinit var statusIconCheck: ImageView
+    private lateinit var statusIconError: ImageView
+
     private val fingers = NebuIA.task.fingers
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private lateinit var svProgressHUD: ProgressHUD
+
+    private lateinit var checkIcon: Bitmap
+    private lateinit var errorIcon: Bitmap
 
     /**
      * @dev onCreate default android life cycle
@@ -42,7 +48,9 @@ class FingerprintPreview : AppCompatActivity() {
         setContentView(R.layout.activity_fingerprint_preview)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        statusIcon = findViewById(R.id.icon_status)
+        statusIconCheck = findViewById(R.id.icon_status_check)
+        statusIconError = findViewById(R.id.icon_status_error)
+
         actionsPanel = findViewById(R.id.actions)
         actionsPanel.visibility = View.INVISIBLE
 
@@ -58,6 +66,7 @@ class FingerprintPreview : AppCompatActivity() {
 
         summary = findViewById(R.id.summary)
         title = findViewById(R.id.title)
+        titleFinger = findViewById(R.id.title_finger)
 
         setFonts()
         setUpColors()
@@ -69,7 +78,7 @@ class FingerprintPreview : AppCompatActivity() {
         ringFinger.setImageBitmap(fingers[2].image)
         littleFinger.setImageBitmap(fingers[3].image)
 
-       setUpNFIQ()
+        setUpNFIQ()
     }
 
     private fun setUpNFIQ() {
@@ -123,46 +132,34 @@ class FingerprintPreview : AppCompatActivity() {
 
     private fun unlockActions(score: Int) {
         actionsPanel.visibility = View.VISIBLE
-        if (score < 40) {
-            if(NebuIA.skipStep) {
-                continueFinger.text = getString(R.string.skip_fingerprints)
-                summary.text = resources.getString(R.string.skip_step_fingerprints)
-            } else {
-                continueFinger.text = getString(R.string.retry_fingerprints)
-                summary.text = resources.getString(R.string.skip_fingerprints_summary)
-            }
-            // icon
-            statusIcon.background = ResourcesCompat.getDrawable(resources, R.drawable.circle_red, null)
-            statusIcon.setCompoundDrawablesWithIntrinsicBounds(R.drawable.close_icon, 0, 0, 0);
 
+        val skipStep = NebuIA.skipStep
+        val successSummary = resources.getString(R.string.success_fingerprint_summary)
+        val skipSummary = resources.getString(R.string.skip_fingerprints_summary)
+        val skipButton = resources.getString(R.string.skip_fingerprints)
+        val retryButton = resources.getString(R.string.retry_fingerprints)
+        val continueButton = resources.getString(R.string.continue_button)
+
+        if (score < 40) {
+            continueFinger.text = if (skipStep) skipButton else retryButton
+            summary.text = skipSummary
+            statusIconError.visibility = View.VISIBLE
         } else {
-            continueFinger.text = resources.getString(R.string.continue_button)
-            summary.text = resources.getString(R.string.success_fingerprint_summary)
-            //
-            statusIcon.background = ResourcesCompat.getDrawable(resources, R.drawable.circle_green, null)
-            statusIcon.setCompoundDrawablesWithIntrinsicBounds(R.drawable.material_check_icon, 0, 0, 0);
+            continueFinger.text = continueButton
+            summary.text = successSummary
+            statusIconCheck.visibility = View.VISIBLE
         }
 
-        // if score is > 45 this is a correct quality
-        if (score < 40) {
-            continueFinger.setOnClickListener {
-                this@FingerprintPreview.finish()
+        continueFinger.setOnClickListener {
+            this@FingerprintPreview.finish()
+            if (score < 40) {
                 NebuIA.fingerSkipWithImages(fingers[0], fingers[1], fingers[2], fingers[3])
-            }
-
-            // set button text
-            if(NebuIA.skipStep) {
-                continueFinger.text = getString(R.string.skip_step_fingerprint)
             } else {
-                continueFinger.text = getString(R.string.retyr_step_fingerprint)
-            }
-        } else {
-            continueFinger.setOnClickListener {
-                this@FingerprintPreview.finish()
                 NebuIA.fingerComplete(fingers[0], fingers[1], fingers[2], fingers[3])
             }
         }
     }
+
 
     private fun windowFeatures() {
         window.navigationBarColor = resources.getColor(R.color.white_overlay)
@@ -174,9 +171,9 @@ class FingerprintPreview : AppCompatActivity() {
      */
     private fun setFonts() {
         NebuIA.theme.applyBoldFont(title)
-        NebuIA.theme.applyBoldFont(summary)
+        NebuIA.theme.applyBoldFont(titleFinger)
+        NebuIA.theme.applyNormalFont(summary)
         NebuIA.theme.applyNormalFont(continueFinger)
-        //NebuIA.theme.applyNormalFont(retake)
     }
 
     /**
@@ -184,7 +181,6 @@ class FingerprintPreview : AppCompatActivity() {
      */
     private fun setUpColors() {
         NebuIA.theme.setUpButtonPrimaryTheme(continueFinger, this)
-        //NebuIA.theme.setUpButtonSecondaryTheme(retake, this)
     }
 
     /**

@@ -34,6 +34,7 @@
     <string name="id_document">Documento de identidad</string>
     <string name="uploading_id">Subiendo tu ID</string>
     <string name="done_image">Finalizado</string>
+    <string name="next_item">Siguiente</string>
     <string name="press_button_recors">Presiona el botón para comenzar a grabar</string>
     <string name="evidence">Evidencia</string>
     <string name="record_summary">A continuación, al detectar tu rostro grabaremos un clip de video de <b>20 segundos como evidencia</b>, deberás leer el texto en pantalla.</string>
