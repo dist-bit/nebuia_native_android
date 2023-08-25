@@ -35,9 +35,6 @@ class FingerprintPreview : AppCompatActivity() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private lateinit var svProgressHUD: ProgressHUD
 
-    private lateinit var checkIcon: Bitmap
-    private lateinit var errorIcon: Bitmap
-
     /**
      * @dev onCreate default android life cycle
      * init listeners for camera frames
@@ -93,7 +90,10 @@ class FingerprintPreview : AppCompatActivity() {
             svProgressHUD.dismiss()
             setScoreOnNotNull(0, it)
             indexFingerNFIQ.text = getString(R.string.nfiq, it)
-            unlockActions(it)
+            runOnUiThread {
+                unlockActions(it)
+            }
+
         })
         getNFIQ(fingers[1].image, onScore = {
             setScoreOnNotNull(1, it)
