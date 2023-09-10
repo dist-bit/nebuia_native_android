@@ -1,10 +1,8 @@
 package com.distbit.nebuia_plugin.services
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.model.*
-import com.distbit.nebuia_plugin.model.sign.mapToSignURL
 import com.distbit.nebuia_plugin.utils.Utils.Companion.getJsonFromMap
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toArray
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toMap
@@ -31,6 +29,12 @@ class Client {
         .writeTimeout(70, TimeUnit.SECONDS)
         .readTimeout(70, TimeUnit.SECONDS)
         .build()
+
+    private fun JSONObject.jsonMediaType(): RequestBody {
+        return this.toString().toRequestBody(
+            "application/json; charset=utf-8".toMediaType()
+        )
+    }
 
     // build request
     private fun build(path: String, isSign: Boolean = false): Request.Builder {
@@ -254,10 +258,7 @@ class Client {
         Dispatchers.IO
     ) {
         val json = JSONObject(data)
-
-        val body = json.toString().toRequestBody(
-            "application/json; charset=utf-8".toMediaType()
-        )
+        val body = json.jsonMediaType()
 
         val response: Response = client.newCall(
             build("address")
@@ -323,9 +324,7 @@ class Client {
             )
         )
 
-        val body = json.toString().toRequestBody(
-            "application/json; charset=utf-8".toMediaType()
-        )
+        val body = json.jsonMediaType()
 
         val response: Response = client.newCall(
             build("email")
@@ -347,9 +346,7 @@ class Client {
             )
         )
 
-        val body = json.toString().toRequestBody(
-            "application/json; charset=utf-8".toMediaType()
-        )
+        val body = json.jsonMediaType()
 
         val response: Response = client.newCall(
             build("phone")
@@ -405,9 +402,8 @@ class Client {
         withContext(Dispatchers.IO) {
             data["kycId"] = report // append report user
             val json = getJsonFromMap(data)
-            val body = json.toString().toRequestBody(
-                "application/json; charset=utf-8".toMediaType()
-            )
+            val body = json.jsonMediaType()
+
             val response: Response = client.newCall(
                 build("advanced-signature/template/by/user", isSign = true)
                     .post(body)

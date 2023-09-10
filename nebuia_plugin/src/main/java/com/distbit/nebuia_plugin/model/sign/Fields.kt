@@ -5,13 +5,8 @@ data class DocumentField(
     val value: String
 )
 
-fun MutableMap<String, String>.toDocumentFields(): Map<String, String> {
-    val documentFieldsJson = mutableMapOf<String, String>()
-
-    for ((key, value) in this) {
-        documentFieldsJson["key"] = key
-        documentFieldsJson["value"] = value
-    }
-
-    return documentFieldsJson
+fun MutableMap<String, String>.toDocumentFields(): Array<HashMap<String, String>> {
+    return this.map { (key, value) ->
+        hashMapOf("key" to key, "value" to value)
+    }.toTypedArray()
 }
