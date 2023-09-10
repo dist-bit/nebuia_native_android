@@ -34,7 +34,6 @@ class RecordActivity : AppCompatActivity() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    //private var doneLayout: LinearLayout? = null
     private lateinit var zone: LinearLayout
 
     private var title: TextView? = null

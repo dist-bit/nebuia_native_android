@@ -1,7 +1,6 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.address
 
 import android.app.Activity
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -170,7 +169,6 @@ class AddressFragment : BottomSheetDialogFragment() {
         val intent = Intent(requireActivity(), AddressPreviewActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
-        //requireActivity().finish()
     }
 
 }

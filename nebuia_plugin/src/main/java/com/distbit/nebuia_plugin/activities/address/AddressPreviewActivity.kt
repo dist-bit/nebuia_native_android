@@ -1,4 +1,4 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.address
 
 import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -45,7 +45,6 @@ class AddressPreviewActivity : AppCompatActivity() {
         upload.setOnClickListener { uploadAddress() }
         retake.setOnClickListener {
             this.finish()
-            //startActivity(Intent(this, AddressActivity::class.java))
         }
 
         if (NebuIA.task.addressBitmap != null)

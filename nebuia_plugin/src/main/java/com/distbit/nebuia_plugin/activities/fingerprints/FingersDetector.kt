@@ -1,4 +1,4 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.fingerprints
 
 import android.content.Intent
 import android.content.res.ColorStateList

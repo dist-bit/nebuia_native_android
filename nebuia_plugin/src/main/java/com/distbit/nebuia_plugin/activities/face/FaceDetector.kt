@@ -1,4 +1,4 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.face
 
 import android.graphics.Bitmap
 import android.graphics.ImageFormat

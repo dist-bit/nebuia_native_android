@@ -1,7 +1,6 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.fingerprints
 
 import android.graphics.*
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -58,9 +57,7 @@ class FingerprintPreview : AppCompatActivity() {
 
         svProgressHUD = ProgressHUD(this)
 
-        //retake = findViewById(R.id.retake_finger)
         continueFinger = findViewById(R.id.continue_fingers)
-
         summary = findViewById(R.id.summary)
         title = findViewById(R.id.title)
         titleFinger = findViewById(R.id.title_finger)
@@ -68,7 +65,6 @@ class FingerprintPreview : AppCompatActivity() {
         setFonts()
         setUpColors()
         windowFeatures()
-        //setUpRetake()
 
         indexFinger.setImageBitmap(fingers[0].image)
         middleFinger.setImageBitmap(fingers[1].image)
@@ -182,16 +178,6 @@ class FingerprintPreview : AppCompatActivity() {
     private fun setUpColors() {
         NebuIA.theme.setUpButtonPrimaryTheme(continueFinger, this)
     }
-
-    /**
-     * @dev set up retake button listener
-     */
-    /*
-    private fun setUpRetake() = retake.setOnClickListener {
-        this.finish()
-        val intent = Intent(this, FingersDetector::class.java)
-        startActivity(intent)
-    } */
 
     /**
      * @dev override back button key

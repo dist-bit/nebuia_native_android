@@ -7,7 +7,7 @@
     android:background="@color/white_overlay"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.NebuIASample.FullscreenContainer"
-    tools:context=".activities.UploadActivity">
+    tools:context=".activities.id.UploadActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

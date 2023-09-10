@@ -3,6 +3,7 @@ package com.distbit.nebuiaexample
 import android.app.Activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.model.ui.Theme
@@ -44,6 +45,7 @@ class MainActivity : Activity() {
         val fingerprints = findViewById<Button>(R.id.fingerprints)
         val address = findViewById<Button>(R.id.address)
         val video = findViewById<Button>(R.id.evidence)
+        val sign = findViewById<Button>(R.id.sign_document)
 
         id.setOnClickListener {
            // nebuIA.recordActivity(arrayListOf<String>("Yo miguel manifientso que pedi un credito a bancra", "Yo miguel angel sanche bravotesxto  manifientso que pedi un credito a bancra y estoy consiente de pagarlos todo y asi terminar mi prestamo  ien librado"),nameFromId = false, onRecordComplete = {} )
@@ -71,6 +73,27 @@ class MainActivity : Activity() {
 
         address.setOnClickListener {
             nebuIA.captureAddress(onAddressComplete = {})
+        }
+
+        val signature = nebuIA.NebuIASigner()
+        sign.setOnClickListener {
+            signature.getSignTemplates(onDocumentTemplates = {
+                Log.i("SIGGGG", it.last().toString())
+                signature.signDocument(it.last().id, mutableMapOf(
+                    "email" to "miguel@distbit.io",
+                    "key_value_one" to "VALOR1",
+                    "rfc_user" to "RFC USERR",
+
+                ), onDocumentSign = {
+                    Log.i("SIGGGG", "SIGNED")
+                })
+
+
+            })
+
+           /* nebuIA.openSignature(onDocumentSignedFunc = {
+
+            }) */
         }
     }
 

@@ -1,4 +1,4 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.id
 
 import android.app.Dialog
 import android.os.Bundle
