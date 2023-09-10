@@ -25,6 +25,7 @@ class AddressActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        addressActivity = this
         showAddressFragment()
     }
 

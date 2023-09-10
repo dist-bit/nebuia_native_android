@@ -24,6 +24,13 @@ import kotlin.math.abs
 class Utils {
     companion object {
 
+        fun Bitmap.compressBitmapAsJPEG(): Bitmap {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            this.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val compressedByteArray = byteArrayOutputStream.toByteArray()
+            return BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+        }
+
         fun Frame.toBitMap(): Bitmap {
 
             var array: ByteArray? = null

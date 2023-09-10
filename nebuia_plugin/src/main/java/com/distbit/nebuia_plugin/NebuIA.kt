@@ -345,9 +345,10 @@ class NebuIA(private var context: Activity) {
             params: MutableMap<String, String>,
             onDocumentSign: () -> Unit
         ) {
+            checkReportParamRequest()
             documentSigned = onDocumentSign
             uiScope.launch {
-                // wait 1 second to show loading dialog
+                // wait 500 milliseconds to show loading dialog
                 delay(500)
                 svProgressHUD.show()
                 val document = task.signDocument(mutableMapOf(

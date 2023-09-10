@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.utils.Utils
+import com.distbit.nebuia_plugin.utils.Utils.Companion.compressBitmapAsJPEG
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import com.distbit.nebuia_plugin.utils.Utils.Companion.warning
@@ -112,7 +113,7 @@ class FaceDetector : AppCompatActivity() {
         camera.addCameraListener(object : CameraListener() {
             override fun onPictureTaken(result: PictureResult) {
                 result.toBitmap {
-                    analyzeFaceSpoofing(it!!)
+                    analyzeFaceSpoofing(it!!.compressBitmapAsJPEG())
                 }
             }
         })
