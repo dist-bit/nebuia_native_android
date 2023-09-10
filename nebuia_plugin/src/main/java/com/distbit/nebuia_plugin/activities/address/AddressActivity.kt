@@ -21,49 +21,37 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
 import java.io.FileOutputStream
 
-
 class AddressActivity : AppCompatActivity() {
 
-    /**
-     * @dev onCreate default android life cycle
-     * init listeners for camera frames
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        showAddressFragment()
+    }
 
-        val addressFragment: AddressFragment = AddressFragment.newInstance()
-        act = this
-
+    private fun showAddressFragment() {
+        val addressFragment = AddressFragment.newInstance()
         addressFragment.show(supportFragmentManager, addressFragment.tag)
     }
 
     companion object {
-        lateinit var act: AddressActivity
+        lateinit var addressActivity: AddressActivity
 
         fun close() {
-            act.onBackPressed();
+            addressActivity.onBackPressed()
         }
     }
 }
 
 class AddressFragment : BottomSheetDialogFragment() {
 
-    companion object {
-        fun newInstance(): AddressFragment {
-            return AddressFragment()
-        }
-    }
+    private var latestTmpUri: Uri? = null
+    private lateinit var tmpFile: File
 
-    override fun onCancel(dialog: DialogInterface) {
-        AddressActivity.close()
-        super.onCancel(dialog)
-    }
-
-    private var resultDocument =
+    private val resultDocument =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                val uri = data!!.data!!
+                val uri = data?.data ?: return@registerForActivityResult
 
                 val input = requireActivity().contentResolver.openInputStream(uri)
 
@@ -71,7 +59,7 @@ class AddressFragment : BottomSheetDialogFragment() {
                 FileOutputStream(file).use { output ->
                     val buffer = ByteArray(4 * 1024)
                     var read: Int
-                    while (input!!.read(buffer).also { read = it } != -1) {
+                    while (input?.read(buffer).also { read = it ?: -1 } != -1) {
                         output.write(buffer, 0, read)
                     }
                     output.flush()
@@ -83,8 +71,7 @@ class AddressFragment : BottomSheetDialogFragment() {
             }
         }
 
-
-    private var resultCamera =
+    private val resultCamera =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
                 latestTmpUri?.let { uri ->
@@ -100,9 +87,10 @@ class AddressFragment : BottomSheetDialogFragment() {
             }
         }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    companion object {
+        fun newInstance(): AddressFragment {
+            return AddressFragment()
+        }
     }
 
     override fun onCreateView(
@@ -123,12 +111,14 @@ class AddressFragment : BottomSheetDialogFragment() {
             pickPDFFile()
         }
 
-        return view;
+        return view
     }
 
-    /**
-     * @dev set up pdf picker action button
-     */
+    override fun onCancel(dialog: DialogInterface) {
+        AddressActivity.close()
+        super.onCancel(dialog)
+    }
+
     private fun pickPDFFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "application/pdf"
@@ -136,10 +126,6 @@ class AddressFragment : BottomSheetDialogFragment() {
         resultDocument.launch(intent)
     }
 
-    /**
-     * @dev set up pdf picker action button
-     */
-    private var latestTmpUri: Uri? = null
     private fun pickCameraFile() {
         getTmpFileUri().let { uri ->
             latestTmpUri = uri
@@ -147,7 +133,6 @@ class AddressFragment : BottomSheetDialogFragment() {
         }
     }
 
-    lateinit var tmpFile: File
     private fun getTmpFileUri(): Uri {
         tmpFile =
             File.createTempFile("tmp_image_file", ".jpeg", requireActivity().cacheDir).apply {
@@ -156,19 +141,15 @@ class AddressFragment : BottomSheetDialogFragment() {
             }
 
         return FileProvider.getUriForFile(
-            this.requireContext(),
-            "${this.requireContext().packageName}.nebuia_plugin",
+            requireContext(),
+            "${requireContext().packageName}.nebuia_plugin",
             tmpFile
         )
     }
 
-    /**
-     * @dev preview address proof
-     */
     private fun finalize() {
         val intent = Intent(requireActivity(), AddressPreviewActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         startActivity(intent)
     }
-
 }

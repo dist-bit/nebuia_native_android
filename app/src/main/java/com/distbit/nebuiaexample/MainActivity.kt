@@ -30,15 +30,6 @@ class MainActivity : Activity() {
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
         nebuIA.setReport("63f25f106e1a6b708a57596f")
-        //nebuIA.setReport("60ef54921bc1004d709a1a05")
-        // CALL NEBUIA METHOD
-        /*nebuIA.fingerDetection(0, false, 4.4, onSkip = {
-
-        }, onFingerDetectionComplete = { fingers, fingers2, fingers3, fingers4 ->
-            // LOGIC HERE
-        }, onSkipWithFingers = { fingers, fingers2, fingers3, fingers4 ->
-
-        }) */
 
         val spoof = findViewById<Button>(R.id.spoofing)
         val id = findViewById<Button>(R.id.id_scanner)
@@ -48,12 +39,12 @@ class MainActivity : Activity() {
         val sign = findViewById<Button>(R.id.sign_document)
 
         id.setOnClickListener {
-           // nebuIA.recordActivity(arrayListOf<String>("Yo miguel manifientso que pedi un credito a bancra", "Yo miguel angel sanche bravotesxto  manifientso que pedi un credito a bancra y estoy consiente de pagarlos todo y asi terminar mi prestamo  ien librado"),nameFromId = false, onRecordComplete = {} )
             nebuIA.documentDetection(onIDComplete = {}, onIDError = {})
         }
 
         video.setOnClickListener {
-            nebuIA.recordActivity(arrayListOf<String>("Yo miguel manifientso que pedi un credito a bancra", "Yo miguel angel sanche bravotesxto  manifientso que pedi un credito a bancra y estoy consiente de pagarlos todo y asi terminar mi prestamo  ien librado"),nameFromId = false, onRecordComplete = {} )
+            nebuIA.recordActivity(
+                arrayListOf(), nameFromId = false, onRecordComplete = {})
 
         }
 
@@ -79,21 +70,15 @@ class MainActivity : Activity() {
         sign.setOnClickListener {
             signature.getSignTemplates(onDocumentTemplates = {
                 Log.i("SIGGGG", it.last().toString())
-                signature.signDocument(it.last().id, mutableMapOf(
-                    "email" to "miguel@distbit.io",
+                signature.signDocument(it.last().id, "miguel@distbit.io", mutableMapOf(
                     "key_value_one" to "VALOR1",
                     "rfc_user" to "RFC USERR",
-
                 ), onDocumentSign = {
                     Log.i("SIGGGG", "SIGNED")
                 })
 
-
             })
 
-           /* nebuIA.openSignature(onDocumentSignedFunc = {
-
-            }) */
         }
     }
 

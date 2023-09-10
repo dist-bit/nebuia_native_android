@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.ComponentName
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.browser.customtabs.CustomTabsCallback
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.browser.customtabs.CustomTabsSession
 import com.distbit.nebuia_plugin.NebuIA
+import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.model.sign.DocumentToSign
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +25,7 @@ class Signature(private val act: Activity) {
     init {
         CustomTabsClient.bindCustomTabsService(
             this.act,
-            "com.android.chrome",
+            act.getString(R.string.com_android_chrome),
             object : CustomTabsServiceConnection() {
                 override fun onCustomTabsServiceConnected(
                     componentName: ComponentName,
@@ -50,7 +50,7 @@ class Signature(private val act: Activity) {
     fun checkIfDocumentIsSigned() {
         val id = this.document
         CoroutineScope(Dispatchers.Main).launch {
-            if(NebuIA.task.isDocumentTemplateSigned(id)) {
+            if (NebuIA.task.isDocumentTemplateSigned(id)) {
                 NebuIA.documentSigned()
             }
         }
@@ -59,6 +59,11 @@ class Signature(private val act: Activity) {
     fun openWindow(document: DocumentToSign) {
         this.document = document.documentId
         val builder = CustomTabsIntent.Builder(customTabsSession)
+
+        builder.setUrlBarHidingEnabled(true)
+        builder.setShowTitle(false)
+        builder.setShareState(CustomTabsIntent.SHARE_STATE_OFF)
+
         val customTabsIntent = builder.build()
         customTabsIntent.intent.setPackage(getPackageName())
         customTabsIntent.launchUrl(this.act, Uri.parse(document.signatureLink))
@@ -67,7 +72,7 @@ class Signature(private val act: Activity) {
     private fun getPackageName(): String? {
         return CustomTabsClient.getPackageName(
             this.act,
-            mutableListOf<String>("com.android.chrome")
+            mutableListOf(act.getString(R.string.com_android_chrome))
         )
     }
 }

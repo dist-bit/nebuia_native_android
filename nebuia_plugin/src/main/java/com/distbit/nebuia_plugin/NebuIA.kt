@@ -19,8 +19,8 @@ import com.distbit.nebuia_plugin.exceptions.ReportException
 import com.distbit.nebuia_plugin.model.Fingers
 import com.distbit.nebuia_plugin.model.Keys
 import com.distbit.nebuia_plugin.model.Side
-import com.distbit.nebuia_plugin.model.sign.ResponseCodes
 import com.distbit.nebuia_plugin.model.sign.Template
+import com.distbit.nebuia_plugin.model.sign.toDocumentFields
 import com.distbit.nebuia_plugin.model.ui.Theme
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.task.Task
@@ -46,9 +46,10 @@ class NebuIA(private var context: Activity) {
      */
     init {
         val client = Client()
+        context.getString(R.string.nebuia_public_key)
         client.keys = Keys(
-            publicKey = getKeyResource("nebuia_public_key"),
-            privateKey = getKeyResource("nebuia_secret_key")
+            publicKey = context.getString(R.string.nebuia_public_key),
+            privateKey = context.getString(R.string.nebuia_secret_key)
         )
 
         id.Init(context.assets)
@@ -107,7 +108,7 @@ class NebuIA(private var context: Activity) {
         checkReportParamRequest()
         faceComplete = onFaceComplete
         val intent = Intent(context, FaceDetector::class.java)
-        intent.putExtra("idShow", useIDShow);
+        intent.putExtra(context.getString(R.string.idshow), useIDShow);
         context.startActivity(intent)
     }
 
@@ -170,10 +171,10 @@ class NebuIA(private var context: Activity) {
     ) {
         checkReportParamRequest()
         recordComplete = onRecordComplete
-        getNameFromId = nameFromId
-        val record = Intent(context, RecordActivity::class.java)
-        record.putStringArrayListExtra("text_to_load", text)
-        context.startActivity(record)
+        val intent = Intent(context, RecordActivity::class.java)
+        intent.putStringArrayListExtra(context.getString(R.string.text_to_load), text)
+        intent.putExtra(context.getString(R.string.name_from_id), nameFromId)
+        context.startActivity(intent)
     }
 
     /**
@@ -340,7 +341,8 @@ class NebuIA(private var context: Activity) {
 
         fun signDocument(
             documentId: String,
-            params: MutableMap<String, Any>,
+            email: String,
+            params: MutableMap<String, String>,
             onDocumentSign: () -> Unit
         ) {
             documentSigned = onDocumentSign
@@ -348,8 +350,11 @@ class NebuIA(private var context: Activity) {
                 // wait 1 second to show loading dialog
                 delay(500)
                 svProgressHUD.show()
-                params["templateId"] = documentId
-                val document = task.signDocument(params)
+                val document = task.signDocument(mutableMapOf(
+                    "email" to email,
+                    "templateId" to documentId,
+                    "fields" to params.toDocumentFields()
+                ))
                 svProgressHUD.dismiss()
                 if (document != null) {
                     sign.openWindow(document)
@@ -357,14 +362,6 @@ class NebuIA(private var context: Activity) {
             }
         }
     }
-
-    /**
-     * @dev load keys from resource
-     * @param key = value key
-     */
-    private fun getKeyResource(key: String): String = context.resources.getString(
-        context.resources.getIdentifier(key, "string", context.packageName)
-    )
 
     private fun autoRequestAllPermissions() {
         var info: PackageInfo? = null
@@ -394,7 +391,6 @@ class NebuIA(private var context: Activity) {
     companion object {
         // background tasks
         var task: Task = Task()
-        // loader
 
         val id: Id = Id()
         val fingers: Finger = Finger()
@@ -422,7 +418,6 @@ class NebuIA(private var context: Activity) {
 
         // video evidence
         var recordComplete: (File) -> Unit = { file: File -> }
-        var getNameFromId: Boolean = false
 
         // face
         var faceComplete: () -> Unit = {}

@@ -68,7 +68,7 @@ class FaceDetector : AppCompatActivity() {
     }
 
     private fun getValueIDInstructions() {
-        idShow = intent.extras!!.getBoolean("idShow")
+        idShow = intent.extras!!.getBoolean(getString(R.string.idshow))
     }
 
     /**
