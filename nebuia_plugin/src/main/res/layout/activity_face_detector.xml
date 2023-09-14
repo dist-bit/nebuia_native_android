@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black_overlay"
     android:theme="@style/ThemeOverlay.NebuIA.FullscreenContainer"
-    tools:context=".activities.FaceDetector">
+    tools:context=".activities.face.FaceDetector">
 
 
     <com.otaliastudios.cameraview.CameraView

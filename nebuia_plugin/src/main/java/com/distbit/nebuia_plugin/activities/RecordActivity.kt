@@ -19,7 +19,6 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
 import com.otaliastudios.cameraview.VideoResult
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -34,7 +33,6 @@ class RecordActivity : AppCompatActivity() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    //private var doneLayout: LinearLayout? = null
     private lateinit var zone: LinearLayout
 
     private var title: TextView? = null
@@ -54,6 +52,8 @@ class RecordActivity : AppCompatActivity() {
     private var faceComplete: Boolean = false
     private var lectureComplete: Boolean = false
 
+    private val timer = Timer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record_evidence)
@@ -70,7 +70,7 @@ class RecordActivity : AppCompatActivity() {
         zone = findViewById(R.id.zone)
         continueText = findViewById(R.id.continue_text)
 
-        suffixText = intent!!.getStringArrayListExtra("text_to_load")!!
+        suffixText = intent!!.getStringArrayListExtra(getString(R.string.text_to_load))!!
         permission()
 
         //back.setOnClickListener { back() }
@@ -78,22 +78,23 @@ class RecordActivity : AppCompatActivity() {
             parseText()
         }
 
-        if(NebuIA.getNameFromId) getDataReport() else readText!!.text = suffixText[0]
+        val nameFromId = intent!!.getBooleanExtra(getString(R.string.name_from_id), false)
+        if (nameFromId) getDataReport() else readText!!.text = suffixText[0]
 
         setFonts()
         setUpCamera(camera!!)
 
-        if(suffixText.size == 1) {
+        if (suffixText.size == 1) {
             continueText.text = getString(R.string.done_image)
         }
     }
 
     private fun parseText() {
-        if(suffixText.size == currentTextPosition + 2) {
+        if (suffixText.size == currentTextPosition + 2) {
             continueText.text = getString(R.string.done_image)
         }
 
-        if(suffixText.size != currentTextPosition + 1) {
+        if (suffixText.size != currentTextPosition + 1) {
             currentTextPosition++
             readText!!.text = suffixText[currentTextPosition]
         } else {
@@ -107,9 +108,11 @@ class RecordActivity : AppCompatActivity() {
     }
 
     private fun permission() {
-        ActivityCompat.requestPermissions(this,
+        ActivityCompat.requestPermissions(
+            this,
             listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(),
-            100)
+            100
+        )
     }
 
     /**
@@ -168,7 +171,7 @@ class RecordActivity : AppCompatActivity() {
      * set image format and life cycle to activity
      * @param camera - CameraView instance
      */
-    @DelicateCoroutinesApi
+
     fun setUpCamera(camera: CameraView) {
         camera.frameProcessingFormat = ImageFormat.NV21
         camera.setLifecycleOwner(this)
@@ -203,17 +206,20 @@ class RecordActivity : AppCompatActivity() {
      * if exist it will be analyzed for anti spoofing protection
      * @param bitmap - frame from camera preview
      */
-    private val timer = Timer()
     private fun detect(bitmap: Bitmap) {
         uiScope.launch {
-
-            if(!lectureComplete && !faceComplete) {
+            if (!lectureComplete && !faceComplete) {
                 val detections = NebuIA.face.detect(bitmap)
                 if (detections.isNotEmpty()) {
                     faceComplete = true
                     summary.text =
-                        "Por favor lee el texto en voz alta, una vez finalices presiona el boton verde para terminar"
-                    camera!!.takeVideoSnapshot(File(getExternalFilesDir(Environment.DIRECTORY_MOVIES), "video.mp4"))
+                        getString(R.string.recording_text)
+                    camera!!.takeVideoSnapshot(
+                        File(
+                            getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+                            "video.mp4"
+                        )
+                    )
                 }
             }
         }

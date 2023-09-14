@@ -8,7 +8,7 @@
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    tools:context=".activities.PreviewDocument">
+    tools:context=".activities.id.PreviewDocument">
 
     <ImageView
         android:layout_width="@dimen/_50sdp"

@@ -1,20 +1,26 @@
 package com.distbit.nebuia_plugin.task
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.core.Finger
 import com.distbit.nebuia_plugin.model.*
+import com.distbit.nebuia_plugin.model.sign.DocumentToSign
+import com.distbit.nebuia_plugin.model.sign.Template
+import com.distbit.nebuia_plugin.model.sign.mapToSignURL
+import com.distbit.nebuia_plugin.model.sign.mapToTemplateList
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.File
 import java.util.*
 
 
 class Task {
 
-    val conf = Bitmap.Config.ARGB_8888
+    private val conf = Bitmap.Config.ARGB_8888
 
     var client: Client? = null
     var currentType: String? = null
@@ -141,6 +147,23 @@ class Task {
 
     suspend fun getNFIQFingerprintImage(image: Bitmap, onError: () -> Unit): HashMap<*, *>? {
         return client!!.getNFIQFingerprint(image, onError)
+    }
+
+    suspend fun getSignTemplates(): List<Template> {
+        val map = client!!.getSignTemplates()
+        val jsonObject = JSONObject(map)
+        val payloadArray = jsonObject.getJSONArray("payload")
+        return payloadArray.mapToTemplateList()
+    }
+
+    suspend fun isDocumentTemplateSigned(documentId: String): Boolean {
+        return client!!.checkDocumentSign(documentId)
+    }
+
+    suspend fun signDocument(params: MutableMap<String, Any>): DocumentToSign? {
+        params["sendEmailToUser"] = false
+        val result = client!!.signDocument(params)
+        return result.mapToSignURL()
     }
 
     // store document images

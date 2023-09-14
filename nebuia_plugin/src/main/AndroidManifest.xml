@@ -11,6 +11,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <queries>
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+    </queries>
+
     <application
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
@@ -26,7 +32,7 @@
         </provider>
 
         <activity
-            android:name=".activities.AddressActivity"
+            android:name=".activities.address.AddressActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoDisplay" />
@@ -36,7 +42,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoDisplay" />
         <activity
-            android:name=".activities.AddressPreviewActivity"
+            android:name=".activities.address.AddressPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingerprint_preview"
             android:screenOrientation="portrait"
@@ -48,31 +54,31 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.FingerprintPreview"
+            android:name=".activities.fingerprints.FingerprintPreview"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingerprint_preview"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.UploadActivity"
+            android:name=".activities.id.UploadActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_upload"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.ScannerID"
+            android:name=".activities.id.ScannerID"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_scanner"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.FingersDetector"
+            android:name=".activities.fingerprints.FingersDetector"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fingers_detector"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".activities.FaceDetector"
+            android:name=".activities.face.FaceDetector"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_face_detector"
             android:screenOrientation="portrait"

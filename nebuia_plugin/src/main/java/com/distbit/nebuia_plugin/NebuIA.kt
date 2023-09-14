@@ -8,17 +8,26 @@ import android.graphics.Bitmap
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.distbit.nebuia_plugin.activities.*
+import com.distbit.nebuia_plugin.activities.address.AddressActivity
+import com.distbit.nebuia_plugin.activities.face.FaceDetector
+import com.distbit.nebuia_plugin.activities.fingerprints.FingersDetector
+import com.distbit.nebuia_plugin.activities.id.ScannerID
+import com.distbit.nebuia_plugin.activities.sign.Signature
 import com.distbit.nebuia_plugin.core.*
 import com.distbit.nebuia_plugin.exceptions.CodeException
 import com.distbit.nebuia_plugin.exceptions.ReportException
 import com.distbit.nebuia_plugin.model.Fingers
 import com.distbit.nebuia_plugin.model.Keys
 import com.distbit.nebuia_plugin.model.Side
+import com.distbit.nebuia_plugin.model.sign.Template
+import com.distbit.nebuia_plugin.model.sign.toDocumentFields
 import com.distbit.nebuia_plugin.model.ui.Theme
 import com.distbit.nebuia_plugin.services.Client
 import com.distbit.nebuia_plugin.task.Task
+import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -29,22 +38,25 @@ class NebuIA(private var context: Activity) {
      * @dev background task execution helper.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main)
-
+    private var svProgressHUD: ProgressHUD
+    private val sign = Signature(context)
 
     /**
      * @dev init NebuIA client with private and public keys.
      */
     init {
         val client = Client()
+        context.getString(R.string.nebuia_public_key)
         client.keys = Keys(
-            publicKey = getKeyResource("nebuia_public_key"),
-            privateKey = getKeyResource("nebuia_secret_key")
+            publicKey = context.getString(R.string.nebuia_public_key),
+            privateKey = context.getString(R.string.nebuia_secret_key)
         )
 
         id.Init(context.assets)
         fingers.Init(context.assets)
         face.Init(context.assets)
         task.client = client
+        svProgressHUD = ProgressHUD(context)
 
         // check manifest permissions
         autoRequestAllPermissions()
@@ -77,7 +89,7 @@ class NebuIA(private var context: Activity) {
     fun setReport(report: String) = task.setReport(report)
 
     /**
-     * @dev generate new report for user - store this un DB
+     * @dev generate new report for user - store this on DB
      * @param onReport - callback function with report
      */
     fun createReport(onReport: (report: String) -> Unit) {
@@ -92,11 +104,11 @@ class NebuIA(private var context: Activity) {
      * @param onFaceComplete - this flow has many activities,
      * on end we need to redirect to another local activity
      */
-    fun faceLiveDetection(useIDShow: Boolean ,onFaceComplete: () -> Unit) {
+    fun faceLiveDetection(useIDShow: Boolean, onFaceComplete: () -> Unit) {
         checkReportParamRequest()
         faceComplete = onFaceComplete
         val intent = Intent(context, FaceDetector::class.java)
-        intent.putExtra("idShow", useIDShow);
+        intent.putExtra(context.getString(R.string.idshow), useIDShow);
         context.startActivity(intent)
     }
 
@@ -107,7 +119,13 @@ class NebuIA(private var context: Activity) {
      * @return ByteArray - wsq file
      * @return Bitmap - index finger with fingerprint clear image
      */
-    fun fingerDetection(ptn: Int, skip: Boolean, onFingerDetectionComplete: (Fingers, Fingers, Fingers, Fingers) -> Unit, onSkip: () -> Unit, onSkipWithFingers: (Fingers, Fingers, Fingers, Fingers) -> Unit) {
+    fun fingerDetection(
+        ptn: Int,
+        skip: Boolean,
+        onFingerDetectionComplete: (Fingers, Fingers, Fingers, Fingers) -> Unit,
+        onSkip: () -> Unit,
+        onSkipWithFingers: (Fingers, Fingers, Fingers, Fingers) -> Unit
+    ) {
         checkReportParamRequest()
         fingerComplete = onFingerDetectionComplete
         fingerSkipWithImages = onSkipWithFingers
@@ -133,7 +151,7 @@ class NebuIA(private var context: Activity) {
                 onWSQDetectionComplete(null)
             })
 
-            if(wsq != null) {
+            if (wsq != null) {
                 onWSQDetectionComplete(wsq)
             } else {
                 onWSQDetectionComplete(null)
@@ -146,13 +164,17 @@ class NebuIA(private var context: Activity) {
      * @param onRecordComplete - on record process done
      * @return String - path of video
      */
-    fun recordActivity(text:  ArrayList<String>, nameFromId: Boolean, onRecordComplete: (File) -> Unit) {
+    fun recordActivity(
+        text: ArrayList<String>,
+        nameFromId: Boolean,
+        onRecordComplete: (File) -> Unit
+    ) {
         checkReportParamRequest()
         recordComplete = onRecordComplete
-        getNameFromId = nameFromId
-        val record = Intent(context, RecordActivity::class.java)
-        record.putStringArrayListExtra("text_to_load", text)
-        context.startActivity(record)
+        val intent = Intent(context, RecordActivity::class.java)
+        intent.putStringArrayListExtra(context.getString(R.string.text_to_load), text)
+        intent.putExtra(context.getString(R.string.name_from_id), nameFromId)
+        context.startActivity(intent)
     }
 
     /**
@@ -171,7 +193,7 @@ class NebuIA(private var context: Activity) {
 
     /**
      * @dev launch IDScanner detector
-     * @param onIDComplete - this flow has many activities,
+     * @param onCaptureComplete - this flow has many activities,
      * on end we need to redirect to another local activity
      */
     fun genericCapture(onCaptureComplete: (ByteArray?) -> Unit) {
@@ -304,13 +326,43 @@ class NebuIA(private var context: Activity) {
         }
     }
 
-    /**
-     * @dev load keys from resource
-     * @param key = value key
-     */
-    private fun getKeyResource(key: String): String = context.resources.getString(
-        context.resources.getIdentifier(key, "string", context.packageName)
-    )
+    inner class NebuIASigner {
+
+        /**
+         * @dev get documents templates
+         */
+        fun getSignTemplates(onDocumentTemplates: (List<Template>) -> Unit) {
+            svProgressHUD.show()
+            uiScope.launch {
+                onDocumentTemplates(task.getSignTemplates())
+                svProgressHUD.dismiss()
+            }
+        }
+
+        fun signDocument(
+            documentId: String,
+            email: String,
+            params: MutableMap<String, String>,
+            onDocumentSign: () -> Unit
+        ) {
+            checkReportParamRequest()
+            documentSigned = onDocumentSign
+            uiScope.launch {
+                // wait 500 milliseconds to show loading dialog
+                delay(500)
+                svProgressHUD.show()
+                val document = task.signDocument(mutableMapOf(
+                    "email" to email,
+                    "templateId" to documentId,
+                    "fields" to params.toDocumentFields()
+                ))
+                svProgressHUD.dismiss()
+                if (document != null) {
+                    sign.openWindow(document)
+                }
+            }
+        }
+    }
 
     private fun autoRequestAllPermissions() {
         var info: PackageInfo? = null
@@ -340,7 +392,6 @@ class NebuIA(private var context: Activity) {
     companion object {
         // background tasks
         var task: Task = Task()
-        // loader
 
         val id: Id = Id()
         val fingers: Finger = Finger()
@@ -350,6 +401,7 @@ class NebuIA(private var context: Activity) {
         var idError: () -> Unit = {}
 
         var addressCapture: (HashMap<String, Any>?) -> Unit = { result: HashMap<String, Any>? -> }
+
         // fingers
         var fingerComplete: (Fingers, Fingers, Fingers, Fingers) -> Unit =
             { index, middle, ring, little: Fingers -> }
@@ -359,18 +411,24 @@ class NebuIA(private var context: Activity) {
         var skipStep: Boolean = false
 
         var positionHand: Int = 0
+
         // generic document capture
         var documentCapture: (ByteArray) -> Unit = { file: ByteArray -> }
 
         var wsqComplete: (ByteArray) -> Unit = { file: ByteArray -> }
+
         // video evidence
         var recordComplete: (File) -> Unit = { file: File -> }
-        var getNameFromId: Boolean = false
+
         // face
         var faceComplete: () -> Unit = {}
 
+        // document signed callback
+        var documentSigned: () -> Unit = {}
+
         // nebuIA theme
         var theme: Theme = Theme()
+
         // api endpoint
         var client: String = "https://api.nebuia.com/api/v1/services"
     }

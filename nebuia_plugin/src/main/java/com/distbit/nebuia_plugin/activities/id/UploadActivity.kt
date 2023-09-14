@@ -1,4 +1,4 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.id
 
 import android.os.Bundle
 import android.view.KeyEvent

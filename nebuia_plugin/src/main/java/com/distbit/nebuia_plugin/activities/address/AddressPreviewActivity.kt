@@ -1,6 +1,5 @@
-package com.distbit.nebuia_plugin.activities
+package com.distbit.nebuia_plugin.activities.address
 
-import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
@@ -14,6 +13,7 @@ import android.graphics.Matrix
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
+import com.distbit.nebuia_plugin.utils.progresshud.ProgressHUD
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 class AddressPreviewActivity : AppCompatActivity() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
-    private lateinit var dialog: ProgressDialog
 
     private lateinit var preview: ImageView
     private lateinit var bitmap: Bitmap
@@ -29,6 +28,8 @@ class AddressPreviewActivity : AppCompatActivity() {
     private lateinit var close: Button
     private lateinit var retake: Button
     private lateinit var upload: ImageView
+
+    private lateinit var svProgressHUD: ProgressHUD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +46,9 @@ class AddressPreviewActivity : AppCompatActivity() {
         upload.setOnClickListener { uploadAddress() }
         retake.setOnClickListener {
             this.finish()
-            //startActivity(Intent(this, AddressActivity::class.java))
         }
+
+        svProgressHUD = ProgressHUD(this)
 
         if (NebuIA.task.addressBitmap != null)
             parseBitmap()
@@ -70,8 +72,8 @@ class AddressPreviewActivity : AppCompatActivity() {
     }
 
     private fun windowFeatures() {
-        window.navigationBarColor = resources.getColor(R.color.nebuia_bg)
-        window.statusBarColor = resources.getColor(R.color.nebuia_bg)
+        window.navigationBarColor = getColor(R.color.nebuia_bg)
+        window.statusBarColor = getColor(R.color.nebuia_bg)
     }
 
     private fun parseBitmap() {
@@ -90,10 +92,7 @@ class AddressPreviewActivity : AppCompatActivity() {
     }
 
     private fun uploadAddress() {
-        dialog = ProgressDialog.show(
-            this, "",
-            "Loading. Please wait...", true
-        )
+        svProgressHUD.show()
         uiScope.launch {
             val result = NebuIA.task.uploadAddress(onError = {
                 NebuIA.addressCapture(null)
@@ -103,7 +102,7 @@ class AddressPreviewActivity : AppCompatActivity() {
                 NebuIA.addressCapture(result)
             }
 
-            dialog.dismiss()
+            svProgressHUD.dismiss()
             NebuIA.task.addressBitmap = null
             NebuIA.task.addressFile = null
             //AddressFragment.closeInstance()

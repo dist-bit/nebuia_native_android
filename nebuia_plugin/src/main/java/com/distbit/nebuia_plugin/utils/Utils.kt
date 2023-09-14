@@ -24,6 +24,13 @@ import kotlin.math.abs
 class Utils {
     companion object {
 
+        fun Bitmap.compressBitmapAsJPEG(): Bitmap {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            this.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val compressedByteArray = byteArrayOutputStream.toByteArray()
+            return BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+        }
+
         fun Frame.toBitMap(): Bitmap {
 
             var array: ByteArray? = null
@@ -212,17 +219,37 @@ class Utils {
             return list
         }
 
-        @Throws(JSONException::class)
         fun getJsonFromMap(map: Map<String, Any>): JSONObject {
             val jsonData = JSONObject()
-            for (key in map.keys) {
-                var value = map[key]
-                if (value is Map<*, *>) {
-                    value = getJsonFromMap(value as Map<String, Any>)
-                }
-                jsonData.put(key, value)
+
+            for ((key, value) in map) {
+                val jsonValue = convertValueToJson(value)
+                jsonData.put(key, jsonValue)
             }
+
             return jsonData
+        }
+
+        private fun convertValueToJson(value: Any): Any {
+            return when (value) {
+                is Map<*, *> -> {
+                    val jsonObject = JSONObject()
+                    for ((key, innerValue) in value as Map<String, Any>) {
+                        jsonObject.put(key, convertValueToJson(innerValue))
+                    }
+                    jsonObject
+                }
+                is Array<*> -> {
+                    val jsonArray = JSONArray()
+                    for (item in value) {
+                        jsonArray.put(convertValueToJson(item!!))
+                    }
+                    jsonArray
+                }
+                else -> {
+                    value
+                }
+            }
         }
 
         fun Bitmap.toArray(): ByteArray {
