@@ -1,7 +1,6 @@
 package com.distbit.nebuia_plugin.task
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.core.Finger
 import com.distbit.nebuia_plugin.model.*
