@@ -50,9 +50,7 @@ class Signature(private val act: Activity) {
     fun checkIfDocumentIsSigned() {
         val id = this.document
         CoroutineScope(Dispatchers.Main).launch {
-            if (NebuIA.task.isDocumentTemplateSigned(id)) {
-                NebuIA.documentSigned()
-            }
+            NebuIA.documentSigned(NebuIA.task.isDocumentTemplateSigned(id))
         }
     }
 

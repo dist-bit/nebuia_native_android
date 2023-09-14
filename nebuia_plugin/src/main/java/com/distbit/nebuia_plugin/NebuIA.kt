@@ -343,7 +343,7 @@ class NebuIA(private var context: Activity) {
             documentId: String,
             email: String,
             params: MutableMap<String, String>,
-            onDocumentSign: () -> Unit
+            onDocumentSign: (Boolean) -> Unit
         ) {
             checkReportParamRequest()
             documentSigned = onDocumentSign
@@ -424,7 +424,7 @@ class NebuIA(private var context: Activity) {
         var faceComplete: () -> Unit = {}
 
         // document signed callback
-        var documentSigned: () -> Unit = {}
+        var documentSigned: (Boolean) -> Unit = { status: Boolean -> }
 
         // nebuIA theme
         var theme: Theme = Theme()
