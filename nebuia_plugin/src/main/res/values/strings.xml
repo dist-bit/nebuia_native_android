@@ -57,7 +57,7 @@
     <string name="document_instruction">Por favor coloca la parte frontal de tu documento de identidad frente a la cámara</string>
     <string name="waiting_document">Esperando documento</string>
     <string name="back_document_instruction">Por favor coloca la parte trasera de tu documento de identidad frente a la cámara</string>
-    <string name="read_text_instruction">Por favor lee el texto en voz alta, una vez finalices presiona el botón verde para terminar</string>
+    <string name="read_text_instruction">Por favor lee el texto en voz alta, una vez finalices presiona el botón Finalizar para continuar con tu enrolamiento</string>
     <string name="video_record_title">Video grabación</string>
     <string name="initial_instruction_record">Por favor, coloca tu rostro en el recuadro y sigue las instrucciones en la parte inferior</string>
     <string name="waiting_read_text">Esperando lectura de texto</string>
