@@ -53,7 +53,7 @@
             android:layout_marginEnd="@dimen/_15sdp"
             android:text="@string/initial_instruction_record"
             android:textAlignment="textStart"
-            android:textColor="@android:color/black"
+            android:textColor="#7d82a8"
             android:textSize="@dimen/_11sdp" />
 
 
