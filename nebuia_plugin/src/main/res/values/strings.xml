@@ -86,7 +86,7 @@
     <string name="version">version 0.0.71</string>
     <string name="text_to_load">text_to_load</string>
     <string name="name_from_id">name_from_id</string>
-    <string name="recording_text">Por favor lee el texto en voz alta, una vez finalices presiona el botón Finalizar para continuar con tu enrolamiento</string>
+    <string name="recording_text">Por favor lee claramente el siguiente texto, una vez terminado pulsa el botón Finalizar para continuar con tu enrolamiento</string>
     <string name="nebuia_public_key">nebuia_public_key</string>
     <string name="nebuia_secret_key">nebuia_secret_key</string>
     <string name="idshow">idShow</string>
