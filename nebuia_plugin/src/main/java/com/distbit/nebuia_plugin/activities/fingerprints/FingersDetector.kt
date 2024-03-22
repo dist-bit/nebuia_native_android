@@ -117,7 +117,7 @@ class FingersDetector : AppCompatActivity() {
                 if (quality > 2) {
                     quality -= 2
                 } else {
-                    quality = 1.5f
+                    quality = 1f
                     maxSizeFingers = 2
                     decrement.cancel()
                 }
