@@ -78,8 +78,7 @@ class RecordActivity : AppCompatActivity() {
             parseText()
         }
 
-        val nameFromId = intent!!.getBooleanExtra(getString(R.string.name_from_id), false)
-        if (nameFromId) getDataReport() else readText!!.text = suffixText[0]
+        readText!!.text = suffixText[0]
 
         setFonts()
         setUpCamera(camera!!)
@@ -113,40 +112,6 @@ class RecordActivity : AppCompatActivity() {
             listOf(Manifest.permission.WRITE_EXTERNAL_STORAGE).toTypedArray(),
             100
         )
-    }
-
-    /**
-     * @dev if report exist, get names from ID and put to read text
-     * if not exist, fill with const text
-     */
-    private fun getDataReport() {
-        val payload = StringBuilder()
-        uiScope.launch {
-            val report = NebuIA.task.getReportSummary()
-            if (report.containsKey("document")) {
-                val document = report["document"] as HashMap<*, *>
-                if (document.containsKey("names")) {
-                    val namesMap: HashMap<*, *> = document["names"] as HashMap<*, *>
-
-                    if (namesMap.containsKey("last_name"))
-                        lastName = namesMap["last_name"] as String
-
-                    if (namesMap.containsKey("names")) {
-                        val namesList: List<String> = namesMap["names"] as List<String>
-                        if (namesList.isNotEmpty()) names = namesList.joinToString(" ")
-                    }
-
-                    if (!names.isNullOrBlank()) payload.append("Yo $names")
-                    if (!lastName.isNullOrBlank()) payload.append(" $lastName ")
-                }
-            }
-
-            if (payload.isBlank())
-                payload.append("Yo (indique su nombre) ")
-            // set text
-            payload.append(suffixText[0])
-            readText!!.text = payload.toString()
-        }
     }
 
     /**
