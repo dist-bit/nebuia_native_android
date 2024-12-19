@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.model.ui.Theme
+import java.util.logging.Logger
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +30,7 @@ class MainActivity : Activity() {
         //nebuIA.setClientURI("http://192.168.1.111:8080/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
-        nebuIA.setReport("63f25f106e1a6b708a57596f")
+        nebuIA.setReport("675c78fad30c24772b27683a")
 
         val spoof = findViewById<Button>(R.id.spoofing)
         val id = findViewById<Button>(R.id.id_scanner)
@@ -63,7 +64,9 @@ class MainActivity : Activity() {
         }
 
         address.setOnClickListener {
-            nebuIA.captureAddress(onAddressComplete = {})
+            nebuIA.captureAddress(onAddressComplete = {
+                Log.i("ADDRESS", it.toString())
+            })
         }
 
         val signature = nebuIA.NebuIASigner()

@@ -79,7 +79,7 @@ class AddressPreviewActivity : AppCompatActivity() {
     private fun parseBitmap() {
         preview.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         preview.setImageBitmap(NebuIA.task.addressBitmap)
-        preview.viewTreeObserver.addOnGlobalLayoutListener { layoutImageView(NebuIA.task.addressBitmap!!) }
+//        preview.viewTreeObserver.addOnGlobalLayoutListener { layoutImageView(NebuIA.task.addressBitmap!!) }
     }
 
     private fun layoutImageView(bitmap: Bitmap) {

@@ -1,6 +1,7 @@
 package com.distbit.nebuia_plugin.services
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.model.*
 import com.distbit.nebuia_plugin.utils.Utils.Companion.getJsonFromMap
@@ -41,6 +42,8 @@ class Client {
         val basePath = if (isSign) signaturePath else NebuIA.client
         val url = if (isSign) "$basePath/$path" else "$basePath/$path?report=$report"
         val headers = buildHeaders()
+
+        Log.d("UploadID", url)
 
         return Request.Builder()
             .url(url)
@@ -178,30 +181,64 @@ class Client {
 
     // uploadID
     suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
+        Log.d("UploadID", "Iniciando proceso de upload de documento")
+
         val docs = Documents
-        val front: RequestBody = create("image/jpeg".toMediaType(), docs.frontImage()!!.toArray())
         val isPassport = docs.type() == DocumentType.PASSPORT
-
-        val body: MultipartBody.Builder = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("document", if (!isPassport) "id" else "passport")
-            .addFormDataPart("front", "front.jpeg", front)
-
-        if (!isPassport) {
-            val back: RequestBody = create("image/jpeg".toMediaType(), docs.backImage()!!.toArray())
-            body.addFormDataPart("back", "back.jpeg", back)
-
-        }
+        Log.d("UploadID", "Tipo de documento: ${if (isPassport) "Pasaporte" else "ID"}")
 
         try {
+            // Log del documento frontal
+            val frontImage = docs.frontImage()
+            if (frontImage == null) {
+                Log.e("UploadID", "Error: Imagen frontal es null")
+                onError()
+                return@withContext null
+            }
+            val front: RequestBody = create("image/jpeg".toMediaType(), frontImage.toArray())
+            Log.d("UploadID", "Imagen frontal procesada correctamente")
+
+            val body: MultipartBody.Builder = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("document", if (!isPassport) "id" else "passport")
+                .addFormDataPart("front", "front.jpeg", front)
+
+            if (!isPassport) {
+                // Log del documento trasero para IDs
+                val backImage = docs.backImage()
+                if (backImage == null) {
+                    Log.e("UploadID", "Error: Imagen trasera es null")
+                    onError()
+                    return@withContext null
+                }
+                val back: RequestBody = create("image/jpeg".toMediaType(), backImage.toArray())
+                body.addFormDataPart("back", "back.jpeg", back)
+                Log.d("UploadID", "Imagen trasera procesada correctamente")
+            }
+
+            Log.d("UploadID", "Iniciando request a servidor")
             val response: Response = client.newCall(
                 build("id/cropped/experimental")
                     .post(body.build())
                     .build()
             ).execute()
 
-            return@withContext toMap(response.json)
+            // Log de la respuesta
+            val responseCode = response.code
+            Log.d("UploadID", "Respuesta del servidor recibida. Código: $responseCode")
+
+            if (!response.isSuccessful) {
+                Log.e("UploadID", "Error en respuesta del servidor: $responseCode - ${response.message}")
+                onError()
+                return@withContext null
+            }
+
+            val result = toMap(response.json)
+            Log.d("UploadID", "Proceso completado exitosamente")
+            return@withContext result
+
         } catch (e: Exception) {
+            Log.e("UploadID", "Error en proceso de upload", e)
             onError()
             return@withContext null
         }
