@@ -1,236 +1,273 @@
-# nebuia
+# Nebuia Native Android - Integration Guide
 
 [![N|Nebula](https://i.ibb.co/DC46xJv/banner-min.png)](https://nebuia.com)
 
 [![dist-bit](https://circleci.com/gh/dist-bit/nebuia_native_android.svg?style=svg)](https://app.circleci.com/pipelines/github/dist-bit/nebuia_native_android) [![](https://jitpack.io/v/dist-bit/nebuia_native_android.svg)](https://jitpack.io/#dist-bit/nebuia_native_android)
 
-### Introduction
+## Installation
 
-NebuIA Native Core is library for nebuia services integration. NebuIA use platform native channels and run over native
-languages Objective-C for IOS and Kotlin/Java for Android
+### Step 1: Add JitPack repository
 
-NebuIA is an Deep Learning library and supports
-  - Face Detection and auto crop
-  - Proof of Live in real time
-    - Darkened images
-    - Office fluorescent lighting
-    - Office with lighting turned off, illuminated only by natural sunlight
-    - Supported attacks
-      - Print
-      - 2D Mask
-      - 2 Replay
-  - Document Detection in real time
-    - Faster and best accuracy than conventional ID Detector (95%)
-    - Support auto cropping
-  - Proof of Address
-    - Automatic extract address
-  - Tipical OTP Verifications for Email and Phone Number SMS
-    - Time-Based One-Time Password (TOTP)
-    - HMAC-Based One-Time Password (HOTP)
-    * [RFC 4226: "RFC 4226 HOTP: An HMAC-Based One-Time Password Algorithm"](https://www.ietf.org/rfc/rfc4226.txt)
-    * [RFC 6238: "TOTP: Time-Based One-Time Password Algorithm"](https://tools.ietf.org/html/rfc6238)
+Add JitPack repository to your root `build.gradle` at the end of repositories:
 
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
 
-### Requirements
- - Kotlin 1.5.10
+Or if you're using `settings.gradle`:
 
-If your app does not have Kotlin support add this to your build.gradle level project
-```groovy
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+### Step 2: Add the dependency
+
+Add the dependency to your app's `build.gradle`:
+
+```gradle
 dependencies {
-    classpath "com.android.tools.build:gradle:4.1.3"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-}
-```
-In your build.gradle level app
-```groovy
-plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    implementation 'com.github.dist-bit:nebuia_native_android:0.0.96'
 }
 ```
 
-### Integration
-Add module android from this repo
-[Import module in android](https://developer.android.com/studio/projects/add-app-module#ImportAModule)
+### Step 3: Add API keys
 
-Add implementation to gradle.build level app
-```groovy
-implementation project(path: ':nebuia')
-```
+Create a `nebuia.xml` file in your app's `res/values` folder with your API credentials:
 
-Sources file with your private and public key
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nebuia_public_key">S5PS103-RHWM8E8-*******-7GQ0NX1</string>
-    <string name="nebuia_secret_key">c96d9080-c479-4439-****-b1523c2e0af4</string>
+    <string name="nebuia_public_key">YOUR_PUBLIC_KEY</string>
+    <string name="nebuia_secret_key">YOUR_SECRET_KEY</string>
 </resources>
 ```
 
-Sample Integration
+## Basic Integration
+
+### Initialize NebuIA
+
 ```kotlin
+import com.distbit.nebuia_plugin.NebuIA
 
-private var nebuIA: NebuIA? = null
-
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-
-    // set nebuIA instance
-    nebuIA = NebuIA(this)
-    // set temporal code
-    nebuIA!!.setTemporalCode("52882602")
-
-    setNebuIAColors()
-    setUpActionNebuIA()
-}
-
-private fun setNebuIATheme() {
-	NebuIA.theme = Theme(
-        primaryColor = 0xff904afa.toInt(),
-        secondaryColor = 0xffffffff.toInt(),
-        primaryTextButtonColor = 0xffffffff.toInt(),
-        secondaryTextButtonColor = 0xff904afa.toInt(),
-        boldFont = ResourcesCompat.getFont(this, R.font.gilroy_bold),
-        normalFont = ResourcesCompat.getFont(this, R.font.gilroy_medium),
-	    thinFont = ResourcesCompat.getFont(this, R.font.gilroy_light)
-	)
-}
-
-private fun setUpActionNebuIA() {
-
-    // set buttons listeners
-    getFace!!.setOnClickListener {
-        execute {
-            // get face image
-            nebuIA!!.getFaceImage {
-                if(it != null)
-                    faceUser!!.setImageBitmap(it)
-            }
-        }
+class MainActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Initialize NebuIA
+        val nebuIA = NebuIA(this)
+        
+        // Configure the client URI
+        nebuIA.setClientURI("https://your-api-endpoint.com/api/v1/services")
+        
+        // Set temporal code
+        nebuIA.setTemporalCode("000000")
+        
+        // Set report ID if needed
+        nebuIA.setReport("your-report-id")
     }
-
-    getDocument!!.setOnClickListener {
-        execute {
-            // get id image [FRONT, BACK]
-            nebuIA!!.getIDImage(Side.FRONT) {
-                if(it != null) {
-                    // set bitmap to image view
-                }
-            }
-        }
-    }
-
-    getDocumentData!!.setOnClickListener {
-        execute {
-            // get report data
-            nebuIA!!.getIDData{
-                Log.i("nebuia_demo", it.toString())
-            }
-        }
-    }
-
-    createReport!!.setOnClickListener {
-        execute {
-            // generate new report id
-            nebuIA!!.createReport {
-                Log.i("nebuia_demo", it)
-            }
-        }
-    }
-
-    proofLive!!.setOnClickListener {
-        execute {
-            // start face live activity
-            nebuIA!!.faceLiveDetection {
-                // call another activity
-                Log.i("nebuia_demo", "proof of live complete")
-            }
-        }
-    }
-
-    fingerPrint!!.setOnClickListener {
-        execute {
-            // start fingerprint scanner and return image from 4 fingers
-            nebuIA!!.fingerDetection { index, middle, ring, little: Bitmap ->
-               // generate WSQ File from finger image
-                    nebuIA!!.generateWSQFingerprint(index) { file: ByteArray ->
-                        // return file in byte array
-                    }
-            }
-        }
-    }
-
-    scanner!!.setOnClickListener {
-        execute {
-            // start ID scanner
-            nebuIA!!.documentDetection {
-            // call another activity
-            Log.i("nebuia_demo", "complete id document")
-            }
-        }
-    }
-
-    recorder!!.setOnClickListener {
-        execute {
-            // start video record activity and return video file
-            nebuIA!!.recordActivity("declaro que adquiri un crédito por 100 pesos mxn") { video ->
-                Log.i("nebuia_demo", "video record complete")
-            }
-    }
- }
-
-    // catch NebuIA errors
-    private fun execute(action: () -> Unit) {
-        try {
-            action()
-        } catch (e: Exception) {
-            errorDescription!!.text = e.message
-        } catch (e: ReportException) {
-            errorDescription!!.text = e.message
-        } catch (e: CodeException) {
-            errorDescription!!.text = e.message
-        }
-    }
-}
-
-
-```
-
-
-### Notes
-
-##### Report identifier
-
-You can use existing report id.
-```kotlin
-nebuIA!!.setReport("60cfc........13c1ca32")
-```
-
-or create new
-```kotlin
-nebuIA!!.createReport {
-	Log.i("detector", it)
 }
 ```
 
-##### Video recording
+### Customize Theme (Optional)
 
-On record end, the activity return video file.
 ```kotlin
-nebuIA!!.recordActivity("declaro que adquiri un crédito por 100 pesos mxn") { video ->
-	Log.i("nebuia_demo", "video record complete")
+import com.distbit.nebuia_plugin.model.ui.Theme
+
+NebuIA.theme = Theme(
+    primaryColor = 0xff2886de.toInt(),
+    secondaryColor = 0xffffffff.toInt(),
+    primaryTextButtonColor = 0xffffffff.toInt(),
+    secondaryTextButtonColor = 0xff904afa.toInt()
+    // You can also set custom fonts:
+    // boldFont = ResourcesCompat.getFont(this, R.font.your_bold_font),
+    // normalFont = ResourcesCompat.getFont(this, R.font.your_normal_font),
+    // thinFont = ResourcesCompat.getFont(this, R.font.your_thin_font)
+)
+```
+
+## Available Features
+
+### Face Liveness Detection
+
+```kotlin
+nebuIA.faceLiveDetection(
+    showIntro = true,
+    onFaceComplete = {
+        // Handle successful face detection
+    }
+)
+```
+
+### Document Scanner
+
+```kotlin
+nebuIA.documentDetection(
+    onIDComplete = {
+        // Handle successful document scan
+    },
+    onIDError = {
+        // Handle error
+    }
+)
+```
+
+### Fingerprint Detection
+
+```kotlin
+nebuIA.fingerDetection(
+    numberOfFingers = 1,
+    showTutorial = false,
+    onSkip = {
+        // Handle skip action
+    },
+    onFingerDetectionComplete = { finger1, finger2, finger3, finger4 ->
+        // Handle successful fingerprint detection
+    },
+    onSkipWithFingers = { finger1, finger2, finger3, finger4 ->
+        // Handle skip with partial fingerprints
+    }
+)
+```
+
+### Address Capture
+
+```kotlin
+nebuIA.captureAddress(
+    onAddressComplete = { address ->
+        // Handle captured address
+    }
+)
+```
+
+### Evidence Recording
+
+```kotlin
+nebuIA.recordActivity(
+    questions = arrayListOf(),
+    nameFromId = false,
+    onRecordComplete = {
+        // Handle recording completion
+    }
+)
+```
+
+### Document Signing
+
+```kotlin
+val signer = nebuIA.NebuIASigner()
+
+// Get available templates
+signer.getSignTemplates(
+    onDocumentTemplates = { templates ->
+        // Select a template and sign
+        signer.signDocument(
+            templateId = templates.first().id,
+            email = "user@example.com",
+            dynamicData = mutableMapOf(
+                "field_key" to "field_value"
+            ),
+            onDocumentSign = {
+                // Handle successful signature
+            }
+        )
+    }
+)
+```
+
+## Report Management
+
+### Create a new report
+
+```kotlin
+nebuIA.createReport { reportId ->
+    // Handle new report ID
 }
 ```
 
-##### Fingerprint
+### Use existing report
 
-On fingerprint scanner endyou can pass any finger image to get WSQ File.
 ```kotlin
-nebuIA!!.generateWSQFingerprint(index) { file: ByteArray ->
+nebuIA.setReport("existing-report-id")
+```
 
+### Get report data
+
+```kotlin
+nebuIA.getIDData { data ->
+    // Handle report data
 }
 ```
 
+### Get captured images
 
-### Images
+```kotlin
+// Get face image
+nebuIA.getFaceImage { bitmap ->
+    // Handle face bitmap
+}
+
+// Get document image
+nebuIA.getIDImage(Side.FRONT) { bitmap ->
+    // Handle document bitmap
+}
+```
+
+## Requirements
+
+- Android SDK 24 or higher
+- Kotlin 1.8 or higher
+- AndroidX libraries
+
+## Permissions
+
+Add these permissions to your `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+
+## ProGuard Rules
+
+If you're using ProGuard, add these rules to your `proguard-rules.pro`:
+
+```proguard
+-keep class com.distbit.nebuia_plugin.** { *; }
+-keepclassmembers class com.distbit.nebuia_plugin.** { *; }
+```
+
+## Error Handling
+
+```kotlin
+private fun execute(action: () -> Unit) {
+    try {
+        action()
+    } catch (e: Exception) {
+        // Handle general exceptions
+        Log.e("NebuIA", e.message ?: "Unknown error")
+    } catch (e: ReportException) {
+        // Handle report-specific exceptions
+        Log.e("NebuIA", "Report error: ${e.message}")
+    } catch (e: CodeException) {
+        // Handle code-specific exceptions
+        Log.e("NebuIA", "Code error: ${e.message}")
+    }
+}
+```
+
+## Support
+
+For issues and feature requests, please visit: https://github.com/dist-bit/nebuia_native_android

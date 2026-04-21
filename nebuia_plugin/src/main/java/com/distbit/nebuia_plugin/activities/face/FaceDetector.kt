@@ -4,103 +4,82 @@ import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.distbit.nebuia_plugin.NebuIA
 import com.distbit.nebuia_plugin.R
 import com.distbit.nebuia_plugin.utils.Utils
-import com.distbit.nebuia_plugin.utils.Utils.Companion.compressBitmapAsJPEG
 import com.distbit.nebuia_plugin.utils.Utils.Companion.hideSystemUI
 import com.distbit.nebuia_plugin.utils.Utils.Companion.toBitMap
-import com.distbit.nebuia_plugin.utils.Utils.Companion.warning
-import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraView
-import com.otaliastudios.cameraview.PictureResult
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.concurrent.schedule
-import kotlin.concurrent.timerTask
+import kotlinx.coroutines.*
 
-
-class FaceDetector : AppCompatActivity() {
-    private val uiScope = CoroutineScope(Dispatchers.Main)
-
-    private val timer = Timer()
-    private var detect: Boolean = false
-
-    private lateinit var title: TextView
-    private lateinit var summary: TextView
-    private lateinit var summaryOne: TextView
-
-    // detection helpers
-    private var faceComplete: Boolean = false
-    private var ineFront: Boolean = false
-    private var ineBack: Boolean = false
+public class FaceDetector : AppCompatActivity() {
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var faceDetectionState = FaceDetectionState()
 
     private lateinit var camera: CameraView
+    private lateinit var title: TextView
+    private lateinit var summary: TextView
+    private lateinit var status: TextView
+    private lateinit var loader: ProgressBar
 
-    private var idShow: Boolean = false
-
-    /**
-     * @dev onCreate default android life cycle
-     * init listeners for camera frames
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_face_detector)
         window.hideSystemUI()
 
-        camera = findViewById(R.id.camera)
-        val back: Button = findViewById(R.id.back)
+        initializeViews()
+        setupUI()
+        initializeCamera()
+    }
 
+    private fun initializeViews() {
+        camera = findViewById(R.id.camera)
         title = findViewById(R.id.title)
         summary = findViewById(R.id.summary)
-        summaryOne = findViewById(R.id.summary_1)
+        status = findViewById(R.id.summary_1)
+        loader = findViewById(R.id.loader)
 
-        back.setOnClickListener { back() }
-
-        getValueIDInstructions()
-        setFonts()
-        setUpCamera()
+        findViewById<Button>(R.id.back).setOnClickListener { finish() }
     }
 
-    private fun getValueIDInstructions() {
-        idShow = intent.extras!!.getBoolean(getString(R.string.idshow))
+    private fun setupUI() {
+        NebuIA.theme.apply {
+            applyBoldFont(title)
+            applyNormalFont(summary)
+            applyNormalFont(status)
+        }
+        updateInitialInstructions()
     }
 
-    /**
-     * @dev apply fonts from NebuIA theme
-     */
-    private fun setFonts() {
-        NebuIA.theme.applyBoldFont(title)
-        NebuIA.theme.applyNormalFont(summary)
-        NebuIA.theme.applyNormalFont(summaryOne)
-        //NebuIA.theme.applyNormalFont(summaryTwo)
+    private fun updateInitialInstructions() {
+        title.text = getString(R.string.face_detection_title)
+        summary.text = getString(R.string.face_position)
+        status.text = getString(R.string.analyzing)
     }
 
-    /**
-     * @dev return to previous activity
-     */
-    private fun back() = this.finish()
+    private fun initializeCamera() {
+        with(camera) {
+            frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
+            setLifecycleOwner(this@FaceDetector)
+            playSounds = false
+            exposureCorrection = 1f
 
-    /**
-     * @dev set up camera for frame processing
-     * set image format and life cycle to activity
-     */
-    private fun setUpCamera() {
-        camera.frameProcessingFormat = ImageFormat.FLEX_RGBA_8888
-        camera.setLifecycleOwner(this)
-        camera.playSounds = false
-        camera.exposureCorrection = 1F
+            setupCameraResolution()
+            setupFrameProcessor()
+        }
+    }
 
+    private fun setupCameraResolution() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
         val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
 
         camera.setPictureSize { source ->
             mutableListOf(Utils.getOptimalSize(source, width, height)!!)
@@ -109,106 +88,93 @@ class FaceDetector : AppCompatActivity() {
         camera.setPreviewStreamSize { source ->
             mutableListOf(Utils.getOptimalSize(source, width, height)!!)
         }
+    }
 
-        camera.addCameraListener(object : CameraListener() {
-            override fun onPictureTaken(result: PictureResult) {
-                result.toBitmap {
-                    analyzeFaceSpoofing(it!!.compressBitmapAsJPEG())
-                }
-            }
-        })
-
+    private fun setupFrameProcessor() {
         camera.addFrameProcessor { frame ->
-            if (!detect) {
-                detect = true
-                if (frame.dataClass === ByteArray::class.java)
-                    detect(frame.toBitMap())
+            if (!faceDetectionState.isProcessing && frame.dataClass == ByteArray::class.java) {
+                faceDetectionState.isProcessing = true
+                processFrame(frame.toBitMap())
             }
         }
     }
 
-    private fun analyzeFaceSpoofing(image: Bitmap) {
-        uiScope.launch {
-            // detect face live
-            if (NebuIA.task.liveDetection(image)) {
-                if (idShow) {
-                    faceComplete = true
-                    summary.text = getString(R.string.document_instruction)
-                    summaryOne.text = getString(R.string.waiting_document)
-                    detect = false
-                } else {
-                    completeActionDetection()
+    private fun processFrame(bitmap: Bitmap) {
+        coroutineScope.launch {
+            try {
+                when {
+                    !faceDetectionState.faceComplete -> processFaceDetection(bitmap)
+                    !faceDetectionState.idFrontComplete -> processIdFront(bitmap)
+                    !faceDetectionState.idBackComplete -> processIdBack(bitmap)
                 }
-            } else detect = false
-        }
-
-    }
-
-    private fun done() {
-        Timer(getString(R.string.time_schedule), false)
-            .schedule(2000) {
-                NebuIA.faceComplete()
-                this@FaceDetector.finish()
-            }
-    }
-
-    /**
-     * @dev on every frame detect if face exist
-     * if exist it will be analyzed for anti spoofing protection
-     * @param bitmap - frame from camera preview
-     */
-    private fun detect(bitmap: Bitmap) {
-        uiScope.launch {
-
-            if (!faceComplete) {
-                val detections = NebuIA.face.detect(bitmap)
-                if (detections.isNotEmpty()) {
-                    // get face quality
-                    val qua = NebuIA.task.qualityFace(bitmap)
-                    if (qua > 70) {
-                        camera.takePicture()
-                    } else {
-                        // play warning sound
-                        warning(this@FaceDetector)
-                        summaryOne.text = getString(R.string.face_quality_warn)
-                        detect = false
-                    }
-                } else detect = false
-            }
-
-            if (faceComplete && !ineFront) {
-                val label = NebuIA.task.documentLabel(bitmap)
-
-                if (label == "mx_id_front") {
-                    uiScope.launch {
-                        ineFront = true
-                        summary.text = getString(R.string.back_document_instruction)
-                        detect = false
-                    }
-                } else {
-                    detect = false
-                }
-            }
-
-            if (ineFront && !ineBack) {
-                val label = NebuIA.task.documentLabel(bitmap)
-                if (label == "mx_id_back") {
-                    completeActionDetection()
-                } else {
-                    detect = false
-                }
+            } catch (e: Exception) {
+                handleError(e)
+            } finally {
+                faceDetectionState.isProcessing = false
             }
         }
     }
 
-    private fun completeActionDetection() {
-        timer.schedule(timerTask {
-            // execute on main thread
-            uiScope.launch {
-                ineBack = true
-                detect = false
-                done()
+    private suspend fun processFaceDetection(bitmap: Bitmap) {
+        val detections = NebuIA.face.detect(bitmap)
+        if (detections.isNotEmpty()) {
+            if (NebuIA.task.liveDetection(bitmap)) {
+                handleSuccessfulFaceDetection()
             }
-        }, 2000)
+        }
+    }
+
+    private suspend fun processIdFront(bitmap: Bitmap) {
+        if (NebuIA.task.documentLabel(bitmap) == "mx_id_front") {
+            faceDetectionState.idFrontComplete = true
+            updateUIForBackDocument()
+        }
+    }
+
+    private suspend fun processIdBack(bitmap: Bitmap) {
+        if (NebuIA.task.documentLabel(bitmap) == "mx_id_back") {
+            faceDetectionState.idBackComplete = true
+            completeVerification()
+        }
+    }
+
+    private fun handleSuccessfulFaceDetection() {
+        faceDetectionState.faceComplete = true
+        summary.text = getString(R.string.document_front)
+        status.text = getString(R.string.document_align)
+    }
+
+    private fun updateUIForBackDocument() {
+        summary.text = getString(R.string.document_back)
+        status.text = getString(R.string.document_align)
+    }
+
+    private fun completeVerification() {
+        coroutineScope.launch {
+            summary.text = getString(R.string.verification_complete)
+            status.text = ""
+            loader.visibility = View.GONE
+            delay(2000)
+            NebuIA.faceComplete()
+            finish()
+        }
+    }
+
+    private fun handleError(error: Exception) {
+        status.text = getString(R.string.verification_failed)
+        loader.visibility = View.GONE
+        Log.e("FaceDetector", "Error during detection", error)
+    }
+
+    private data class FaceDetectionState(
+        var isProcessing: Boolean = false,
+        var faceComplete: Boolean = false,
+        var idFrontComplete: Boolean = false,
+        var idBackComplete: Boolean = false
+    )
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
     }
 }

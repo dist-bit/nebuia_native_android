@@ -57,10 +57,6 @@ class Task {
             return@withContext client!!.saveFace(bitmap)
         }
 
-    suspend fun qualityFace(bitmap: Bitmap): Double = withContext(Dispatchers.Default) {
-            return@withContext client!!.qualityFace(bitmap)
-        }
-
     suspend fun documentRealTimeDetection(bitmap: Bitmap): Bitmap? =
         withContext(Dispatchers.Default) {
             // create fixed size bitmap
@@ -165,17 +161,26 @@ class Task {
         return result.mapToSignURL()
     }
 
+    // ─── Face Liveness (two-frame zoom-approach) ───
+
+    suspend fun createFaceCaptureSession(): String? =
+        client!!.createFaceCaptureSession()
+
+    suspend fun analyzeLiveness(
+        sessionId: String,
+        normalFrame: ByteArray,
+        closeFrame: ByteArray
+    ): LivenessResult? =
+        client!!.analyzeLiveness(sessionId, normalFrame, closeFrame)
+
+    suspend fun sendPassiveSignals(
+        sessionId: String,
+        metadata: PassiveLivenessMetadata
+    ): Boolean =
+        client!!.sendPassiveSignals(sessionId, metadata)
+
     // store document images
     private fun Bitmap.setBitmapForIdentity() {
         Documents.setImage(this)
-        /*documents.isPassport = false
-        when (currentType) {
-            "mx_id_front" -> documents.front = image
-            "mx_id_back" -> documents.back = image
-            "mx_passport_front" -> {
-                documents.front = image
-                documents.isPassport = true
-            }
-        } */
     }
 }

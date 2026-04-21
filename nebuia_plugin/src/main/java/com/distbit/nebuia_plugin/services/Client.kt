@@ -13,6 +13,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.create
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.lang.Exception
@@ -153,31 +154,6 @@ class Client {
         return@withContext false
     }
 
-    // store image face
-    suspend fun qualityFace(file: Bitmap): Double = withContext(Dispatchers.IO) {
-        val image: RequestBody = create("image/jpeg".toMediaType(), file.toArray())
-
-        val body: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("face", "temp.jpeg", image)
-            .build()
-
-        val response: Response = client.newCall(
-            build("face/quality")
-                .post(body)
-                .build()
-        ).execute()
-
-        if (response.isSuccessful) {
-            val json = response.json
-            if (json.getBoolean("status")) {
-                return@withContext json.getDouble("payload")
-            }
-            return@withContext 0.0
-        }
-
-        return@withContext 0.0
-    }
 
     // uploadID
     suspend fun uploadID(onError: () -> Unit): HashMap<String, Any>? = withContext(Dispatchers.IO) {
@@ -471,5 +447,116 @@ class Client {
         }
 
         return@withContext (json["payload"] as Boolean)
+    }
+
+    // ─── Face Liveness (two-frame zoom-approach) ───
+
+    suspend fun createFaceCaptureSession(): String? = withContext(Dispatchers.IO) {
+        try {
+            val body = create(null, ByteArray(0))
+            val response: Response = client.newCall(
+                build("face/capture-session")
+                    .post(body)
+                    .build()
+            ).execute()
+            if (response.isSuccessful) {
+                val json = response.json
+                if (json.getBoolean("status")) {
+                    val payload = json.get("payload")
+                    return@withContext when (payload) {
+                        is JSONObject -> payload.getString("session_id")
+                        is String -> payload
+                        else -> null
+                    }
+                }
+            }
+            return@withContext null
+        } catch (e: Exception) {
+            Log.e("Client", "createFaceCaptureSession error", e)
+            return@withContext null
+        }
+    }
+
+    suspend fun analyzeLiveness(
+        sessionId: String,
+        normalFrame: ByteArray,
+        closeFrame: ByteArray
+    ): LivenessResult? = withContext(Dispatchers.IO) {
+        try {
+            val normalImage: RequestBody = create("image/jpeg".toMediaType(), normalFrame)
+            val closeImage: RequestBody = create("image/jpeg".toMediaType(), closeFrame)
+
+            val body = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("session_id", sessionId)
+                .addFormDataPart("normal", "normal.jpeg", normalImage)
+                .addFormDataPart("close", "close.jpeg", closeImage)
+                .build()
+
+            val response: Response = client.newCall(
+                build("face/liveness")
+                    .post(body)
+                    .build()
+            ).execute()
+
+            if (response.isSuccessful) {
+                val json = response.json
+                Log.d("Client", "analyzeLiveness payload: $json")
+                if (json.getBoolean("status")) {
+                    val payload = json.getJSONObject("payload")
+                    return@withContext LivenessResult(
+                        score = payload.optDouble("score", 0.0),
+                        isValidForKyc = payload.optBoolean("is_valid_for_kyc", false),
+                        accessories = parseAccessories(payload.optJSONObject("accessories"))
+                    )
+                }
+            }
+            return@withContext null
+        } catch (e: Exception) {
+            Log.e("Client", "analyzeLiveness error", e)
+            return@withContext null
+        }
+    }
+
+    suspend fun sendPassiveSignals(
+        sessionId: String,
+        metadata: PassiveLivenessMetadata
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val json = JSONObject().apply {
+                put("session_id", sessionId)
+                put("blinkCount", metadata.blinkCount)
+                put("blinkTimestamps", JSONArray(metadata.blinkTimestamps))
+                put("avgBlinkDurationMs", metadata.avgBlinkDurationMs)
+                put("mouthMovements", metadata.mouthMovements)
+                put("headVarianceX", metadata.headVarianceX)
+                put("headVarianceY", metadata.headVarianceY)
+                put("irisVarianceX", metadata.irisVarianceX)
+                put("irisVarianceY", metadata.irisVarianceY)
+                put("sessionDurationMs", metadata.sessionDurationMs)
+                put("frameCount", metadata.frameCount)
+                put("avgEAR", metadata.avgEAR)
+            }
+            val response = client.newCall(
+                build("face/passive-signals")
+                    .post(json.jsonMediaType())
+                    .build()
+            ).execute()
+            return@withContext response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("Client", "sendPassiveSignals error", e)
+            return@withContext false
+        }
+    }
+
+    private fun parseAccessories(json: JSONObject?): Accessories? {
+        if (json == null) return null
+        return Accessories(
+            hasGlasses = json.optBoolean("has_glasses", false),
+            hasMask = json.optBoolean("has_mask", false),
+            hasCap = json.optBoolean("has_cap", false),
+            hasHat = json.optBoolean("has_hat", false),
+            rejectReason = json.optString("reject_reason", null)
+        )
     }
 }

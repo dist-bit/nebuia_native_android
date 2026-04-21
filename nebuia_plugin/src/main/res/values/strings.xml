@@ -91,4 +91,50 @@
     <string name="nebuia_secret_key">nebuia_secret_key</string>
     <string name="idshow">idShow</string>
     <string name="com_android_chrome">com.android.chrome</string>
+
+    <!-- Face Detection Strings -->
+
+
+    <!-- Instructions -->
+    <string name="face_position">Coloca tu rostro dentro del óvalo</string>
+    <string name="face_quality_instructions">Asegúrate de estar en un lugar bien iluminado\nMantén tu rostro centrado y visible\nEvita usar lentes o gorra</string>
+
+    <!-- Status Messages -->
+    <string name="analyzing">Analizando tu rostro…</string>
+    <string name="face_quality_low">Acércate un poco más a la cámara</string>
+    <string name="face_not_detected">No se detecta el rostro</string>
+    <string name="face_too_far">Acércate más a la cámara</string>
+    <string name="face_too_close">Aléjate un poco de la cámara</string>
+    <string name="face_centered">¡Perfecto! Mantén esta posición</string>
+
+    <!-- Document Verification -->
+
+    <string name="document_front">Muestra el frente de tu identificación</string>
+    <string name="document_back">Ahora muestra el reverso</string>
+    <string name="document_align">Alinea el documento dentro del marco</string>
+
+    <!-- Progress Messages -->
+    <string name="processing">Procesando…</string>
+    <string name="verification_complete">¡Verificación completada!</string>
+    <string name="verification_failed">La verificación falló, intenta de nuevo</string>
+
+    <!-- Face Liveness (zoom-approach) -->
+    <string name="title_activity_face_liveness">Prueba de vida</string>
+    <string name="liveness_title">Prueba de vida</string>
+    <string name="liveness_position_face">Centra tu rostro</string>
+    <string name="liveness_perfect">Mantente así</string>
+    <string name="liveness_move_closer">Acércate más</string>
+    <string name="liveness_move_away">Aléjate un poco</string>
+    <string name="liveness_approach">Acércate lentamente</string>
+    <string name="liveness_dont_retreat">No te alejes</string>
+    <string name="liveness_analyzing">Analizando…</string>
+    <string name="liveness_success">¡Verificación exitosa!</string>
+    <string name="liveness_retry">Intentar nuevamente</string>
+    <string name="liveness_error_glasses">Se detectaron lentes en tu rostro.\nPor favor retira tus lentes y vuelve a intentar.</string>
+    <string name="liveness_error_mask">Se detectó un cubrebocas.\nPor favor retíralo y vuelve a intentar.</string>
+    <string name="liveness_error_hat">Se detectó una gorra o sombrero.\nPor favor retírala y vuelve a intentar.</string>
+    <string name="liveness_error_generic">No pudimos verificar tu rostro.\nAsegúrate de tener buena iluminación y que tu rostro esté completamente visible.</string>
+    <string name="liveness_error_network">Error de conexión.\nPor favor intenta de nuevo.</string>
+    <string name="liveness_instructions">Asegúrate de estar en un lugar bien iluminado\nMantén tu rostro centrado y visible\nEvita usar lentes o gorra</string>
+    <string name="liveness_center_in_oval">Centra tu rostro</string>
 </resources>

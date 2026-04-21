@@ -27,10 +27,10 @@ class MainActivity : Activity() {
             //thinFont = ResourcesCompat.getFont(this, R.font.gilroy_light)
         )
         // SET TEMPORAL CODE FROM IP REQUEST
-        //nebuIA.setClientURI("http://192.168.1.111:8080/api/v1/services")
+        nebuIA.setClientURI("https://prewebnebula.bancrea.com/api/v1/services")
         nebuIA.setTemporalCode("000000")
         // SET CLIENT REPORT
-        nebuIA.setReport("675c78fad30c24772b27683a")
+        nebuIA.setReport("677356a58755fae0cbe13136")
 
         val spoof = findViewById<Button>(R.id.spoofing)
         val id = findViewById<Button>(R.id.id_scanner)
@@ -60,7 +60,9 @@ class MainActivity : Activity() {
         }
 
         spoof.setOnClickListener {
-            nebuIA.faceLiveDetection(true, onFaceComplete = {})
+            nebuIA.faceLivenessDetection { isValidForKyc ->
+                Log.d("KYC", "Liveness valid: $isValidForKyc")
+            }
         }
 
         address.setOnClickListener {

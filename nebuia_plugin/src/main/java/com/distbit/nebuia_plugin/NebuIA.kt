@@ -10,6 +10,7 @@ import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.distbit.nebuia_plugin.activities.*
 import com.distbit.nebuia_plugin.activities.address.AddressActivity
 import com.distbit.nebuia_plugin.activities.face.FaceDetector
+import com.distbit.nebuia_plugin.activities.face.liveness.FaceLivenessActivity
 import com.distbit.nebuia_plugin.activities.fingerprints.FingersDetector
 import com.distbit.nebuia_plugin.activities.id.ScannerID
 import com.distbit.nebuia_plugin.activities.sign.Signature
@@ -110,6 +111,18 @@ class NebuIA(private var context: Activity) {
         val intent = Intent(context, FaceDetector::class.java)
         intent.putExtra(context.getString(R.string.idshow), useIDShow);
         context.startActivity(intent)
+    }
+
+    /**
+     * @dev launch face liveness detection with MediaPipe
+     * @param onComplete - callback with liveness result (true = valid for KYC)
+     */
+    fun faceLivenessDetection(onComplete: (Boolean) -> Unit) {
+        checkReportParamRequest()
+        faceLivenessComplete = onComplete
+        context.startActivity(
+            Intent(context, FaceLivenessActivity::class.java)
+        )
     }
 
     /**
@@ -422,6 +435,7 @@ class NebuIA(private var context: Activity) {
 
         // face
         var faceComplete: () -> Unit = {}
+        var faceLivenessComplete: (Boolean) -> Unit = { _: Boolean -> }
 
         // document signed callback
         var documentSigned: (Boolean) -> Unit = { status: Boolean -> }

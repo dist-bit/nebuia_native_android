@@ -7,4 +7,16 @@
     <color name="white_overlay">#FFFFFFFF</color>
 
     <color name="nebuia_bg">#1C1C1C</color>
+
+    <color name="white_87">#DEFFFFFF</color>
+    <color name="black_70">#B3000000</color>
+
+    <color name="primary">#2886DE</color>
+
+    <!-- Face Liveness -->
+    <color name="liveness_green">#FF22c55e</color>
+    <color name="liveness_yellow">#FFeab308</color>
+    <color name="liveness_red">#FFef4444</color>
+    <color name="liveness_gray">#FF9ca3af</color>
+    <color name="liveness_indigo">#FF6366f1</color>
 </resources>

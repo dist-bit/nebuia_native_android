@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <queries>
         <intent>
@@ -81,6 +82,11 @@
             android:name=".activities.face.FaceDetector"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_face_detector"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".activities.face.liveness.FaceLivenessActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
