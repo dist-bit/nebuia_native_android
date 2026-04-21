@@ -60,8 +60,8 @@ class MainActivity : Activity() {
         }
 
         spoof.setOnClickListener {
-            nebuIA.faceLivenessDetection { isValidForKyc ->
-                Log.d("KYC", "Liveness valid: $isValidForKyc")
+            nebuIA.faceLiveDetection(false) {
+                Log.d("KYC", "Face legacy complete")
             }
         }
 

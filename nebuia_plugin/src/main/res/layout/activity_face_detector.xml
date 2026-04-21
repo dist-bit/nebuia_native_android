@@ -24,11 +24,11 @@
         app:cameraUseDeviceOrientation="true"
         app:cameraWhiteBalance="auto">
 
-       <!-- <com.distbit.nebuia_plugin.utils.views.FaceShapeView
+        <com.distbit.nebuia_plugin.utils.views.FaceShapeView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".5"
-            android:background="#80ffffff" /> -->
+            android:background="#80ffffff" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"

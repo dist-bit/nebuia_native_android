@@ -96,7 +96,7 @@
 
 
     <!-- Instructions -->
-    <string name="face_position">Coloca tu rostro dentro del óvalo</string>
+    <string name="face_position">Centra tu rostro en la cámara</string>
     <string name="face_quality_instructions">Asegúrate de estar en un lugar bien iluminado\nMantén tu rostro centrado y visible\nEvita usar lentes o gorra</string>
 
     <!-- Status Messages -->

@@ -117,9 +117,33 @@ public class FaceDetector : AppCompatActivity() {
 
     private suspend fun processFaceDetection(bitmap: Bitmap) {
         val detections = NebuIA.face.detect(bitmap)
+        Log.d("FaceDetector", "detections: ${detections.size}, bitmap: ${bitmap.width}x${bitmap.height}")
         if (detections.isNotEmpty()) {
-            if (NebuIA.task.liveDetection(bitmap)) {
-                handleSuccessfulFaceDetection()
+            val face = detections[0]
+            Log.d("FaceDetector", "face: x=${face.x} y=${face.y} w=${face.w} h=${face.h}")
+
+            // centro del rostro en coordenadas de pantalla
+            val scaleX = camera.width.toFloat() / bitmap.width
+            val scaleY = camera.height.toFloat() / bitmap.height
+            val faceCenterX = (face.x + face.w / 2) * scaleX
+            val faceCenterY = (face.y + face.h / 2) * scaleY
+
+            // centro de la pantalla (camera view)
+            val screenCenterX = camera.width / 2f
+            val screenCenterY = camera.height / 2f
+
+            // desviación normalizada respecto al tamaño de pantalla
+            val dx = Math.abs(faceCenterX - screenCenterX) / camera.width
+            val dy = Math.abs(faceCenterY - screenCenterY) / camera.height
+
+            Log.d("FaceDetector", "dx=$dx dy=$dy centered=${dx < 0.15f && dy < 0.15f}")
+
+            if (dx < 0.15f && dy < 0.15f) {
+                if (NebuIA.task.liveDetection(bitmap)) {
+                    handleSuccessfulFaceDetection()
+                }
+            } else {
+                status.text = getString(R.string.face_position)
             }
         }
     }
